@@ -1,4 +1,4 @@
-# API
+#  QUIZZ
 
 pip install pymysql
 from app import db
