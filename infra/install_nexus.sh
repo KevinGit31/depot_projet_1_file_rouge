@@ -64,6 +64,30 @@ systemctl enable --now nexus.service
 
 ufw allow 8081/tcp
 
+
+#install fail2ban
+apt install -y fail2ban
+
+#start du service fail2ban + activation au démarrage
+systemctl start fail2ban
+systemctl enable fail2ban
+
+#configuration fail2ban
+echo "[DEFAULT]
+ignoreip = 127.0.0.1
+findtime = 10m
+bantime = 24h
+maxretry = 3
+
+[sshd]
+enabled = true
+logpath = /var/log/auth.log
+
+" >> /etc/fail2ban/jail.d/custom.conf
+
+systemctl restart fail2ban
+
+
 sleep 300s
 
 # Affiche le mot de passe
