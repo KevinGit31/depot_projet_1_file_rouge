@@ -4,7 +4,12 @@ services:
   # ajout d'un service mysql
   mysql-app:
     image: 'mysql:5.7'
+    ports:
+      - "3306:3306"
     environment:
+      MYSQL_DATABASE: db.quizz
+      MYSQL_USER: user.quizz
+      MYSQL_PASSWORD: dru98eDFC90
       MYSQL_ROOT_PASSWORD: password
     volumes:
       #- /var/lib/mysql # volume anonyme, perd ses données  après un "down"
