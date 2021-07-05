@@ -1,11 +1,11 @@
 #!/bin/bash
 
-AWSBIN=/usr/local/bin/aws
+AWSBIN=aws
 STACKNAME="projet1grp3"
 TPL=""
 INSTANCE_TYPE="t2.micro"
-KEYNAME=$STACKNAME + "_key"
-PEMKEYNAME=$KEYNAME + ".pem"
+KEYNAME=$STACKNAME"_key"
+PEMKEYNAME=$KEYNAME".pem"
 REGION="eu-west-2"
 echo ""
 echo "Le nom de la stack utilisé est: $STACKNAME"
@@ -13,7 +13,7 @@ echo ""
 
 
 echo "------START CREATE STACK-------" 1>>trace.log 2>&1
-read -p "Saisir jenkins ou nexus pour l'installation" n1
+read -p "Saisir jenkins ou nexus pour l'installation: " n1
 if [ "$n1" = "jenkins" ]; then
     echo "Choix du template jenkins effectué."
     TPL="tplgrp3jenkins.yaml"
@@ -33,7 +33,7 @@ CHOIX=("CREATE" "UPDATE" "DELETE" "EXIT")
 echo "" > trace.log
 
 
-if [! -f $PEMKEYNAME ]; then
+if ! [ -f $PEMKEYNAME ]; then
   $AWSBIN ec2 create-key-pair --key-name $KEYNAME --query "KeyMaterial" --output text > $PEMKEYNAME
 fi
 
