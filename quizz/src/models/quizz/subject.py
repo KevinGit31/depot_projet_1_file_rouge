@@ -14,6 +14,15 @@ class Subject(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
     description = db.Column(db.String(200))
+        
+    # Collection des parties
+    subjects = db.relationship("game")
+
+    # La collection de question
+    subject_question = db.Table('subject_question', db.metadata,
+    db.Column('subject_id', db.Integer, db.ForeignKey('subject.id')),
+    db.Column('question_id', db.Integer, db.ForeignKey('question.id')))
+    questions = db.relationship("question",secondary=subject_question)
 
     # Meta data
     quizz_metadata_id = db.Column(db.Integer, db.ForeignKey('metadata.id'))

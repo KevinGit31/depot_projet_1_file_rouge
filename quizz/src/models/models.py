@@ -15,6 +15,9 @@ from auth.role import Role
 from auth.password import Password
 from quizz.mode import Mode
 from quizz.subject import Subject
+from quizz.game import Game
+from quizz.question import Question
+from quizz.answer import Answer
 
 if __name__ == "__main__":
 

@@ -8,23 +8,22 @@ sys.path.insert(0, parentdir)
 
 from app.app  import db,ma
 
-class Role(db.Model):
+class Answer(db.Model):
 
-    __tablename__ = 'role'
+    __tablename__ = 'answer'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100))
-    user = db.relationship("User")
+    answer = db.Column(db.String(1024))
+    isAnswer = db.Column(db.Boolean)
 
     # Meta data
     quizz_metadata_id = db.Column(db.Integer, db.ForeignKey('metadata.id'))
-    quizz_metadata = db.relationship("Metadata", back_populates="role")
+    quizz_metadata = db.relationship("Metadata", back_populates="answer")
 
-    def __init__(self,name):
-        self.name = name
+    def __init__(self,answer,isAnswer):
+        self.answer = answer
+        self.isAnswer = isAnswer
 
-
-
-# Role Schema
-class RoleSchema(ma.Schema):
+# Answer Schema
+class AnswerSchema(ma.Schema):
     class Meta:
-        fields=('id','name')
+        fields=('id','answer','isAnswer')

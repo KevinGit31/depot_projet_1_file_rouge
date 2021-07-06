@@ -21,7 +21,7 @@ class Mode(db.Model):
     mode_subject = db.Table('mode_subject', db.metadata,
     db.Column('mode_id', db.Integer, db.ForeignKey('mode.id')),
     db.Column('subject_id', db.Integer, db.ForeignKey('subject.id')))
-    subject = db.relationship("subject",secondary=mode_subject)
+    subjects = db.relationship("subject",secondary=mode_subject)
 
     # Meta data
     quizz_metadata_id = db.Column(db.Integer, db.ForeignKey('metadata.id'))

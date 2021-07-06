@@ -20,6 +20,9 @@ class User(db.Model):
     password_id = db.Column(db.Integer, db.ForeignKey('password.id'))
     password = db.relationship("Password", back_populates="user")
 
+    games = db.relationship("game")
+    
+
     # Meta data
     quizz_metadata_id = db.Column(db.Integer, db.ForeignKey('metadata.id'))
     quizz_metadata = db.relationship("Metadata", back_populates="user")

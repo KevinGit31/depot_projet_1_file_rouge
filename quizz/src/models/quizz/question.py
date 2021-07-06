@@ -8,23 +8,26 @@ sys.path.insert(0, parentdir)
 
 from app.app  import db,ma
 
-class Game(db.Model):
+class Question(db.Model):
 
-    __tablename__ = 'subject'
+    __tablename__ = 'question'
     id = db.Column(db.Integer, primary_key=True)
-    endDate = db.Column(db.String(100))
-    description = db.Column(db.String(200))
+    question = db.Column(db.String(1024))
+
+    # La collection de reponse
+    question_answer = db.Table('question_answer', db.metadata,
+    db.Column('question_id', db.Integer, db.ForeignKey('question.id')),
+    db.Column('answer_id', db.Integer, db.ForeignKey('answer.id')))
+    answers = db.relationship("answer",secondary=question_answer)
 
     # Meta data
     quizz_metadata_id = db.Column(db.Integer, db.ForeignKey('metadata.id'))
-    quizz_metadata = db.relationship("Metadata", back_populates="subject")
+    quizz_metadata = db.relationship("Metadata", back_populates="question")
 
-    def __init__(self,name,description):
-        self.name = name
-        self.description = description
+    def __init__(self,question):
+        self.question = question
 
-
-# Game Schema
-class GameSchema(ma.Schema):
+# Question Schema
+class QuestionSchema(ma.Schema):
     class Meta:
-        fields=('id','name','description')
+        fields=('id','question')
