@@ -1,10 +1,16 @@
 from flask import Flask, request, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
-import os
 
+import os
+import sys
+import inspect
+
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.append(parentdir)
 # Init app
-from src.models.auth import role
+from models.auth import role
 
 
 app = Flask(__name__)
@@ -20,7 +26,6 @@ db = SQLAlchemy(app)
 
 # Init ma
 ma = Marshmallow(app)
-
 
 @app.route("/")
 def index():
@@ -42,11 +47,11 @@ def add_user():
         pseudo = request.form["prenom"]
         role_form = request.form["prenom"]
         return {
-            "firstname": firstname,
-            "lastname": lastname,
-            "pseudo": pseudo,
-            "role": role_form
-        }
+                "firstname": firstname,
+                "lastname": lastname,
+                "pseudo": pseudo,
+                "role": role_form
+            }
 
 
 @app.route("/page_listuser", methods=["POST", "GET"])
