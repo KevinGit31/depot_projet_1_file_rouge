@@ -136,4 +136,4 @@ systemctl restart fail2ban
 # On restart le service
 systemctl restart sshd
 
-
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
