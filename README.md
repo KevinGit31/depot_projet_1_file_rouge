@@ -5,3 +5,8 @@
 Ce dossier contien deux sous dossier
 <b>api</b> pour les services web <b>app</b> pour l'interface web
 </p>
+
+### Run Quizz
+Sur un linux lancer le script **start-quizz.sh** .
+
+Le quizz est disponible sur l'url http://127.0.0.1:5000
