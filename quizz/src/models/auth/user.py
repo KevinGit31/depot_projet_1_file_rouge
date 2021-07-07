@@ -6,10 +6,11 @@ currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentfram
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 
-from app.app  import db,ma
+
+from app.app import db, ma
+
 
 class User(db.Model):
-
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
     firstname = db.Column(db.String(100))
@@ -21,14 +22,12 @@ class User(db.Model):
     password = db.relationship("Password", back_populates="user")
 
     games = db.relationship("game")
-    
 
     # Meta data
     quizz_metadata_id = db.Column(db.Integer, db.ForeignKey('metadata.id'))
     quizz_metadata = db.relationship("Metadata", back_populates="user")
 
-
-    def __init__(self,firstname,lastname,pseudo):
+    def __init__(self, firstname, lastname, pseudo):
         self.firstname = firstname
         self.lastname = lastname
         self.pseudo = pseudo
@@ -37,4 +36,4 @@ class User(db.Model):
 # User Schema
 class UserSchema(ma.Schema):
     class Meta:
-        fields=('id','firstname','lastname','pseudo')
+        fields = ('id', 'firstname', 'lastname', 'pseudo')
