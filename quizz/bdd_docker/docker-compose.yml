@@ -14,6 +14,20 @@ services:
     volumes:
       #- /var/lib/mysql # volume anonyme, perd ses données  après un "down"
       - db_vol:/var/lib/mysql # volume nommé
+  
+  # ajout d'un service mysql de test
+  mysql-test:
+    image: 'mysql:5.7'
+    ports:
+      - "3300:3306"
+    environment:
+      MYSQL_DATABASE: test.db.quizz
+      MYSQL_USER: test.user.quizz
+      MYSQL_PASSWORD: dtu896DCYUdf
+      MYSQL_ROOT_PASSWORD: password
+    volumes:
+      #- /var/lib/mysql # volume anonyme, perd ses données  après un "down"
+      - db_vol_test:/var/lib/mysql # volume nommé
     
   admin-db:
     image: phpmyadmin
@@ -21,8 +35,9 @@ services:
       - "8080:80"
     environment:
       MYSQL_ROOT_PASSWORD: password
-      PMA_HOST: mysql-app
+      PMA_HOSTS: mysql-app,mysql-test
 
 # section volumes pour options
 volumes:
   db_vol:
+  db_vol_test:
