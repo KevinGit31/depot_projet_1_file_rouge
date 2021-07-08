@@ -4,12 +4,12 @@ Parameters:
   VpcId:
     Type: AWS::EC2::VPC::Id
     Description: 'The VPC ID'
-  TypeName:
-    Type: String
-    Description: 'Type de serveur'
-    AllowedValues:
-      - jenkins
-      - nexus
+#  TypeName:
+#    Type: String
+#    Description: 'Type de serveur'
+#    AllowedValues:
+#      - jenkins
+#      - nexus
   SSHLocation:
     Description: ' The IP address range that can be used to SSH to the EC2 instances'
     Type: String
@@ -31,7 +31,7 @@ Resources:
           CidrIp: !Ref SSHLocation
       Tags:
       - Key: Name
-        Value: !Sub ${AWS::StackName}-SecurityGroup-Grp3-${TypeName}
+        Value: !Sub ${AWS::StackName}-SecurityGroups
 
 Outputs:
   GroupeSec1:

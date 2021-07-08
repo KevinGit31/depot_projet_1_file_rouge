@@ -31,7 +31,7 @@ Resources:
 #      InstanceTenancy: default
       Tags:
       - Key: Name
-        Value:  !Join ['', [!Ref "AWS::StackName", "-VPC" ]]
+        Value:  !Join ['', [!Ref "AWS::StackName", "-VPC-GRP3" ]]
 #Creation d'une passerelle internet
   InternetGateway:
     Type: AWS::EC2::InternetGateway
@@ -129,7 +129,7 @@ Resources:
       VpcId: !Ref VPC
       Tags:
       - Key: Name
-        Value: Public
+        Value: PublicRoute-GRP3
 #Creation d'une route vers la passerelle internet
   PublicRoute1:
     Type: AWS::EC2::Route
@@ -146,7 +146,7 @@ Resources:
       VpcId: !Ref VPC
       Tags:
       - Key: Name
-        Value: Private
+        Value: PrivateRoute-GRP3
 #Creation d'une route vers la passerelle internet
 #  PublicRoute1:
 #    Type: AWS::EC2::Route
