@@ -1,15 +1,6 @@
 #!/usr/bin/bash
 
 
-#Execution du script en tant que root
-root_connect(){
-    ID="$(id -u)"
-    if ["$ID" -ne 0]; then
-        1>&2 echo "Vous devez executer le script en tant que root"
-        exit 1
-    fi
-}
-
 #Installation des packages sous forme de fonction avec vérification si le package est installé
 install_package() {
     PACKAGE="$1"

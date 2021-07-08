@@ -28,19 +28,23 @@ Parameters:
     AllowedValues:
       - jenkins
       - nexus
+      - qcmdev
+      - qcmqua
+      - qcmprod
   IngressPort:
     Type: String
     Description: 'Port administration jenkins (8080) ou nexus(8081)'
     AllowedValues:
       - '8080'
       - '8081'
+      - '5000'
   Urlscript:
     Type: String
     Description: 'command du script'
-    AllowedValues:
-      - 'sudo wget -O /tmp/install_jenkins.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/dev/infra/install_jenkins.sh && chmod +x /tmp/install_jenkins.sh && sudo /bin/bash /tmp/install_jenkins.sh'
-      - 'sudo wget -O /tmp/install_nexus.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/dev/infra/install_nexus.sh && chmod +x /tmp/install_nexus.sh && sudo /bin/bash /tmp/install_nexus.sh'
-      - 'sudo wget -O /tmp/install_nexus.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/dev/infra/install_nexus.sh && chmod +x /tmp/install_nexus.sh'
+#    AllowedValues:
+#      - 'sudo wget -O /tmp/install_jenkins.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/dev/infra/install_jenkins.sh && chmod +x /tmp/install_jenkins.sh && sudo /bin/bash /tmp/install_jenkins.sh'
+#      - 'sudo wget -O /tmp/install_nexus.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/dev/infra/install_nexus.sh && chmod +x /tmp/install_nexus.sh && sudo /bin/bash /tmp/install_nexus.sh'
+#      - 'sudo echo ""'
 
   SecurityGroupId:
     Type: 'AWS::EC2::SecurityGroup::Id'
