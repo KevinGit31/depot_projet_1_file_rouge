@@ -29,20 +29,98 @@ def test_add_answer():
 
 # Modifier une réponse
 def test_update_answer():
-    response = client.put(url)
+
+    # Ajouter la réponse à modifié
+    insert_response = addAnswer('')
+
+    # Récuperer l'id de la réponse à modifié
+    id = json.loads(insert_response.data).get('id')
+
+    # Url de modification 
+    update_url=url+"/"+str(id);
+    
+    # Réponse à modifié
+    update_data = {
+        'answer': 'Le soleil est vert. Après modification',
+        'isAnswer': False
+    }
+
+    # Appele du l'endpoint de la modification d'une réponse
+    response = client.put(update_url, data=json.dumps(update_data))
+    resp_data = json.loads(response.data)
+
+    # Test des résultat attendu
     assert response.status_code == 200
+    assert resp_data.get('answer') == "Le soleil est vert. Après modification"
+    assert resp_data.get('isAnswer') == False
+
 
 # Récupperer une réponse
-def test_update_answer():
-    response = client.get(url)
+def test_get_answer():
+
+    # Ajouter la réponse à récupéré
+    insert_response = addAnswer('')
+
+    # Récuperer l'id de la réponse
+    id = json.loads(insert_response.data).get('id')
+
+    # Url de récupération
+    get_url=url+"/"+str(id);
+    
+    # Appele du l'endpoint de la récupération d'une réponse
+    response = client.get(get_url)
+    resp_data = json.loads(response.data)
+
+    # Test des résultat attendu
     assert response.status_code == 200
+    assert resp_data.get('answer') == " - Le souleil est vert"
+    assert resp_data.get('isAnswer') == True
 
 # Supprimer une réponse
 def test_delete_answer():
-    response = client.delete(url)
+    
+    # Ajouter la réponse à supprimé
+    insert_response = addAnswer('')
+
+    # Récuperer l'id de la réponse à supprimé
+    id = json.loads(insert_response.data).get('id')
+
+    # Url de suppression
+    delete_url=url+"/"+str(id);
+    
+    # Appele du l'endpoint de la suppression d'une réponse
+    response = client.delete(delete_url)
+    resp_data = json.loads(response.data)
+
+    # Test des résultat attendu
     assert response.status_code == 200
+    assert resp_data.get('answer') == " - Le souleil est vert"
+    assert resp_data.get('isAnswer') == True
 
 # Lister les réponses
 def test_list_answer():
-    response = client.delete(url)
+    
+    # Ajouter 10 réponses
+    for i in range(10):
+        index= str(i)
+        addAnswer(index)
+    
+    # Appele du l'endpoint de la suppression d'une réponse
+    response = client.get(url)
+    resp_data = json.loads(response)
+
+    # Test des résultat attendu
     assert response.status_code == 200
+    assert resp_data.length() >= 10
+
+# Ajouter une reponse pour effectuer les testes
+def addAnswer(index):
+
+    # Réponse à modifié, à supprimer ou à traité
+    request_data_toUpdate = {
+        'answer': index+' - Le souleil est vert',
+        'isAnswer': True
+    }
+
+    # Ajouter la réponse à modifié
+    return client.post(url, data=json.dumps(request_data_toUpdate))
