@@ -107,11 +107,11 @@ def test_list_answer():
     
     # Appele du l'endpoint de la suppression d'une réponse
     response = client.get(url)
-    resp_data = json.loads(response)
+    resp_data = json.loads(response.data)
 
     # Test des résultat attendu
     assert response.status_code == 200
-    assert resp_data.length() >= 10
+    assert len(resp_data) >= 10
 
 # Ajouter une reponse pour effectuer les testes
 def addAnswer(index):

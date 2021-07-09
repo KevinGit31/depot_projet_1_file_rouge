@@ -66,17 +66,17 @@ def delete_answer(id):
     # Retour de la réponse supprimer
     return answer_schema.jsonify(deleteanswer)
 
-# Récuperer les réponses
+# Récupérer les réponses
 def all_answers():
 
     # Récupération des données
     allanswers = Answer.query.all()
-    result = answer_schema.dump(allanswers)
+    result = answers_schema.dump(allanswers)
 
     # Retour des réponses
     return jsonify(result)
 
-# Récuperer une réponse
+# Récupérer une réponse
 def get_answer(id):
 
     # Récupération des données
