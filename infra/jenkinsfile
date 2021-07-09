@@ -1,0 +1,68 @@
+pipeline {
+    environment {
+        NEXUS_VERSION = "nexus3"
+        NEXUS_PROTOCOL = "http"
+        NEXUS_URL = "192.168.1.200:8081"
+        NEXUS_REPOSITORY = "APPGRP3"
+        NEXUS_CREDENTIAL_ID = "nexus"
+    }
+//
+agent any
+    stages {
+        stage('clone source') {
+            steps {
+                sh 'rm -rf depot_projet_1_file_rouge'
+                git branch: 'dev', url: 'https://github.com/KevinGit31/depot_projet_1_file_rouge.git'
+
+            }
+        }
+//        stage('test'){
+//            steps {
+//                sh 'sleep 15s'
+//                sh 'curl http://192.168.40.11:3002'
+//
+//            }
+//        }
+        stage("Build") {
+            steps {
+                script {
+                    sh 'cd ./quizz && tar cvfz qcm.tar.gz .'
+                }
+            }
+        }
+        stage('push nexus') {
+            steps{
+                nexusArtifactUploader artifacts: [
+                    [
+                        artifactId: 'qcm',
+                        classifier: '',
+                        file: "quizz/qcm.tar.gz",
+                        type: 'tar.gz'
+                        ]
+                    ],
+                    credentialsId: 'nexus',
+                    groupId: '',
+                    nexusUrl: '192.168.1.200:8081',
+                    nexusVersion: 'nexus3',
+                    protocol: 'http',
+                    repository: 'APPGRP3',
+                    version: "1.0-${BUILD_NUMBER}"
+            }
+        }
+//test du build versionné
+        stage('testnexuscible'){
+            steps {
+                sh 'sleep 15s'
+                sh "curl http://${NEXUS_URL}/repository/${NEXUS_REPOSITORY}/${NEXUS_ARTIFACT_ID}/1.0-${BUILD_NUMBER}/${NEXUS_ARTIFACT_ID}-1.0-${BUILD_NUMBER}.tar.gz"
+            }
+        }
+//        stage('deployansible') {
+//            steps {
+//                sh 'ansible-playbook -i /home/vagrant/ansible/hosts /home/vagrant/ansible/playbook.yml'
+//            }
+//        }
+
+//                }
+//            }
+        }
+}

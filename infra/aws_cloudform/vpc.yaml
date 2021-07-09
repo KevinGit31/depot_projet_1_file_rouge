@@ -2,16 +2,9 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: projet1
 Parameters:
   KeyName:
-    Default: tp1GB
+    Default: projet1grp3_key
     Description: Name of an existing EC2 KeyPair to enable SSH access to the instance
     Type: 'AWS::EC2::KeyPair::KeyName'
-  InstanceType:
-    Description: WebServer EC2 instance type
-    Type: String
-    Default: t2.micro
-    AllowedValues:
-      - t2.micro
-    ConstraintDescription: t2.micro
   SSHLocation:
     Description: ' The IP address range that can be used to SSH to the EC2 instances'
     Type: String
@@ -236,10 +229,5 @@ Outputs:
   PrivateSubnet3:
     Description: A reference to the Private subnet in the 1st Availability Zone
     Value: !Ref PrivateSubnetPROD
-
-
-#  GroupeSec1:
-#    Description: Groupe secu
-#    Value: !Ref Grp3SecurityGroup
 
 

@@ -2,7 +2,7 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: projet1 instance ADM
 Parameters:
   KeyName:
-    Default: projet1GRP3
+    Default: projet1grp3_key
     Description: Name of an existing EC2 KeyPair to enable SSH access to the instance
     Type: 'AWS::EC2::KeyPair::KeyName'
   SSHLocation:
@@ -19,9 +19,13 @@ Parameters:
   SubnetIdPub:
     Type: AWS::EC2::Subnet::Id
     Description: 'The Subnet ID public'
-#  SubnetIdPriv:
-#    Type: AWS::EC2::Subnet::Id
-#    Description: 'The Subnet ID private'
+  SubnetIdPriv:
+    Type: AWS::EC2::Subnet::Id
+    Description: 'The Subnet ID private'
+  PrivateIP:
+    Type: String
+    Description: 'Exemple ip 10.80.140.x'
+    AllowedPattern: (\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})
   TypeName:
     Type: String
     Description: 'Type de serveur'
@@ -45,7 +49,9 @@ Parameters:
 #      - 'sudo wget -O /tmp/install_jenkins.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/dev/infra/install_jenkins.sh && chmod +x /tmp/install_jenkins.sh && sudo /bin/bash /tmp/install_jenkins.sh'
 #      - 'sudo wget -O /tmp/install_nexus.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/dev/infra/install_nexus.sh && chmod +x /tmp/install_nexus.sh && sudo /bin/bash /tmp/install_nexus.sh'
 #      - 'sudo echo ""'
-
+  SecurityGroupName:
+    Type: 'List<AWS::EC2::SecurityGroup::Id>'
+    Description: 'The Security Group'
   SecurityGroupId:
     Type: 'AWS::EC2::SecurityGroup::Id'
     Description: 'The Security Group ID'
@@ -398,6 +404,7 @@ Mappings:
       HVMG2: ami-0fe84a5b4563d8f27
 
 Resources:
+
   Grp3SecurityGroupingress:
     Type: 'AWS::EC2::SecurityGroupIngress'
     Properties:
@@ -412,10 +419,15 @@ Resources:
     Type: 'AWS::EC2::Instance'
     Properties:
       InstanceType: !Ref InstanceType
-      SubnetId: !Ref SubnetIdPub
-      SecurityGroupIds:
-        - !Ref SecurityGroupId
+#      SubnetId: !Ref SubnetIdPub
+#      SecurityGroupIds:
+#        - !Ref SecurityGroupId
       KeyName: !Ref KeyName
+      NetworkInterfaces:
+      # - NetworkInterfaceId: !Ref 'Eth0'
+      #   DeviceIndex: '0'
+      - NetworkInterfaceId: !Ref 'Eth1'
+        DeviceIndex: '0'
       ImageId: !FindInMap
         - AWSRegionArch2AMI
         - !Ref 'AWS::Region'
@@ -433,8 +445,34 @@ Resources:
        - Key: Name
          Value: !Ref TypeName
 
-
-
+  # Eth0:
+  #   Type: AWS::EC2::NetworkInterface
+  #   Properties:
+  #     Description: eth0
+  #     SecurityGroupIds:
+  #       - !Ref SecurityGroupId
+  #     SourceDestCheck: 'true'
+  #     SubnetId: !Ref 'SubnetIdPub'
+  #     Tags:
+  #     - Key: Name
+  #       Value: Interface 0
+  #     - Key: Interface
+  #       Value: eth0
+  Eth1:
+    Type: AWS::EC2::NetworkInterface
+    Properties:
+      Description: eth1
+      GroupSet:  !Ref 'SecurityGroupName'
+      PrivateIpAddresses:
+      - PrivateIpAddress: !Ref 'PrivateIP'
+        Primary: 'false'
+      SourceDestCheck: 'true'
+      SubnetId: !Ref 'SubnetIdPriv'
+      Tags:
+      - Key: Name
+        Value: Interface 1
+      - Key: Interface
+        Value: eth1
 
 Outputs:
   WebsiteURL:
