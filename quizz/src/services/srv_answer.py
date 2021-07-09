@@ -8,7 +8,7 @@ currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentfram
 parentdir = os.path.dirname(currentdir)
 sys.path.append(parentdir)
 from models.quizz.answer import Answer,AnswerSchema
-from app.app import db
+from models.app import db
 
 answer_schema = AnswerSchema()
 answers_schema = AnswerSchema(many=True)

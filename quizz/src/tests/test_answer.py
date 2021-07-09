@@ -1,9 +1,8 @@
-from flask.scaffold import F
 from controllers.controller_answer import controller_answer
 from tests.__init__ import app
 import json
 
-url = '/answer'
+url = '/api/v1/answer'
 client = app.test_client()
 
 controller_answer(app)

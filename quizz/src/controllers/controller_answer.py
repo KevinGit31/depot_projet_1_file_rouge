@@ -18,7 +18,7 @@ answers_schema = AnswerSchema(many=True)
 
 def controller_answer(app):
 
-    @app.route('/answer', methods=['GET'])
+    @app.route('/api/v1/answer', methods=['GET'])
     def answer_all():
 
         # Appel du service de traitement de la récupération de toutes les réponses
@@ -30,7 +30,7 @@ def controller_answer(app):
         else:
             return 'Bad Request', 400 # Error
 
-    @app.route('/answer/<id>', methods=['GET'])
+    @app.route('/api/v1/answer/<id>', methods=['GET'])
     def answer_get(id):
 
         # Appel du service de traitement de la récupération d'une réponse
@@ -42,7 +42,7 @@ def controller_answer(app):
         else:
             return 'Bad Request', 400 # Error
 
-    @app.route('/answer', methods=['POST'])
+    @app.route('/api/v1/answer', methods=['POST'])
     def answer_post():
 
         # Appel du service de traitement de l'ajout d'une réponse
@@ -54,7 +54,7 @@ def controller_answer(app):
         else:
             return 'Bad Request', 400 # Error
 
-    @app.route('/answer/<id>', methods=['PUT'])
+    @app.route('/api/v1/answer/<id>', methods=['PUT'])
     def answer_put(id):
 
         # Appel du service de traitement de modification d'une réponse
@@ -67,7 +67,7 @@ def controller_answer(app):
             return 'Bad Request', 400 # Error
 
 
-    @app.route('/answer/<id>', methods=['DELETE'])
+    @app.route('/api/v1/answer/<id>', methods=['DELETE'])
     def answer_delete(id):
 
         # Appel du service de traitement de modification d'une réponse

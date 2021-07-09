@@ -2,12 +2,12 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from models.init_helper import helper
-from config.testconfig import tsconfig
+from config.appconfig import app_config
 # Init helper
 app = Flask(__name__)
 
 # Database
-tsconfig(app)
+app_config(app)
 
 # Init helper
 helper(app)

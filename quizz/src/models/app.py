@@ -14,7 +14,7 @@ from routes.routes import configure_routes
 from config.appconfig import app_config
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
-from .init_helper import helper,db,ma
+from models.init_helper import helper,db,ma
 
 # Init app
 app = Flask(__name__)
