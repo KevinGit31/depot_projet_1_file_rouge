@@ -12,7 +12,9 @@ sys.path.append(parentdir)
 
 from routes.routes import configure_routes
 from config.appconfig import app_config
-from init_helper import helper
+from flask_sqlalchemy import SQLAlchemy
+from flask_marshmallow import Marshmallow
+from .init_helper import helper,db,ma
 
 # Init app
 app = Flask(__name__)
@@ -22,6 +24,10 @@ app_config(app)
 
 # Init helper
 helper(app)
+
+db = SQLAlchemy(app)
+# Init ma
+ma=Marshmallow(app)
 
 configure_routes(app)
 
