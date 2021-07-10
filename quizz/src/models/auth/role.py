@@ -5,11 +5,11 @@ import inspect
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.append(parentdir)
-from app import db, ma
+from app.app import db,ma
 
 
 class Role(db.Model):
-    __tablename__ = 'role2'
+    __tablename__ = 'role'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
     user = db.relationship("User")

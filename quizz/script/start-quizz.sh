@@ -1,2 +1,2 @@
 #!/bin/bash
-cd ../quizz/src && pipenv run python app/app.py
+cd ../quizz/src && pipenv run python api/app.py
