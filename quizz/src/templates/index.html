@@ -1,9 +1,12 @@
+
+<link href="{{ url_for('static', filename='css/index.css') }}" rel="stylesheet">
+
 {% extends "layout/base.html" %}
 
 {% block contenu %}
-<div class="row">
+<div class="row row-menu ">
 
-    <div class="col-md-2 col-sm-3 col-4">
+    <div class="col-md-2 col-sm-3 col-4 nav-pills-menu">
         <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
             {% for menu in menu_list %}
             <a class="nav-link {{menu.isActive}}" id="v-pills-home-tab" href="{{ url_for(menu.url) }}" role="tab"
@@ -11,8 +14,8 @@
             {% endfor %}
         </div>
     </div>
-    <div class="col-md-10 col-sm-9 col-8">
-        {% block pills %}Ma pile{{description}}{% endblock %}
+    <div class="col-md-10 col-sm-9 col-8 nav-pills-content">
+        {% block pills %}Ma pile {% endblock %}
     </div>
 </div>
 {% endblock %}

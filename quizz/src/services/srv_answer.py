@@ -71,7 +71,7 @@ def all_answers():
 
     # Récupération des données
     allanswers = Answer.query.all()
-    result = answers_schema.dump(allanswers)
+    result = answers_schema.dumps(allanswers)
 
     # Retour des réponses
     return jsonify(result)
