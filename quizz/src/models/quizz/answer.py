@@ -14,6 +14,7 @@ from models.app import db, ma
 class Answer(db.Model):
 
     __tablename__ = 'answer'
+    __table_args__ = {'extend_existing': True} 
     id = db.Column(db.Integer, primary_key=True)
     answer = db.Column(db.String(1024))
     isAnswer = db.Column(db.Boolean)
@@ -33,6 +34,10 @@ class Answer(db.Model):
 
 
 # Answer Schema
-class AnswerSchema(ma.Schema):
+class AnswerSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
-        fields=('id','answer','isAnswer')
+        model = Answer
+
+    id = ma.auto_field()
+    answer = ma.auto_field()
+    isAnswer = ma.auto_field()
