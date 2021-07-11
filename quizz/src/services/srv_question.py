@@ -48,7 +48,10 @@ def update_question(id,request):
 
     # Modification de l'objet question
     updatequestion.question = request.get('question')
-    updatequestion.isQuestion = request.get('isQuestion')
+    updatequestion.answers = []
+    for anwser in request.get('answers'):
+        _anwser = Answer(anwser.get('answer'),bool(anwser.get('isAnswer')))
+        updatequestion.answers.append(_anwser)
 
     # Insertion dans la session de connexion courant
     db.session.add(updatequestion)
