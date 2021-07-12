@@ -22,7 +22,7 @@ app = Flask(__name__)
 
 # Database
 app_config(app)
-tsconfig(app)
+#tsconfig(app)
 
 # Init helper
 helper(app)

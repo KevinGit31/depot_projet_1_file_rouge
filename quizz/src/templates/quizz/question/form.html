@@ -1,0 +1,50 @@
+{% extends "quizz/question/index.html" %}
+
+{% block pills %}
+
+<h3>{% block subtitletext %}Form{% endblock %}</h3>
+
+<form method="post">
+    <div class="row">
+
+        <div class="col-12">
+            <hr>
+            <div class="form-group">
+                <label for="question">Question</label>
+                <textarea class="form-control" name="question" id="question" rows="5">{{question.question}}</textarea>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <hr>
+            <div class="form-group">
+                <label for="answer">Réponse</label>
+                <textarea class="form-control" name="answer" id="answer" rows="3">{{answer}}</textarea>
+            </div>
+            <div class="float-right">
+                <button type="submit" name="btn-answer" value="ADD" class="btn btn-outline-primary">Ajouter une
+                    question</button>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-group">
+                <label for="answer_list">Liste des réponses</label>
+                <input name="answers" display="none" value="{{question.answers}}">
+                <div name="answers" value={{question.answers}}>
+                    {% for answer in question.answers %}
+                    <span>{{answer}}</span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="float-right">
+                <a class="btn btn-second" href="{{ url_for('question') }}">Annuler</a>
+                <button type="submit" class="btn btn-primary">Valider</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+{% endblock %}
