@@ -1,5 +1,6 @@
 import os
 
+
 import sys
 import inspect
 from flask import json
@@ -10,6 +11,7 @@ currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentfram
 parentdir = os.path.dirname(currentdir)
 sys.path.append(parentdir)
 from models.quizz.question import Question,QuestionSchema
+from models.quizz.question_answer import QuestionAnswer
 from models.app import db
 from models.quizz.answer import Answer
 
@@ -27,16 +29,14 @@ def add_question(request):
     # Création d'un objet question
     new_question = Question(_question)
 
-    for anwser in _answers:
-        _anwser = Answer(anwser.get('answer'),bool(anwser.get('isAnswer')))
-        new_question.answers.append(_anwser)
-    
+    new_question = _question_answer(new_question,_answers)
+  
     # Insertion dans la session de connexion courant
-    db.session.add(new_question)
-
+    db.session.add(new_question) 
+    
     # Sauvegarde de la question
     db.session.commit()
-
+    
     # Retour de la question sauvegarder
     return question_schema.jsonify(new_question)
 
@@ -49,10 +49,9 @@ def update_question(id,request):
     # Modification de l'objet question
     updatequestion.question = request.get('question')
     updatequestion.answers = []
-    for anwser in request.get('answers'):
-        _anwser = Answer(anwser.get('answer'),bool(anwser.get('isAnswer')))
-        updatequestion.answers.append(_anwser)
 
+    updatequestion = _question_answer(updatequestion,request.get('answers'))
+    
     # Insertion dans la session de connexion courant
     db.session.add(updatequestion)
 
@@ -95,3 +94,22 @@ def get_question(id):
     
     # Retour de la question
     return question_schema.jsonify(getquestion)
+
+# Création de la relation question réponse
+def _question_answer(new_question,_answers):
+
+    for answer in _answers:
+        _queryAnswer = answer.get('answer').get('answer')
+        _queryId = answer.get('answer').get('id')
+        _queryIsAnswer = answer.get('isAnswer')
+    
+        # Si la réponse existe déja
+        if _queryId :
+            _answer = Answer.query.get(_queryId)
+            _answer.answer = _queryAnswer
+        else :
+            _answer = Answer(_queryAnswer)
+        _isAnswer = bool(_queryIsAnswer)
+        a = QuestionAnswer(_isAnswer,_answer)
+        new_question.answers.append(a)
+    return new_question

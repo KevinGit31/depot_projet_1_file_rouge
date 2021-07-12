@@ -1,3 +1,4 @@
+import json
 import os
 import sys
 import inspect
@@ -15,4 +16,16 @@ class QuestionAnswer(db.Model):
     question_id = db.Column(db.Integer, db.ForeignKey('question.id'), primary_key=True)
     answer_id = db.Column(db.Integer, db.ForeignKey('answer.id'), primary_key=True)
     isAnswer = db.Column(db.Boolean)
+    
     answer = db.relationship("Answer")
+
+    def __init__(self,isAnswer,answer):
+        self.isAnswer =isAnswer
+        self.answer=answer
+
+
+# QuestionAnswer Schema
+class QuestionAnswerSchema(ma.Schema):
+
+    class Meta:
+        fields=('question_id','answer_id','isAnswer')

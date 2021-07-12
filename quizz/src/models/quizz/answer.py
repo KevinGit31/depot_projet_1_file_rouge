@@ -9,14 +9,15 @@ parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 
 from models.app import db, ma
-
+from models.quizz.question_answer  import QuestionAnswer
 
 class Answer(db.Model):
 
     __tablename__ = 'answer'
-    __table_args__ = {'extend_existing': True} 
     id = db.Column(db.Integer, primary_key=True)
     answer = db.Column(db.String(1024))
+
+    #questions = db.relationship("QuestionAnswer", back_populates="answer")
 
     def __init__(self,answer):
         self.answer = answer
@@ -25,14 +26,6 @@ class Answer(db.Model):
         return json.dumps({ 'answer' : self.answer})
     
 # Answer Schema
-class AnswerSchema(ma.SQLAlchemyAutoSchema):
+class AnswerSchema(ma.Schema):
     class Meta:
-<<<<<<< HEAD
-        model = Answer
-
-    id = ma.auto_field()
-    answer = ma.auto_field()
-    isAnswer = ma.auto_field()
-=======
         fields=('id','answer')
->>>>>>> dev_response
