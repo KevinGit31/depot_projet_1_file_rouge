@@ -5,7 +5,7 @@ import inspect
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.append(parentdir)
-from app.app import db,ma
+from models.app import db,ma
 
 
 class Role(db.Model):
