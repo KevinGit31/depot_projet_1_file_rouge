@@ -17,27 +17,22 @@ class Answer(db.Model):
     __table_args__ = {'extend_existing': True} 
     id = db.Column(db.Integer, primary_key=True)
     answer = db.Column(db.String(1024))
-    isAnswer = db.Column(db.Boolean)
 
-    # Meta data
-    #quizz_metadata_id = db.Column(db.Integer, db.ForeignKey('metadata.id'))
-    #quizz_metadata = db.relationship("Metadata", back_populates="answer")
-
-    def __init__(self,answer,isAnswer):
+    def __init__(self,answer):
         self.answer = answer
-        self.isAnswer = isAnswer
     
     def __str__(self) -> str:
-        return json.dumps({ 'answer' : self.answer,"isAnswer":self.isAnswer})
+        return json.dumps({ 'answer' : self.answer})
     
-    
-
-
 # Answer Schema
 class AnswerSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
+<<<<<<< HEAD
         model = Answer
 
     id = ma.auto_field()
     answer = ma.auto_field()
     isAnswer = ma.auto_field()
+=======
+        fields=('id','answer')
+>>>>>>> dev_response
