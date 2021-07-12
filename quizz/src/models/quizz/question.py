@@ -6,7 +6,8 @@ currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentfram
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 
-from app.app  import db,ma
+from models.app  import db,ma
+from models.quizz.question_answer  import QuestionAnswer
 
 class Question(db.Model):
 
@@ -15,14 +16,7 @@ class Question(db.Model):
     question = db.Column(db.String(1024))
 
     # La collection de reponse
-    question_answer = db.Table('question_answer', db.metadata,
-    db.Column('question_id', db.Integer, db.ForeignKey('question.id')),
-    db.Column('answer_id', db.Integer, db.ForeignKey('answer.id')))
-    answers = db.relationship("answer",secondary=question_answer)
-
-    # Meta data
-    quizz_metadata_id = db.Column(db.Integer, db.ForeignKey('metadata.id'))
-    quizz_metadata = db.relationship("Metadata", back_populates="question")
+    answers = db.relationship("QuestionAnswer")
 
     def __init__(self,question):
         self.question = question

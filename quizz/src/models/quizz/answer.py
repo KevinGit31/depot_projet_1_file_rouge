@@ -16,23 +16,14 @@ class Answer(db.Model):
     __tablename__ = 'answer'
     id = db.Column(db.Integer, primary_key=True)
     answer = db.Column(db.String(1024))
-    isAnswer = db.Column(db.Boolean)
 
-    # Meta data
-    #quizz_metadata_id = db.Column(db.Integer, db.ForeignKey('metadata.id'))
-    #quizz_metadata = db.relationship("Metadata", back_populates="answer")
-
-    def __init__(self,answer,isAnswer):
+    def __init__(self,answer):
         self.answer = answer
-        self.isAnswer = isAnswer
     
     def __str__(self) -> str:
-        return json.dumps({ 'answer' : self.answer,"isAnswer":self.isAnswer})
+        return json.dumps({ 'answer' : self.answer})
     
-    
-
-
 # Answer Schema
 class AnswerSchema(ma.Schema):
     class Meta:
-        fields=('id','answer','isAnswer')
+        fields=('id','answer')

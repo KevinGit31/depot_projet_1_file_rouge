@@ -7,7 +7,7 @@ parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 
 
-from app.app import db,ma
+from models.app import db,ma
 
 
 class User(db.Model):

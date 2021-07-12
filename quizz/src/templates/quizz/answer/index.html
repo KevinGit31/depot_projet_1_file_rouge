@@ -19,13 +19,11 @@
     <table class="table table-striped table-bordered table-hover">
         <tr>
             <th>Réponse</th>
-            <th class="br">Bonne Réponse</th>
             <th class="action">Actions</th>
         </tr>
         {% for row in rep_list %}
         <tr>
             <td>{{ row.answer }}</td>
-            <td>{% if row.isAnswer %} Oui {% else %} Non {% endif %}</td>
             <td>
                 <div class="float-right">
                     <a class="btn btn-icon" href="{{ url_for('update_answer',id=row.id) }}"><i
