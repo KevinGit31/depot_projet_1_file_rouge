@@ -49,7 +49,7 @@ Parameters:
 #      - 'sudo wget -O /tmp/install_jenkins.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/dev/infra/install_jenkins.sh && chmod +x /tmp/install_jenkins.sh && sudo /bin/bash /tmp/install_jenkins.sh'
 #      - 'sudo wget -O /tmp/install_nexus.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/dev/infra/install_nexus.sh && chmod +x /tmp/install_nexus.sh && sudo /bin/bash /tmp/install_nexus.sh'
 #      - 'sudo echo ""'
-  SecurityGroupName:
+  SecurityGroupNameList:
     Type: 'List<AWS::EC2::SecurityGroup::Id>'
     Description: 'The Security Group'
   SecurityGroupId:
@@ -415,19 +415,62 @@ Resources:
       CidrIp: 0.0.0.0/0
 
 
+  # Eth0:
+  #   Type: AWS::EC2::NetworkInterface
+  #   Properties:
+  #     Description: eth0
+  #     SubnetId: !Ref SubnetIdPub
+  #     GroupSet:  !Ref 'SecurityGroupNameList'
+
+#      SecurityGroupIds:
+#        - !Ref SecurityGroupId
+
+  # Eth1:
+  #   Type: AWS::EC2::NetworkInterface
+  #   Properties:
+  #     Description: eth1
+  #     GroupSet:  !Ref 'SecurityGroupNameList'
+  #     PrivateIpAddresses:
+  #     - PrivateIpAddress: !Ref 'PrivateIP'
+  #       Primary: 'false'
+  #     SourceDestCheck: 'true'
+  #     SubnetId: !Ref 'SubnetIdPriv'
+  #     Tags:
+  #     - Key: Name
+  #       Value: Interface 1
+  #     - Key: Interface
+  #       Value: eth1
+
+
+
+
+
   EC2Instance:
     Type: 'AWS::EC2::Instance'
     Properties:
       InstanceType: !Ref InstanceType
-#      SubnetId: !Ref SubnetIdPub
-#      SecurityGroupIds:
-#        - !Ref SecurityGroupId
+      SubnetId: !Ref SubnetIdPub
+      SecurityGroupIds:
+        - !Ref SecurityGroupId
       KeyName: !Ref KeyName
-      NetworkInterfaces:
+      # NetworkInterfaces:
+      # NetworkInterfaces:
+      # - NetworkInterfaceId:
+      #    Ref: NetworkInterfaceAttachment
+      #   DeviceIndex: '0'
+      # - NetworkInterfaceId:
+      #     Ref: Eth0
+      #   DeviceIndex: '0'
+      #   AssociatePublicIpAddress: true
+      # - NetworkInterfaceId:
+      #     Ref: Eth1
+      #   DeviceIndex: '1'
+      #   AssociatePublicIpAddress: false
+#      - AssociatePublicIpAddress: false
       # - NetworkInterfaceId: !Ref 'Eth0'
       #   DeviceIndex: '0'
-      - NetworkInterfaceId: !Ref 'Eth1'
-        DeviceIndex: '0'
+#      - NetworkInterfaceId: !Ref 'Eth0'
+
       ImageId: !FindInMap
         - AWSRegionArch2AMI
         - !Ref 'AWS::Region'
@@ -458,21 +501,6 @@ Resources:
   #       Value: Interface 0
   #     - Key: Interface
   #       Value: eth0
-  Eth1:
-    Type: AWS::EC2::NetworkInterface
-    Properties:
-      Description: eth1
-      GroupSet:  !Ref 'SecurityGroupName'
-      PrivateIpAddresses:
-      - PrivateIpAddress: !Ref 'PrivateIP'
-        Primary: 'false'
-      SourceDestCheck: 'true'
-      SubnetId: !Ref 'SubnetIdPriv'
-      Tags:
-      - Key: Name
-        Value: Interface 1
-      - Key: Interface
-        Value: eth1
 
 Outputs:
   WebsiteURL:

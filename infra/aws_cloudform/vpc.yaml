@@ -87,6 +87,15 @@ Resources:
       Tags:
       - Key: Name
         Value: !Sub ${AWS::StackName}-Private-ADM
+  PrivateSubnetADM2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: 10.80.141.0/24
+      AvailabilityZone: !Select [ 0, !GetAZs ]
+      Tags:
+      - Key: Name
+        Value: !Sub ${AWS::StackName}-Private-ADM2
   PrivateSubnetDEV:
     Type: AWS::EC2::Subnet
     Properties:
@@ -114,6 +123,32 @@ Resources:
       Tags:
       - Key: Name
         Value: !Sub ${AWS::StackName}-Private-PROD
+
+#########
+  # NatGateway1EIP:
+  #   Type: AWS::EC2::EIP
+  #   DependsOn: AttachGateway
+  #   Properties:
+  #     Domain: vpc
+
+  # NatGateway2EIP:
+  #   Type: AWS::EC2::EIP
+  #   DependsOn: AttachGateway
+  #   Properties:
+  #     Domain: vpc
+
+  # NatGateway1:
+  #   Type: AWS::EC2::NatGateway
+  #   Properties:
+  #     AllocationId: !GetAtt NatGateway1EIP.AllocationId
+  #     SubnetId: !Ref PublicSubnetADM
+
+  # NatGateway2:
+  #   Type: AWS::EC2::NatGateway
+  #   Properties:
+  #     AllocationId: !GetAtt NatGateway2EIP.AllocationId
+  #     SubnetId: !Ref PublicSubnetDEV
+###########
 
 #Creation d'une table de route
   PublicRouteTable:
@@ -176,6 +211,11 @@ Resources:
     Properties:
       SubnetId: !Ref PrivateSubnetADM
       RouteTableId: !Ref PrivateRouteTable
+  PrivateSubnetADM2RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PrivateSubnetADM2
+      RouteTableId: !Ref PrivateRouteTable
   PrivateSubnetDEVRouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
@@ -214,9 +254,13 @@ Outputs:
     Description: A reference to the public subnet in the 1st Availability Zone
     Value: !Ref PublicSubnetPROD
 
-  PrivateSubnets:
+  PrivateSubnetsADM:
     Description: A list of the Private subnets
     Value: !Join [ ",", [ !Ref PrivateSubnetADM ]]
+
+  PrivateSubnetsADM2:
+    Description: A list of the Private subnets
+    Value: !Join [ ",", [ !Ref PrivateSubnetADM2 ]]
 
   PrivateSubnet1:
     Description: A reference to the Private subnet in the 1st Availability Zone
