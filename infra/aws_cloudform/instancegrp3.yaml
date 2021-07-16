@@ -13,6 +13,10 @@ Parameters:
     MaxLength: '18'
     Default: 0.0.0.0/0
     AllowedPattern: '(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})/(\d{1,2})'
+  VpcId:
+    Type: String
+#    Type: AWS::EC2::VPC::Id
+    Description: 'The VPC ID'
   SubnetIdPub:
     Type: String
 #    Type: AWS::EC2::Subnet::Id
@@ -53,8 +57,8 @@ Parameters:
     Type: 'List<AWS::EC2::SecurityGroup::Id>'
     Description: 'The Security Group'
   SecurityGroupId:
-#    Type: String
-    Type: 'AWS::EC2::SecurityGroup::Id'
+    Type: String
+#    Type: 'AWS::EC2::SecurityGroup::Id'
     Description: 'The Security Group ID'
 
   InstanceType:
@@ -454,16 +458,11 @@ Resources:
             "",
             [
               "#!/bin/bash -xe\n",
-              "sudo hostname ",
-              {
-                "Ref": "Urlscript"
-              },
-              "\n",
               "echo ",
               {
-                "Ref": "Urlscript"
+                "Ref": "PrivateIP"
               },
-              " > /etc/hostname\n",
+              "/tmp/ip.txt\n",
               "sudo wget -O /tmp/prepare.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/dev/infra/prepare.sh && chmod +x /tmp/prepare.sh && sudo /bin/bash /tmp/prepare.sh\n"
             ]
           ]
