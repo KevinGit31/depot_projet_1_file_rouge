@@ -1,0 +1,14 @@
+.idea/
+Pipfile
+Pipfile.lock
+quizz/.gitignore.swp
+quizz/src/config/__pycache__/
+quizz/src/controllers/__pycache__/
+quizz/src/models/routes/rt_user.py
+venv/
+quizz/.gitignore
+quizz/src/models/quizz/__pycache__/answer.cpython-39.pyc
+quizz/src/routes/__pycache__/__init__.cpython-39.pyc
+quizz/src/routes/__pycache__/routes.cpython-39.pyc
+quizz/src/models/__pycache__/
+quizz/src/models/quizz/__pycache__/answer.cpython-39.pyc

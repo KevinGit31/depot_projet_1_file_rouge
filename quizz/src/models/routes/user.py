@@ -1,7 +1,7 @@
 import os
 import sys
 import inspect
-from flask import request,render_template
+from flask import request, render_template
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
@@ -10,12 +10,11 @@ sys.path.append(parentdir)
 from models.auth import role
 from app import db
 
-def userroutes(app):
 
+def userroutes(app):
     @app.route("/")
     def index():
         return render_template("index.html")
-
 
     @app.route("/page_adduser", methods=["POST", "GET"])
     def add_user():
@@ -37,7 +36,6 @@ def userroutes(app):
                 "pseudo": pseudo,
                 "role": role_form
             }
-
 
     @app.route("/page_listuser", methods=["POST", "GET"])
     def list_user():
