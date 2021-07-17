@@ -19,7 +19,7 @@
             <hr>
             <div class="form-group">
                 <label for="answer">Réponse</label>
-                <textarea class="form-control" name="answer" id="answer" rows="3">{{answer}}</textarea>
+                <textarea class="form-control" name="answer" id="answer" rows="3">{{_answer}}</textarea>
             </div>
             <div class="float-right">
                 <button type="submit" name="btn-answer" value="ADD" class="btn btn-outline-primary">Ajouter une
@@ -29,10 +29,10 @@
         <div class="col-12">
             <div class="form-group">
                 <label for="answer_list">Liste des réponses</label>
-                <input name="answers" display="none" value="{{question.answers}}">
-                <div name="answers" value={{question.answers}}>
+                <input type="hidden" name="answers" value="{{question.answers}}">
+                <div  value={{question.answers}}>
                     {% for answer in question.answers %}
-                    <span>{{answer}}</span>
+                    <li>{{answer.answer.answer}}</li>
                     {% endfor %}
                 </div>
             </div>

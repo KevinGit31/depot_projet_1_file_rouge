@@ -9,7 +9,6 @@ urlAnswer = '/api/v1/answer'
 client = app.test_client()
 
 
-controller_answer(app)
 controller_question(app)
 
 # Ajouer une question avec de nouvelles réponses

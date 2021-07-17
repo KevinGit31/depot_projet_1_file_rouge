@@ -99,9 +99,11 @@ def get_question(id):
 def _question_answer(new_question,_answers):
 
     for answer in _answers:
-        _queryAnswer = answer.get('answer').get('answer')
-        _queryId = answer.get('answer').get('id')
-        _queryIsAnswer = answer.get('isAnswer')
+        if answer != None:
+            print(answer)
+            _queryAnswer = answer.get('answer').get('answer')
+            _queryId = answer.get('answer').get('id')
+            _queryIsAnswer = answer.get('isAnswer')
     
         # Si la réponse existe déja
         if _queryId :
