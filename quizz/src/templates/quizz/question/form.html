@@ -1,7 +1,7 @@
 {% extends "quizz/question/index.html" %}
 
 {% block pills %}
-
+<link href="{{ url_for('static', filename='css/question/form.css') }}" rel="stylesheet">
 <h3>{% block subtitletext %}Form{% endblock %}</h3>
 
 <form method="post">
@@ -10,7 +10,18 @@
         <div class="col-12">
             <hr>
             <div class="form-group">
-                <label for="question">Question</label>
+
+                <div class="row">
+                    <div class="col-auto mr-auto">
+                        <label for="question">Question</label>
+                    </div>
+                    <div class="col-auto q_select">
+                        {% if select_answer=='True' %}
+                        <button type="submit" name="btn-select" value="SELECT_ANSWER"
+                            class="btn btn-outline-primary">Sélectionner une réponse</button>
+                        {% endif %}
+                    </div>
+                </div>
                 <textarea class="form-control" name="question" id="question" rows="5">{{question.question}}</textarea>
             </div>
         </div>
@@ -19,20 +30,57 @@
             <hr>
             <div class="form-group">
                 <label for="answer">Réponse</label>
+                {% if select_answer=='True' %}
                 <textarea class="form-control" name="answer" id="answer" rows="3">{{_answer}}</textarea>
+                {% else %}
+                <div class="form-group" >
+                    <select name="answer"  class="form-control">
+                        {% for answer in  answers_list %}
+                        <option class="q_option" value="{{answer.answer}}">{{answer.answer}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% endif %}
             </div>
-            <div class="float-right">
-                <button type="submit" name="btn-answer" value="ADD" class="btn btn-outline-primary">Ajouter une
-                    question</button>
+            <div class="row">
+                <div class="col-auto mr-auto">
+                    <button type="submit" name="btn-answer" value="ADD_FALSE" class="btn btn-outline-danger">Ajouter une
+                        mauvaise réponse</button>
+                </div>
+                <div class="col-auto">
+                    <button type="submit" name="btn-answer" value="ADD_TRUE" class="btn btn-outline-primary">Ajouter une
+                        bonne réponse</button>
+                </div>
             </div>
         </div>
-        <div class="col-12">
+
+        <!-- Liste des mauvaise réponses -->
+        <div class="col-6">
             <div class="form-group">
-                <label for="answer_list">Liste des réponses</label>
+                <label for="answer_list">Liste des mauvaies réponses</label>
                 <input type="hidden" name="answers" value="{{question.answers}}">
-                <div  value={{question.answers}}>
+                <div class="list_question" value={{question.answers}}>
                     {% for answer in question.answers %}
-                    <li>{{answer.answer.answer}}</li>
+                    <span class="hide">{{loop.index}}</span>
+                    {% if answer.isAnswer=='False' %}
+                    {% include "quizz/question/answer.html" %}
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Liste des bonnes réponses -->
+        <div class="col-6">
+            <div class="form-group">
+                <label for="answer_list">Liste des bonnes réponses</label>
+                <input type="hidden" name="answers" value="{{question.answers}}">
+                <div class="list_question" value={{question.answers}}>
+                    {% for answer in question.answers %}
+                    <span class="hide">{{loop.index}}</span>
+                    {% if answer.isAnswer=='True' %}
+                    {% include "quizz/question/answer.html" %}
+                    {% endif %}
                     {% endfor %}
                 </div>
             </div>

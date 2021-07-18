@@ -3,6 +3,7 @@ import json
 from flask import render_template, request, redirect, url_for
 
 url = '/api/v1/question'
+url_answer = '/api/v1/answer'
 baseUrl = 'http://127.0.0.1:5000'
 
 tableInfo = {
@@ -36,10 +37,14 @@ def configure_routes_question(app):
 
         rep_list = json.loads(rep_list)
 
+        answers_list = requests.get(baseUrl+url_answer).json()
+        answers_list = json.loads(answers_list)
+
         return render_template('quizz/question/index.html',
                                tableInfo=tableInfo,
                                menu_list=menu_list,
-                               rep_list=rep_list)
+                               rep_list=rep_list,
+                                answers_list=answers_list)
 
     @app.route('/question/create', methods=['GET', 'POST'])
     def create_question():
@@ -54,7 +59,10 @@ def configure_routes_question(app):
                 'question': '',  # request.form.get('question'),
                 'answers': answers
             }
-            return render_template('quizz/question/create.html', menu_list=menu_list, question=question)
+            return render_template('quizz/question/create.html',
+                                   menu_list=menu_list,
+                                   question=question,
+                                   select_answer='True')
 
         # Soumission du formulaire
         if request.method == "POST":
@@ -66,17 +74,64 @@ def configure_routes_question(app):
             answers = json.loads(answers)
             print(answers)
 
-            if request.form.get('btn-answer') == "ADD":
+            # Action pour ajouter une mauvaise réponse
+            if request.form.get('btn-answer') == "ADD_FALSE":
 
-                answer = {
-                    'answer': {
-                        'answer': request.form.get('answer')
-                    },
-                    'isAnswer': 'False'
+                str_answer = request.form.get('answer').strip()
+                if str_answer != "":
+
+                    answer = {
+                        'answer': {
+                            'answer': str_answer
+                        },
+                        'isAnswer': 'False'
+                    }
+
+                    # Ajout de la nouvelle réponse
+                    answers.append(answer)
+
+                # answers.append(answer)
+                question = {
+                    'question': request.form.get('question'),
+                    'answers': answers
                 }
+                return render_template('quizz/question/create.html', menu_list=menu_list, question=question,
+                                       select_answer='True')
 
-                # Ajout de la nouvelle réponse
-                answers.append(answer)
+            # Action pour ajouter une bonne réponse
+            if request.form.get('btn-answer') == "ADD_TRUE":
+
+                str_answer = request.form.get('answer').strip()
+                if str_answer != "":
+
+                    answer = {
+                        'answer': {
+                            'answer': str_answer
+                        },
+                        'isAnswer': 'True'
+                    }
+
+                    # Ajout de la nouvelle réponse
+                    answers.append(answer)
+
+                # answers.append(answer)
+                question = {
+                    'question': request.form.get('question'),
+                    'answers': answers
+                }
+                return render_template('quizz/question/create.html', menu_list=menu_list, question=question,
+                                       select_answer='True')
+
+            # Action pour supprimer une réponse
+            if request.form.get('btn-close'):
+
+                # answers = del answers[2]
+
+                index_answer = request.form.get('btn-close')
+                index_answer = int(index_answer) - 1
+
+                # Supprimer une réponse
+                answers.pop(index_answer)
 
                 # answers.append(answer)
                 question = {
@@ -85,11 +140,46 @@ def configure_routes_question(app):
                 }
                 return render_template('quizz/question/create.html', menu_list=menu_list, question=question)
 
+           
+
+            # Sélectionner une question 
+            str_question = request.form.get('question').strip()
+            if request.form.get('btn-select') == "SELECT_ANSWER":
+
+                answers_list = requests.get(baseUrl+url_answer).json()
+                answers_list = json.loads(answers_list)
+
+                question = {
+                    'question': str_question,
+                    'answers': answers
+                }
+                return render_template('quizz/question/create.html', 
+                menu_list=menu_list, 
+                question=question,
+                select_answer='False',
+                answers_list=answers_list)
+           
+            # Action si la question est un champ vide
+            str_question = request.form.get('question').strip()
+            if str_question == "":
+                # answers.append(answer)
+                question = {
+                    'question': str_question,
+                    'answers': answers
+                }
+                return render_template('quizz/question/create.html', menu_list=menu_list, question=question,
+                                       select_answer='True')
+
             question = {
-                'question': request.form.get('question'),
+                'question': str_question,
                 'answers': answers
             }
 
             print(question)
             requests.post(baseUrl+url, json.dumps(question))
             return redirect(url_for("question"))
+
+    @app.route('/question/create/select_answer')
+    def select_answer():
+        return render_template('quizz/question/form_select_answer.html', menu_list=menu_list, question=question,
+                               select_answer='True')

@@ -1,0 +1,33 @@
+.hide{
+    display: none;
+}
+
+.list_question{
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+.q_select{
+    padding-bottom: 10px;
+}
+
+
+.q_option
+{
+width: 100px;
+ overflow: hidden;
+ text-overflow: ellipsis;
+ white-space: nowrap;
+}
+
+select {
+    width:100px; 
+    overflow:hidden; 
+    white-space:nowrap; 
+    text-overflow:ellipsis;
+}
+select option {
+    width:100px;
+    text-overflow:ellipsis;
+    overflow:hidden;
+}
