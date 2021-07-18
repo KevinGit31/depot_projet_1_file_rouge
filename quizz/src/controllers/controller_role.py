@@ -7,23 +7,23 @@ import inspect
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.append(parentdir)
-from models.auth.role import Answer, AnswerSchema
-from services.srv_role import all_answers
-
-answer_schema = AnswerSchema()
-answers_schema = AnswerSchema(many=True)
+from quizz.src.models.auth.role import RoleSchema
+from quizz.src.services.srv_role import all_roles
 
 
-def controller_answer(app):
+role_schema = RoleSchema(many=True)
 
-    @app.route('/api/v1/answer', methods=['GET'])
-    def answer_all():
+
+def controller_role(app):
+
+    @app.route('/api/v1/role', methods=['GET'])
+    def role_all():
 
         # Appel du service de traitement de la récupération de toutes les réponses
-        allanswer = all_answers()
+        allroles = all_roles()
 
         # Test sur le résultat
-        if allanswer:
-            return allanswer, 200 #Success
+        if allroles:
+            return allroles, 200 #Success
         else:
             return 'Bad Request', 400 # Error

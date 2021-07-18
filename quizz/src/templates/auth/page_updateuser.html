@@ -1,22 +1,50 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Appli flask docker</title>
-</head>
-<body>
-    <div style="text-align:center"><h1>Ajout d'un nouvel utilisateur</h1></div>
-    <p><a href="/">Accueil</a></p>
-    <form action="" method="PUT">
-        <p><input type="text" name="firstname" placeholder= "firstname" maxlength="40" required/></p>
-        <p><input type="text" name="lastname" placeholder= "lastname" maxlength="40" required/></p>
-        <p><input type="text" name="pseudo" placeholder= "pseudo" maxlength="40" required/></p>
-        <p><select name="role">
-            <option value=""></option>
-            <option value="dog">Dog</option>
-            <option value="cat">Cat</option>
-        </select></p>
-        <input type="submit" value="Ajouter"><br>
-    </form>
-</body>
-</html>
+{% extends "quizz/answer/index.html" %}
+
+{% block pills %}
+
+<h3>{% block subtitletext %} Ajouter un nouvel utilisateur {% endblock %}</h3>
+
+<form method="put">
+    <div class="row">
+
+        <div class="col-12">
+            <div class="form-group">
+                <label for="firstname">firstname:</label>
+                <input type="text" placeholder="firstname" class="form-control" name="firstname" id="firstname" value="{{ user.firstname }}">
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="form-group">
+                <label for="lastname">lastname:</label>
+                <input type="text" placeholder="lastname" class="form-control" name="lastname" id="lastname" value="{{ user.lastname }}">
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="form-group">
+                <label for="pseudo">pseudo:</label>
+                <input type="text" placeholder="pseudo" class="form-control" name="pseudo" id="pseudo" value="{{ user.pseudo }}">
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="form-group">
+                <label for="role">role</label>
+                <select class="form-control" name="role" id="role">
+                    {% for role in lst_role %}
+                    <option value="{{role.id}}">{{role.name}}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="float-right">
+                <a class="btn btn-second" href="{{ url_for('user') }}">Annuler</a>
+                <button type="submit" class="btn btn-primary">Valider</button>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}

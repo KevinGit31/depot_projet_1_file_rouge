@@ -9,8 +9,8 @@ import inspect
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.append(parentdir)
-from models.auth.user import User, UserSchema
-from services.srv_user import add_user,get_user,all_users,delete_user,update_user
+from quizz.src.models.auth.user import User, UserSchema
+from quizz.src.services.srv_user import add_user,get_user,all_users,delete_user,update_user
 
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
