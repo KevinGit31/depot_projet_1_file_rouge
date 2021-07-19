@@ -1,0 +1,92 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: projet1 instance ADM
+Parameters:
+  DBNameP:
+    Type: String
+  MUser:
+    Type: String
+  MPass:
+    Type: String
+    Description: "Minimum 8 caractères"
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Description: 'The VPC ID'
+  ParameterGroup:
+    Type: String
+    Description: The name of the database parameter group created
+  SecurityGroupId:
+    Type: 'AWS::EC2::SecurityGroup::Id'
+    Description: 'The Security Group ID'
+  PrimaryAZ:
+    Type: AWS::EC2::AvailabilityZone::Name
+    Description: Primary AZ
+# Conditions:
+#   IsFirstPrimaryAZ:
+#     Fn::Equals:
+#       - !Ref PrimaryAZ
+#       - !Select [0, Fn::GetAZs: "eu-west-2a"]
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Description: 'The VPC ID'
+
+Resources:
+  Grp3SecurityGroupingress:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: Open database for access
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: '3306'
+          ToPort: '3306'
+          SourceSecurityGroupId: !Ref SecurityGroupId
+#      CidrIp: 0.0.0.0/32
+      VpcId: !Ref VpcId
+
+
+  Subnet1:
+    Type: "AWS::EC2::Subnet"
+    Properties:
+      VpcId: !Ref VpcId
+      AvailabilityZone: "eu-west-2a"
+      CidrBlock: "10.80.240.0/24"
+      # ...
+  Subnet2:
+    Type: "AWS::EC2::Subnet"
+    Properties:
+      VpcId: !Ref VpcId
+      AvailabilityZone: "eu-west-2b"
+#        Fn::If:
+#        - IsFirstPrimaryAZ
+#        - !Select [1, !GetAZs ""]
+#        - !Select [1, {!GetAZs "eu-west-2"}]
+#        - !Select [0, {!GetAZs "eu-west-2"}]
+#        - !Select [0, !GetAZs ""]
+      CidrBlock: "10.80.241.0/24"
+
+  RDSDBSubnetGroup:
+    Type: "AWS::RDS::DBSubnetGroup"
+    Properties:
+      DBSubnetGroupDescription: "Subnet Group for mySQL database"
+      DBSubnetGroupName: !Sub "${AWS::Region}-db-subnet-grp"
+      SubnetIds:
+        - !Ref Subnet1
+        - !Ref Subnet2
+
+  MyDBInstances:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      BackupRetentionPeriod: 2
+      EnableIAMDatabaseAuthentication: false
+      DBName: !Ref DBNameP
+      MasterUsername: !Ref MUser
+      MasterUserPassword: !Ref MPass
+      Engine: MySQL
+      DBInstanceClass: db.t2.micro
+      StorageType: gp2
+      PubliclyAccessible: false
+      AllocatedStorage: "5"
+      DBInstanceIdentifier: !Join ["-", [ "MyDbInstances", !Ref "AWS::Region"]]
+#      DBParameterGroupName: !Ref ParameterGroup
+      DBSubnetGroupName: !Ref RDSDBSubnetGroup
+      VPCSecurityGroups:
+        - !Ref Grp3SecurityGroupingress

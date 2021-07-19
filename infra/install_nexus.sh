@@ -1,17 +1,5 @@
 #!/usr/bin/bash
 
-
-#Installation des packages sous forme de fonction avec vérification si le package est installé
-install_package() {
-    PACKAGE="$1"
-    if ! dpkg -l |grep --quiet "^ii.$PACKAGE"; then
-        sudo apt install -y "$PACKAGE"
-    fi
-}
-
-#Test si openjdk est installé
-dpkg -l | grep openjdk-8-jdk
-RETOUR_INSTALL_OPENJDK=$?
 #Test presence du binaire nexus
 RETOUR_BIN_NEXUS=/opt/nexus/bin/nexus
 
@@ -20,24 +8,27 @@ if [[ $RETOUR_INSTALL_OPENJDK = 0 ]] && [[ ! -f $RETOUR_BIN_NEXUS ]]; then
     exit 0
 fi
 
-sudo apt -y update
+sudo yum update -y
+sudo yum install wget -y
+sudo yum install java-1.8.0-openjdk.x86_64 -y
 
-install_package openjdk-8-jdk
 #Test si le user nexus existe
 RETOUR_USER_NEXUS=sudo cat /etc/passwd | grep -i nexus
 echo $RETOUR_USER_NEXUS
 #creation du user nexus et positionnement dans le sudoers
 if [[ $RETOUR_USER_NEXUS != 0 ]]; then
-    sudo useradd -M -d /opt/nexus -s /bin/bash -r nexus
+    sudo sudo adduser nexus
     sudo echo 'nexus   ALL=(ALL)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
 fi
 
 #Download des sources
-URLDL=https://sonatype-download.global.ssl.fastly.net/repository/downloads-prod-group/3/nexus-3.31.1-01-unix.tar.gz
-wget $URLDL
+#URLDL=https://sonatype-download.global.ssl.fastly.net/repository/downloads-prod-group/3/nexus-3.31.1-01-unix.tar.gz
+URLDL='https://download.sonatype.com/nexus/3/latest-unix.tar.gz'
+wget -O nexus.tar.gz $URLDL
 sleep 5s
 
-if [[ ! -f nexus-3.31.1-01-unix.tar.gz ]]; then
+#if [[ ! -f nexus-3.31.1-01-unix.tar.gz ]]; then
+if [[ ! -f nexus.tar.gz ]]; then
     echo "Problème de download $URLDL \n"
     exit 0
 fi
@@ -46,9 +37,9 @@ fi
 if [ ! -d "/opt/nexus" ]; then
         sudo mkdir /opt/nexus
         #decompression des sources dans le dossier cible
-        sudo tar xzf nexus-3.31.1-01-unix.tar.gz -C /opt/nexus --strip-components=1
+        sudo tar xzf nexus.tar.gz -C /opt/nexus --strip-components=1
         #positionnement du proprietaire dans le dossier cible
-        sudo chown -R nexus: /opt/nexus
+        sudo chown -R nexus: /opt/nexus /opt/sonatype-work
 fi
 
 #positionnement du user nexus
@@ -81,37 +72,9 @@ WantedBy=multi-user.target
 EOF
 
 
+sudo chkconfig nexus on
 #Demarrage de nexus
-sudo systemctl enable nexus
-
 sudo systemctl start nexus
-
-
-#Autorisation de l'acces
-sudo ufw allow 8081/tcp
-
-#install fail2ban
-install_package "fail2ban"
-
-#start du service fail2ban + activation au démarrage
-sudo systemctl start fail2ban
-sudo systemctl enable fail2ban
-
-#configuration fail2ban
-sudo bash -c "cat >> /etc/fail2ban/jail.d/custom.conf" <<EOF
-[DEFAULT]
-ignoreip = 127.0.0.1
-findtime = 10m
-bantime = 24h
-maxretry = 3
-
-[sshd]
-enabled = true
-logpath = /var/log/auth.log
-EOF
-
-sudo systemctl restart fail2ban
-
 
 # Affiche le mot de passe
 echo 'Mot de passe admin dans 40s en cours de generation PATIENTEZ SVP...:\n'

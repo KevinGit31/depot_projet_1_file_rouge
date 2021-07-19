@@ -2,9 +2,10 @@ AWSTemplateFormatVersion: 2010-09-09
 Description: projet1 instance ADM
 Parameters:
   KeyName:
-    Default: projet1grp3_key
+    Type: String
+    Default: projet1grp3key
     Description: Name of an existing EC2 KeyPair to enable SSH access to the instance
-    Type: 'AWS::EC2::KeyPair::KeyName'
+#    Type: 'AWS::EC2::KeyPair::KeyName'
   SSHLocation:
     Description: ' The IP address range that can be used to SSH to the EC2 instances'
     Type: String
@@ -13,14 +14,16 @@ Parameters:
     Default: 0.0.0.0/0
     AllowedPattern: '(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})/(\d{1,2})'
   VpcId:
-    Type: AWS::EC2::VPC::Id
+    Type: String
+#    Type: AWS::EC2::VPC::Id
     Description: 'The VPC ID'
-#    Default: vpc-033c4fd4afa6a3b73
   SubnetIdPub:
-    Type: AWS::EC2::Subnet::Id
+    Type: String
+#    Type: AWS::EC2::Subnet::Id
     Description: 'The Subnet ID public'
   SubnetIdPriv:
-    Type: AWS::EC2::Subnet::Id
+    Type: String
+#    Type: AWS::EC2::Subnet::Id
     Description: 'The Subnet ID private'
   PrivateIP:
     Type: String
@@ -50,10 +53,12 @@ Parameters:
 #      - 'sudo wget -O /tmp/install_nexus.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/dev/infra/install_nexus.sh && chmod +x /tmp/install_nexus.sh && sudo /bin/bash /tmp/install_nexus.sh'
 #      - 'sudo echo ""'
   SecurityGroupNameList:
+#    Type: String
     Type: 'List<AWS::EC2::SecurityGroup::Id>'
     Description: 'The Security Group'
   SecurityGroupId:
-    Type: 'AWS::EC2::SecurityGroup::Id'
+    Type: String
+#    Type: 'AWS::EC2::SecurityGroup::Id'
     Description: 'The Security Group ID'
 
   InstanceType:
@@ -378,8 +383,10 @@ Mappings:
       HVM64: ami-015232c01a82b847b
       HVMG2: ami-0d5299b1c6112c3c7
     eu-west-2:
-#      HVM64: ami-0765d48d7e15beb93
-      HVM64: ami-0194c3e07668a7e36
+#IMG Amazon Linux 2 AMI (HVM), SSD Volume Type - ami-03ac5a9b225e99b02 (64 bits x86)
+      HVM64: ami-03ac5a9b225e99b02
+#IMG Ubuntu Server 20.04 LTS (HVM), SSD Volume Type - ami-0194c3e07668a7e36 (64 bits x86)
+#      HVM64: ami-0194c3e07668a7e36
       HVMG2: NOT_SUPPORTED
     eu-west-3:
       HVM64: ami-0caf07637eda19d9c
@@ -404,7 +411,6 @@ Mappings:
       HVMG2: ami-0fe84a5b4563d8f27
 
 Resources:
-
   Grp3SecurityGroupingress:
     Type: 'AWS::EC2::SecurityGroupIngress'
     Properties:
@@ -413,37 +419,6 @@ Resources:
       FromPort: !Ref IngressPort
       ToPort: !Ref IngressPort
       CidrIp: 0.0.0.0/0
-
-
-  # Eth0:
-  #   Type: AWS::EC2::NetworkInterface
-  #   Properties:
-  #     Description: eth0
-  #     SubnetId: !Ref SubnetIdPub
-  #     GroupSet:  !Ref 'SecurityGroupNameList'
-
-#      SecurityGroupIds:
-#        - !Ref SecurityGroupId
-
-  # Eth1:
-  #   Type: AWS::EC2::NetworkInterface
-  #   Properties:
-  #     Description: eth1
-  #     GroupSet:  !Ref 'SecurityGroupNameList'
-  #     PrivateIpAddresses:
-  #     - PrivateIpAddress: !Ref 'PrivateIP'
-  #       Primary: 'false'
-  #     SourceDestCheck: 'true'
-  #     SubnetId: !Ref 'SubnetIdPriv'
-  #     Tags:
-  #     - Key: Name
-  #       Value: Interface 1
-  #     - Key: Interface
-  #       Value: eth1
-
-
-
-
 
   EC2Instance:
     Type: 'AWS::EC2::Instance'
@@ -455,13 +430,13 @@ Resources:
       KeyName: !Ref KeyName
       # NetworkInterfaces:
       # NetworkInterfaces:
-      # - NetworkInterfaceId:
-      #    Ref: NetworkInterfaceAttachment
-      #   DeviceIndex: '0'
-      # - NetworkInterfaceId:
-      #     Ref: Eth0
-      #   DeviceIndex: '0'
-      #   AssociatePublicIpAddress: true
+      # # - NetworkInterfaceId:
+      # #    Ref: NetworkInterfaceAttachment
+      # #   DeviceIndex: '0'
+      # # - NetworkInterfaceId:
+      # #     Ref: Eth0
+      # #   DeviceIndex: '0'
+      # #   AssociatePublicIpAddress: true
       # - NetworkInterfaceId:
       #     Ref: Eth1
       #   DeviceIndex: '1'
@@ -470,7 +445,6 @@ Resources:
       # - NetworkInterfaceId: !Ref 'Eth0'
       #   DeviceIndex: '0'
 #      - NetworkInterfaceId: !Ref 'Eth0'
-
       ImageId: !FindInMap
         - AWSRegionArch2AMI
         - !Ref 'AWS::Region'
@@ -478,12 +452,35 @@ Resources:
           - AWSInstanceType2Arch
           - !Ref InstanceType
           - Arch
-      UserData: !Base64
-        'Fn::Join':
-          - ''
-          - - |
-              #!/bin/bash -xe
-            - !Ref Urlscript
+      UserData:
+        Fn::Base64:  {
+          "Fn::Join": [
+            "",
+            [
+              "#!/bin/bash -xe\n",
+              "echo ",
+              {
+                "Ref": "PrivateIP"
+              },
+              "/tmp/ip.txt\n",
+              "sudo wget -O /tmp/prepare.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/dev/infra/prepare.sh && chmod +x /tmp/prepare.sh && sudo /bin/bash /tmp/prepare.sh\n"
+            ]
+          ]
+        }
+
+          # #!/bin/bash -xe
+          # -- |
+          #  -
+          # sudo hostname myhost
+          # echo myhost > /etc/hostname
+          # HNAME=$(echo hostname | awk 1 ORS='' )
+          # if [[ -n "$HNAME | grep "jenkins" ]]; then
+          # CMDSCRIPT1=$(sudo wget -O /tmp/install_jenkins.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/dev/infra/install_jenkins.sh && chmod +x /tmp/install_jenkins.sh && sudo /bin/bash /tmp/install_jenkins.sh)
+          # elif [[ -n "$HNAME | grep "nexus" ]]; then
+          # CMDSCRIPT2=$(sudo wget -O /tmp/install_nexus.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/dev/infra/install_nexus.sh && chmod +x /tmp/install_nexus.sh && sudo /bin/bash /tmp/install_nexus.sh)
+          # elif [[ -n "$HNAME | grep "qcm" ]]; then
+          # CMDSCRIPT3=$(sudo wget -O /tmp/install_qcm.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/dev/infra/install_qcm.sh && chmod +x /tmp/install_qcm.sh && sudo /bin/bash /tmp/install_qcm.sh)
+          # fi
       Tags:
        - Key: Name
          Value: !Ref TypeName
@@ -492,46 +489,46 @@ Resources:
   #   Type: AWS::EC2::NetworkInterface
   #   Properties:
   #     Description: eth0
-  #     SecurityGroupIds:
-  #       - !Ref SecurityGroupId
-  #     SourceDestCheck: 'true'
-  #     SubnetId: !Ref 'SubnetIdPub'
-  #     Tags:
-  #     - Key: Name
-  #       Value: Interface 0
-  #     - Key: Interface
-  #       Value: eth0
+  #     SubnetId: !Ref SubnetIdPub
+  #     GroupSet:  !Ref 'SecurityGroupNameList'
 
-Outputs:
-  WebsiteURL:
-    Description: URL for newly created LAMP stack
-    Value: !Join
-      - ''
-      - - 'http://'
-        - !GetAtt
-          - EC2Instance
-          - PublicDnsName
+#      SecurityGroupIds:
+#        - !Ref SecurityGroupId
+
+  Eth1:
+    Type: AWS::EC2::NetworkInterface
+    Properties:
+      Description: eth1
+      GroupSet:  !Ref 'SecurityGroupNameList'
+      PrivateIpAddresses:
+      - PrivateIpAddress: !Ref 'PrivateIP'
+        Primary: 'True'
+      SourceDestCheck: 'true'
+      SubnetId: !Ref 'SubnetIdPriv'
+      Tags:
+      - Key: Name
+        Value: Interface 1
+      - Key: Interface
+        Value: eth1
+
+  NetworkInterfaceAttachment:
+    Type: AWS::EC2::NetworkInterfaceAttachment
+    Properties:
+        InstanceId:
+          Ref: EC2Instance
+        NetworkInterfaceId:
+          Ref: Eth1
+        DeviceIndex: 1
 
 
-Metadata:
-  'AWS::CloudFormation::Designer':
-    bfea2c56-be77-47d7-9ddb-bb401fea53b8:
-      size:
-        width: 60
-        height: 60
-      position:
-        x: 60
-        'y': 90
-      z: 1
-      embeds: []
-    ae2c342c-13ef-475f-9510-537822d10859:
-      size:
-        width: 60
-        height: 60
-      position:
-        x: 180
-        'y': 90
-      z: 1
-      embeds: []
-      isassociatedwith:
-        - bfea2c56-be77-47d7-9ddb-bb401fea53b8
+#Outputs:
+#  WebsiteURL:
+#    Description: URL for newly created LAMP stack
+#    Value: !Join
+#      - ''
+#      - - 'http://'
+#        - !GetAtt
+#          - EC2Instance
+#          - PublicDnsName
+
+

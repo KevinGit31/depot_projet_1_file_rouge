@@ -1,0 +1,152 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: projet1 instance ADM
+Parameters:
+  DBName:
+    Type: String
+  MUser:
+    Type: String
+  MPass:
+    Type: String
+    Description: "Minimum 8 caractères"
+  VpcId:
+    Type: String
+##    Type: AWS::EC2::VPC::Id
+    Description: 'The VPC ID'
+#  ParameterGroup:
+#    Type: String
+#    Description: The name of the database parameter group created
+  Env:
+    Type: String
+    Description: 'Saisir DEV/QUA/PROD'
+  subnet1CIDR:
+    Type: String
+    Description: 'Saisir "10.80.(DEV 210/ QUA 220/PROD 230).0/24"'
+    AllowedValues:
+      - 10.80.210.0/24
+      - 10.80.220.0/24
+      - 10.80.230.0/24
+  subnet2CIDR:
+    Type: String
+    Description: 'Saisir "10.80.(DEV 211/ QUA 221/PROD 231).0/24"'
+    AllowedValues:
+      - 10.80.211.0/24
+      - 10.80.221.0/24
+      - 10.80.231.0/24
+#    AllowedValues:
+#      - DEV
+#      - QUA
+#      - PROD
+  # SecGrpCIDR:
+  #   Type: String
+  #   Description: 'Exemple ip rds 10.80.(DEV=110/QUA=120/PROD=130/ADM=140).0/24'
+  #   AllowedValues:
+  #     - 10.80.110.0/24
+  #     - 10.80.120.0/24
+  #     - 10.80.130.0/24
+  #     - 10.80.140.0/24
+  SecurityGroupId:
+    Type: String
+#    Type: 'AWS::EC2::SecurityGroup::Id'
+    Description: 'The Security Group ID'
+  PrimaryAZ:
+    Type: AWS::EC2::AvailabilityZone::Name
+    Description: Primary AZ
+# Conditions:
+#   IsFirstPrimaryAZ:
+#     Fn::Equals:
+#       - !Ref PrimaryAZ
+#       - !Select [0, Fn::GetAZs: "eu-west-2a"]
+  DBInstanceClass:
+    Description: The name of the compute and memory capacity classes of the DB instance.
+    Type: String
+    Default: db.t2.micro
+
+  DBPortNumber:
+    Description: The port number on which the database accepts connections.
+    Type: Number
+    Default: '3306'
+    MinValue: '3306'
+    MaxValue: '3306'
+    ConstraintDescription: 1150-65535 except for 1434, ,3306, 3389, 47001, 49152, and 49152
+
+  AllocatedStorage:
+    Description: 'Storage Size in GB'
+    Type: String
+    Default: '5'
+    ConstraintDescription: "Value must be a valid number between 5-16384"
+
+  EngineDB:
+     Description: The name of the database engine to be used for this instance.
+     Type: String
+     AllowedValues: [MySQL, sqlserver-ee, sqlserver-se, sqlserver-ex, sqlserver-web]
+     Default: MySQL
+     ConstraintDescription: Please specify either a MySQL, sqlserver-ee, sqlserver-se, sqlserver-ex, or sqlserver-web engine for the RDS instance.
+
+
+Resources:
+  Grp3SecurityGroupingress:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: !Join [ "Open database for access-", [ !Ref Env ]]
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: !Ref DBPortNumber
+          ToPort: !Ref DBPortNumber
+          SourceSecurityGroupId: !Ref SecurityGroupId
+#          CidrIp: !Ref SecGrpCIDR
+      VpcId: !Ref VpcId
+
+
+  Subnet1:
+    Type: "AWS::EC2::Subnet"
+    Properties:
+      VpcId: !Ref VpcId
+      AvailabilityZone: "eu-west-2a"
+      CidrBlock: !Ref subnet1CIDR
+      # ...
+  Subnet2:
+    Type: "AWS::EC2::Subnet"
+    Properties:
+      VpcId: !Ref VpcId
+      AvailabilityZone: "eu-west-2b"
+#        Fn::If:
+#        - IsFirstPrimaryAZ
+#        - !Select [1, !GetAZs ""]
+#        - !Select [1, {!GetAZs "eu-west-2"}]
+#        - !Select [0, {!GetAZs "eu-west-2"}]
+#        - !Select [0, !GetAZs ""]
+      CidrBlock: !Ref subnet2CIDR
+
+  RDSDBSubnetGroup:
+    Type: "AWS::RDS::DBSubnetGroup"
+    Properties:
+      DBSubnetGroupDescription: "Subnet Group for mySQL database"
+      DBSubnetGroupName: !Sub "${AWS::Region}-db-subnet-grp-${Env}"
+      SubnetIds:
+        - !Ref Subnet1
+        - !Ref Subnet2
+
+  MyDBInstances:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      BackupRetentionPeriod: 1
+      EnableIAMDatabaseAuthentication: false
+      DBName: !Ref DBName
+      MasterUsername: !Ref MUser
+      MasterUserPassword: !Ref MPass
+      Engine: MySQL
+      DBInstanceClass: !Ref DBInstanceClass
+      StorageType: gp2
+      PubliclyAccessible: false
+      AllocatedStorage: !Ref AllocatedStorage
+#      DBInstanceIdentifier: !Join ["-DB-", [ !Ref Env , !Ref "AWS::Region"]]
+      DBSubnetGroupName: !Ref RDSDBSubnetGroup
+      MultiAZ: false
+      MonitoringInterval: 0
+      VPCSecurityGroups:
+        - !Ref Grp3SecurityGroupingress
+      Tags:
+        - Key: Name
+          Value: !Sub
+          - ${AWS::StackName}-${Name}
+          - { Name: !Ref EngineDB }

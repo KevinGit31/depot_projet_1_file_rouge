@@ -87,7 +87,7 @@ Resources:
       Tags:
       - Key: Name
         Value: !Sub ${AWS::StackName}-Private-ADM
-  PrivateSubnetADM2:
+  PrivateSubnet2ADM:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref VPC
@@ -214,7 +214,7 @@ Resources:
   PrivateSubnetADM2RouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
-      SubnetId: !Ref PrivateSubnetADM2
+      SubnetId: !Ref PrivateSubnet2ADM
       RouteTableId: !Ref PrivateRouteTable
   PrivateSubnetDEVRouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
@@ -258,9 +258,9 @@ Outputs:
     Description: A list of the Private subnets
     Value: !Join [ ",", [ !Ref PrivateSubnetADM ]]
 
-  PrivateSubnetsADM2:
+  PrivateSubnets2ADM:
     Description: A list of the Private subnets
-    Value: !Join [ ",", [ !Ref PrivateSubnetADM2 ]]
+    Value: !Join [ ",", [ !Ref PrivateSubnet2ADM ]]
 
   PrivateSubnet1:
     Description: A reference to the Private subnet in the 1st Availability Zone
