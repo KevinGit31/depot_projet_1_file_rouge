@@ -19,6 +19,9 @@
                         {% if select_answer=='True' %}
                         <button type="submit" name="btn-select" value="SELECT_ANSWER"
                             class="btn btn-outline-primary">Sélectionner une réponse</button>
+                        {% else %}
+                        <button type="submit" name="btn-select" value="INPUT_ANSWER"
+                        class="btn btn-outline-primary">Entrer une réponse</button>
                         {% endif %}
                     </div>
                 </div>
@@ -62,7 +65,7 @@
                 <div class="list_question" value={{question.answers}}>
                     {% for answer in question.answers %}
                     <span class="hide">{{loop.index}}</span>
-                    {% if answer.isAnswer=='False' %}
+                    {% if answer.isAnswer=='' or answer.isAnswer=='False' %}
                     {% include "quizz/question/answer.html" %}
                     {% endif %}
                     {% endfor %}

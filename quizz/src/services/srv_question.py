@@ -30,6 +30,8 @@ def add_question(request):
     new_question = Question(_question)
 
     new_question = _question_answer(new_question,_answers)
+
+    print (question_schema.jsonify(new_question))
   
     # Insertion dans la session de connexion courant
     db.session.add(new_question) 
