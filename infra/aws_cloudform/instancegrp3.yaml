@@ -60,7 +60,10 @@ Parameters:
     Type: String
 #    Type: 'AWS::EC2::SecurityGroup::Id'
     Description: 'The Security Group ID'
-
+  AnsibleKey:
+    Type: String
+#    Type: 'AWS::EC2::SecurityGroup::Id'
+    Description: 'clé Ansible vault password'
   InstanceType:
     Description: WebServer EC2 instance type
     Type: String
@@ -463,6 +466,11 @@ Resources:
                 "Ref": "PrivateIP"
               },
               "/tmp/ip.txt\n",
+              "echo ",
+              {
+                "Ref": "AnsibleKey"
+              },
+              "/tmp/key.txt\n",
               "sudo wget -O /tmp/prepare.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/dev/infra/prepare.sh && chmod +x /tmp/prepare.sh && sudo /bin/bash /tmp/prepare.sh\n"
             ]
           ]
