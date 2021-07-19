@@ -40,7 +40,6 @@ def configure_routes_answer(app):
       if request.method == "POST":
          answer = {
             'answer':request.form.get('answer'),
-            "isAnswer":bool(request.form.get('isAnswer'))
          }
          requests.post(baseUrl+url,json.dumps(answer))
          return redirect(url_for("answer")) 
@@ -60,7 +59,6 @@ def configure_routes_answer(app):
       if request.method == "POST":
          answer = {
             'answer':request.form.get('answer'),
-            "isAnswer":bool(request.form.get('isAnswer'))
          }
          requests.put(newurl,json.dumps(answer))
          return redirect(url_for("answer")) 

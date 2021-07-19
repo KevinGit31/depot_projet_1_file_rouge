@@ -18,10 +18,9 @@ def add_answer(request):
     
     # Récupération des données
     _answer = request.get('answer')
-    _isAnswer = request.get('isAnswer')
 
     # Création d'un objet réponse
-    new_answer = Answer(_answer,_isAnswer)
+    new_answer = Answer(_answer)
 
     # Insertion dans la session de connexion courant
     db.session.add(new_answer)
@@ -40,7 +39,6 @@ def update_answer(id,request):
 
     # Modification de l'objet réponse
     updateanswer.answer = request.get('answer')
-    updateanswer.isAnswer = request.get('isAnswer')
 
     # Insertion dans la session de connexion courant
     db.session.add(updateanswer)
