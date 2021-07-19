@@ -8,6 +8,9 @@ if [[ $RETOUR_INSTALL_OPENJDK = 0 ]] && [[ ! -f $RETOUR_BIN_NEXUS ]]; then
     exit 0
 fi
 
+#Nettoyage /tmp
+sudo rm -f /tmp/*.txt
+
 sudo yum update -y
 sudo yum install wget -y
 sudo yum install java-1.8.0-openjdk.x86_64 -y

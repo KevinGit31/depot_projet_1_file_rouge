@@ -1,6 +1,9 @@
 #!/bin/bash
 
-JENKINSPWD=$(cat key.txt)
+JENKINSPWD=$(cat /tmp/jenkinskey.txt)
+DEVOPSPWD=$(cat /tmp/devopsuserkey.txt)
+ROOTPASS=$(cat /tmp/root.txt)
+ANSIBPASS=$(cat /tmp/ansiblekey.txt)
 #install java
 sudo yum install -y java-1.8.0-openjdk-devel
 #recuperation package
@@ -38,6 +41,34 @@ echo "userjenkins:$JENKINSPWD" | sudo chpasswd
 
 sudo echo 'userjenkins   ALL=(ALL)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
 
+#install ansible
+sudo su - userjenkins && mkdir -p ~/ansible && git clone https://github.com/KevinGit31/depot_projet_1_file_rouge.git
+sudo amazon-linux-extras install ansible2 -y
+sudo echo "#!/bin/bash" >> /etc/ansible/ansvlt.sh
+sudo echo "echo $ANSIBPASS" >> /etc/ansible/.ansvlt
+sudo echo "RET=$(cat /etc/ansible/.ansvlt)"
+sudo echo "echo $RET" >> /etc/ansible/ansvltsh
+sudo chmod +x /etc/ansible/ansvlt.sh
+#configuration ansible vault paswword
+sudo sed -e "/\[defaults\]/a\\
+vault_password_file=/etc/ansible/ansvlt.sh" < /etc/ansible/ansible.cfg
+
+#ansible-vault encrypt_string $DEVOPSPWD --name 'secret_devops' >> ~/vault
+
+sudo -i
+sudo useradd -m -s /bin/bash devops
+echo "devops:$DEVOPSPWD" | sudo chpasswd
+sudo echo 'devops   ALL=(ALL)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
+echo "root:$ROOTPASS" | sudo chpasswd
+#genere la cle pub et priv pour le user devops
+sudo su - devops && ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa 2>/dev/null <<< y >/dev/null
+
+#Nettoyage /tmp
+sudo rm -f /tmp/*.txt
+
 sleep 30
 # Mdp jenkins
 sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+
+
+
