@@ -63,7 +63,7 @@ echo "root:$ROOTPASS" | sudo chpasswd
 
 
 #Nettoyage /tmp
-#sudo rm -f /tmp/root.txt /tmp/jenkinskey.txt /tmp/devopsuserkey.txt /tmp/ansiblekey.txt
+rm -f /tmp/root.txt /tmp/jenkinskey.txt /tmp/devopsuserkey.txt /tmp/ansiblekey.txt
 
 sleep 30
 # Mdp jenkins
