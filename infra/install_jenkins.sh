@@ -53,7 +53,21 @@ sudo sed -i 's/\#vault_password_file = \/path\/to\/vault_password_file/vault_pas
 /etc\/ansible\/ansvlt.sh/' /etc/ansible/ansible.cfg
 
 #ansible-vault encrypt_string $DEVOPSPWD --name 'secret_devops' >> ~/vault
-
+#install ansible
+sudo amazon-linux-extras install ansible2 -y
+sudo echo "#!/bin/bash" >> /etc/ansible/ansvlt.sh
+sudo echo "echo "$ANSIBPASS >> /etc/ansible/.ansvlt
+sudo echo "RET=$(cat /etc/ansible/.ansvlt)"
+sudo echo "echo $RET" >> /etc/ansible/ansvlt.sh
+sudo chmod +x /etc/ansible/ansvlt.sh
+#configuration ansible vault paswword
+sudo sed -i 's/\#vault_password_file = \/path\/to\/vault_password_file/vault_password_file=\
+/etc\/ansible\/ansvlt.sh/' /etc/ansible/ansible.cfg
+#preparation du user devops sur les host remote + distrib key
+sudo -i
+sudo useradd -m -s /bin/bash devops
+echo "devops:$DEVOPSPWD" | sudo chpasswd
+sudo echo 'devops   ALL=(ALL)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
 echo "root:$ROOTPASS" | sudo chpasswd
 #genere la cle pub et priv pour le user devops
 #sudo -H -u devops bash -c 'ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa <<<y >/dev/null 2>&1'
