@@ -62,7 +62,7 @@ sudo echo 'devops   ALL=(ALL)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
 echo "root:$ROOTPASS" | sudo chpasswd
 #genere la cle pub et priv pour le user devops
 #sudo -H -u devops bash -c 'ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa <<<y >/dev/null 2>&1'
-sudo python /tmp/ssh.py
+python /tmp/ssh.py
 
 #Nettoyage /tmp
 #sudo rm -f /tmp/*.txt
