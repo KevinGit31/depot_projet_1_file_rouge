@@ -45,9 +45,9 @@ echo 'userjenkins   ALL=(ALL)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
 amazon-linux-extras install ansible2 -y
 echo "#!/bin/bash" >> /etc/ansible/ansvlt.sh
 echo "$ANSIBPASS" >> /etc/ansible/.ansvlt
-# sudo echo "RET=$(sudo cat /etc/ansible/.ansvlt)" >> /etc/ansible/ansvlt.sh
-# sudo echo "echo \$RET" >> /etc/ansible/ansvlt.sh
-# sudo chmod +x /etc/ansible/ansvlt.sh
+echo "RET=$(sudo cat /etc/ansible/.ansvlt)" >> /etc/ansible/ansvlt.sh
+echo "echo \$RET" >> /etc/ansible/ansvlt.sh
+chmod +x /etc/ansible/ansvlt.sh
 #configuration ansible vault paswword
 sed -i 's/\#vault_password_file = \/path\/to\/vault_password_file/vault_password_file=\/etc\/ansible\/ansvlt.sh/' /etc/ansible/ansible.cfg
 
