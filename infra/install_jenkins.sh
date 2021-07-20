@@ -6,7 +6,6 @@ ROOTPASS=$(cat /tmp/root.txt)
 ANSIBPASS=$(cat /tmp/ansiblekey.txt)
 #install java
 sudo yum install -y java-1.8.0-openjdk-devel
-sudo yum install -y java-1.8.0-openjdk-devel
 #recuperation package
 sudo wget –O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat-stable/jenkins.repo
 #Modification du fichier de conf
@@ -36,12 +35,13 @@ sudo systemctl start jenkins
 sudo /sbin/chkconfig jenkins on
 
 # On modifit l' utilisateur jenkins définition du password
-echo "jenkins:$JENKINSPWD" | sudo chpasswd
-sudo echo 'jenkins   ALL=(ALL)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
+sudo useradd -m userjenkins
+echo "userjenkins:$JENKINSPWD" | sudo chpasswd
+sudo echo 'userjenkins   ALL=(ALL)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
 
 
-sudo -H -u jenkins -c 'mkdir -p ~/ansible'
-sudo -H -u jenkins -c 'git clone https://github.com/KevinGit31/depot_projet_1_file_rouge.git'
+sudo -H -u userjenkins -c 'mkdir -p ~/ansible'
+sudo -H -u userjenkins -c 'git clone https://github.com/KevinGit31/depot_projet_1_file_rouge.git'
 #install ansible
 sudo amazon-linux-extras install ansible2 -y
 sudo echo "#!/bin/bash" >> /etc/ansible/ansvlt.sh
