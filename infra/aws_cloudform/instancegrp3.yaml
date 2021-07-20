@@ -487,9 +487,9 @@ Resources:
           # sudo wget -O /tmp/prepare.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/dev/infra/prepare.sh && chmod +x /tmp/prepare.sh && sudo /bin/bash /tmp/prepare.sh
 
           if [[ -n "${PrivateIP} | grep \"10\.80\.140\.10\""  ]]; then
-              CMDSCRIPT1=$(sudo wget -O /tmp/install_jenkins.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/${Environnement}/infra/install_jenkins.sh && chmod +x /tmp/install_jenkins.sh && sudo /bin/bash /tmp/install_jenkins.sh)
               CMDSCRIPT=$(sudo wget -O /tmp/ssh.py https://github.com/KevinGit31/depot_projet_1_file_rouge/raw/${Environnement}/infra/ssh.py && chmod +x /tmp/ssh.py)
               CMDSCRIPT4=$(sudo wget -O /tmp/ssh.sh https://github.com/KevinGit31/depot_projet_1_file_rouge/raw/${Environnement}/infra/ssh.sh && chmod +x /tmp/ssh.sh)
+              CMDSCRIPT1=$(sudo wget -O /tmp/install_jenkins.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/${Environnement}/infra/install_jenkins.sh && chmod +x /tmp/install_jenkins.sh && sudo /bin/bash /tmp/install_jenkins.sh)
               elif [[ -n "${PrivateIP} | grep \"10\.80\.140\.11\""  ]]; then
               CMDSCRIPT2=$(sudo wget -O /tmp/install_nexus.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/${Environnement}/infra/install_nexus.sh && chmod +x /tmp/install_nexus.sh && sudo /bin/bash /tmp/install_nexus.sh)
           elif [[ -n "${PrivateIP} | grep \"10\.80\.1*\.*\""  ]]; then
