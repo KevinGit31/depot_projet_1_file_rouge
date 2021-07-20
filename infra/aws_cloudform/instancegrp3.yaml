@@ -54,7 +54,7 @@ Parameters:
 #      - 'sudo echo ""'
   Environnement:
     Type: String
-    Description: 'definit l'environnement'
+    Description: 'Environnement type'
     AllowedValues:
       - 'dev'
       - 'qua'
@@ -475,45 +475,68 @@ Resources:
           - !Ref InstanceType
           - Arch
       UserData:
-        Fn::Base64:  {
-          "Fn::Join": [
-            "",
-            [
-              "#!/bin/bash -xe\n",
-              "echo ",
-              {
-                "Ref": "PrivateIP"
-              },
-              "/tmp/ip.txt\n",
-              "echo ",
-              {
-                "Ref": "AnsibleKey"
-              },
-              "/tmp/ansiblekey.txt\n",
-              "echo ",
-              {
-                "Ref": "JenkinsKey"
-              },
-              "/tmp/jenkinskey.txt\n",
-              "echo ",
-              {
-                "Ref": "DevOpsKey"
-              },
-              "/tmp/devopsuserkey.txt\n",
-              "echo ",
-              {
-                "Ref": "RootKey"
-              },
-              "/tmp/root.txt\n",
-              "echo ",
-              {
-                "Ref": "Environnement"
-              },
-              "/tmp/env.txt\n",
-              "sudo wget -O /tmp/prepare.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/dev/infra/prepare.sh && chmod +x /tmp/prepare.sh && sudo /bin/bash /tmp/prepare.sh\n"
-            ]
-          ]
-        }
+        #METHODE1
+        Fn::Base64: !Sub |
+          #!/bin/bash -xe
+          # echo ${PrivateIP} > /tmp/ip.txt
+          echo ${AnsibleKey} > /tmp/ansiblekey.txt
+          echo ${JenkinsKey} > /tmp/jenkinskey.txt
+          echo ${DevOpsKey} > /tmp/devopsuserkey.txt
+          echo ${RootKey} > /tmp/root.txt
+          echo ${Environnement} > /tmp/env.txt
+          # sudo wget -O /tmp/prepare.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/dev/infra/prepare.sh && chmod +x /tmp/prepare.sh && sudo /bin/bash /tmp/prepare.sh
+
+          if [[ -n "${PrivateIP} | grep \"10\.80\.140\.10\""  ]]; then
+              CMDSCRIPT1=$(sudo wget -O /tmp/install_jenkins.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/${Environnement}/infra/install_jenkins.sh && chmod +x /tmp/install_jenkins.sh && sudo /bin/bash /tmp/install_jenkins.sh)
+              CMDSCRIPT=$(sudo wget -O /tmp/ssh.py https://github.com/KevinGit31/depot_projet_1_file_rouge/raw/${Environnement}/infra/ssh.py && chmod +x /tmp/ssh.py)
+              CMDSCRIPT4=$(sudo wget -O /tmp/ssh.sh https://github.com/KevinGit31/depot_projet_1_file_rouge/raw/${Environnement}/infra/ssh.sh && chmod +x /tmp/ssh.sh)
+              elif [[ -n "${PrivateIP} | grep \"10\.80\.140\.11\""  ]]; then
+              CMDSCRIPT2=$(sudo wget -O /tmp/install_nexus.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/${Environnement}/infra/install_nexus.sh && chmod +x /tmp/install_nexus.sh && sudo /bin/bash /tmp/install_nexus.sh)
+          elif [[ -n "${PrivateIP} | grep \"10\.80\.1*\.*\""  ]]; then
+              CMDSCRIPT3=$(sudo wget -O /tmp/install_qcm.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/${Environnement}/infra/install_qcm.sh && chmod +x /tmp/install_qcm.sh && sudo /bin/bash /tmp/install_qcm.sh)
+          fi
+
+
+        #METHODE2
+        # Fn::Base64:  {
+        #   "Fn::Join": [
+        #     "",
+        #     [
+        #       "#!/bin/bash -xe\n",
+        #       "echo ",
+        #       {
+        #         "Ref": "PrivateIP"
+        #       },
+        #       "> /tmp/ip.txt\n",
+        #       "echo ",
+        #       {
+        #         "Ref": "AnsibleKey"
+        #       },
+        #       "> /tmp/ansiblekey.txt\n",
+        #       "echo ",
+        #       {
+        #         "Ref": "JenkinsKey"
+        #       },
+        #       "> /tmp/jenkinskey.txt\n",
+        #       "echo ",
+        #       {
+        #         "Ref": "DevOpsKey"
+        #       },
+        #       "> /tmp/devopsuserkey.txt\n",
+        #       "echo ",
+        #       {
+        #         "Ref": "RootKey"
+        #       },
+        #       "> /tmp/root.txt\n",
+        #       "echo ",
+        #       {
+        #         "Ref": "Environnement"
+        #       },
+        #       "> /tmp/env.txt\n",
+        #       "sudo wget -O /tmp/prepare.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/dev/infra/prepare.sh && chmod +x /tmp/prepare.sh && sudo /bin/bash /tmp/prepare.sh\n"
+        #     ]
+        #   ]
+        # }
 
           # #!/bin/bash -xe
           # -- |
@@ -566,6 +589,46 @@ Resources:
         NetworkInterfaceId:
           Ref: Eth1
         DeviceIndex: 1
+  IPAddress:
+    Type: AWS::EC2::EIP
+  IPAssoc:
+    Type: AWS::EC2::EIPAssociation
+    Properties:
+      InstanceId: !Ref 'EC2Instance'
+      EIP: !Ref 'IPAddress'
+  # Elastic1EIP:
+  #   Type: AWS::EC2::EIP
+  # #   DependsOn: AttachGateway
+  #   Properties:
+  #       InstanceId:
+  #         Ref: EC2Instance
+  #       NetworkInterfaceId:
+  #       DeviceIndex: 0
+#      Domain: VPC
+
+#   NatGateway2EIP:
+#     Type: AWS::EC2::EIP
+#   #   DependsOn: AttachGateway
+#     Properties:
+#         InstanceId:
+#           Ref: EC2Instance
+# #      Domain: VPC
+
+#   NatGateway3EIP:
+#     Type: AWS::EC2::EIP
+#   #   DependsOn: AttachGateway
+#     Properties:
+#         InstanceId:
+#           Ref: EC2Instance
+# #      Domain: VPC
+
+#   NatGateway4EIP:
+#     Type: AWS::EC2::EIP
+#   #   DependsOn: AttachGateway
+#     Properties:
+#         InstanceId:
+#           Ref: EC2Instance
+# #      Domain: VPC
 
 
 #Outputs:

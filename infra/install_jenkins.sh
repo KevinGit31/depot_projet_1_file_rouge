@@ -6,6 +6,7 @@ ROOTPASS=$(cat /tmp/root.txt)
 ANSIBPASS=$(cat /tmp/ansiblekey.txt)
 #install java
 sudo yum install -y java-1.8.0-openjdk-devel
+sudo yum install -y java-1.8.0-openjdk-devel
 #recuperation package
 sudo wget –O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat-stable/jenkins.repo
 #Modification du fichier de conf
@@ -34,24 +35,23 @@ sleep 5
 sudo systemctl start jenkins
 sudo /sbin/chkconfig jenkins on
 
-# On ajoute le nouvel utilisateur userjenkins + définition du password
-echo "${GREEN}$(date +'%Y-%m-%d %H:%M:%S') [ INFO  ] : Création de l'utilisateur userjenkins ... ${NC}"
-sudo useradd -m userjenkins
-echo "userjenkins:$JENKINSPWD" | sudo chpasswd
+# On modifit l' utilisateur jenkins définition du password
+echo "jenkins:$JENKINSPWD" | sudo chpasswd
+sudo echo 'jenkins   ALL=(ALL)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
 
-sudo echo 'userjenkins   ALL=(ALL)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
 
+sudo -H -u jenkins -c 'mkdir -p ~/ansible'
+sudo -H -u jenkins -c 'git clone https://github.com/KevinGit31/depot_projet_1_file_rouge.git'
 #install ansible
-sudo su - userjenkins && mkdir -p ~/ansible && git clone https://github.com/KevinGit31/depot_projet_1_file_rouge.git
 sudo amazon-linux-extras install ansible2 -y
 sudo echo "#!/bin/bash" >> /etc/ansible/ansvlt.sh
-sudo echo $ANSIBPASS >> /etc/ansible/.ansvlt
+sudo echo "$ANSIBPASS" >> /etc/ansible/.ansvlt
 sudo echo "RET=$(cat /etc/ansible/.ansvlt)"
 sudo echo "echo $RET" >> /etc/ansible/ansvlt.sh
 sudo chmod +x /etc/ansible/ansvlt.sh
 #configuration ansible vault paswword
-sudo sed -e "/\[defaults\]/a\\
-vault_password_file=/etc/ansible/ansvlt.sh" < /etc/ansible/ansible.cfg
+sudo sed -i 's/\#vault_password_file = \/path\/to\/vault_password_file/vault_password_file=\
+/etc\/ansible\/ansvlt.sh/' /etc/ansible/ansible.cfg
 
 #ansible-vault encrypt_string $DEVOPSPWD --name 'secret_devops' >> ~/vault
 #preparation du user devops sur les host remote + distrib key
@@ -62,10 +62,10 @@ sudo echo 'devops   ALL=(ALL)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
 echo "root:$ROOTPASS" | sudo chpasswd
 #genere la cle pub et priv pour le user devops
 #sudo -H -u devops bash -c 'ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa <<<y >/dev/null 2>&1'
-sudo python3 /tmp/ssh.py
+sudo python /tmp/ssh.py
 
 #Nettoyage /tmp
-sudo rm -f /tmp/*.txt
+#sudo rm -f /tmp/*.txt
 
 sleep 30
 # Mdp jenkins

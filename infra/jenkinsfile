@@ -58,7 +58,13 @@ agent any
         }
 //        stage('deployansible') {
 //            steps {
-//                sh 'ansible-playbook -i /home/vagrant/ansible/hosts /home/vagrant/ansible/playbook.yml'
+//                    sh """#!/bin/bash
+//                    myenv=\$(cat /tmp/env.txt)
+//                    ansible-playbook -i /home/jenkins/depot_projet_1_file_rouge/infra/ansible/inventory/\$myenv/hosts /home/jenkins/depot_projet_1_file_rouge/infra/ansible/\$myenv.yml"
+//                    """
+//
+//                sh '
+//                sh 'ansible-playbook -i /home/jenkins/depot_projet_1_file_rouge/infra/ansible/inventory/hosts /home/jenkins/depot_projet_1_file_rouge/infra/ansible/playbook.yml'
 //            }
 //        }
 
