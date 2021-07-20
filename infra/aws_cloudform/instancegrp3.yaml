@@ -478,7 +478,7 @@ Resources:
         #METHODE1
         Fn::Base64: !Sub |
           #!/bin/bash -xe
-          # echo ${PrivateIP} > /tmp/ip.txt
+          echo ${PrivateIP} > /tmp/ip.txt
           echo ${JenkinsKey} > /tmp/jenkinskey.txt
           echo ${RootKey} > /tmp/root.txt
           echo ${DevOpsKey} > /tmp/devopsuserkey.txt
@@ -486,7 +486,7 @@ Resources:
           echo ${Environnement} > /tmp/env.txt
           # sudo wget -O /tmp/prepare.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/dev/infra/prepare.sh && chmod +x /tmp/prepare.sh && sudo /bin/bash /tmp/prepare.sh
 
-          if [[ -n "${PrivateIP} | grep \"10\.80\.140\.10\""  ]]; then
+          if [[ "${PrivateIP} | grep \"10\.80\.140\.10\""  ]]; then
               CMDSCRIPT=$(wget -O /tmp/ssh.py https://github.com/KevinGit31/depot_projet_1_file_rouge/raw/${Environnement}/infra/ssh.py && chmod +x /tmp/ssh.py)
               CMDSCRIPT4=$(wget -O /tmp/ssh.sh https://github.com/KevinGit31/depot_projet_1_file_rouge/raw/${Environnement}/infra/ssh.sh && chmod +x /tmp/ssh.sh)
               CMDSCRIPT1=$(wget -O /tmp/install_jenkins.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/${Environnement}/infra/install_jenkins.sh && chmod +x /tmp/install_jenkins.sh && /bin/bash /tmp/install_jenkins.sh)
@@ -494,9 +494,9 @@ Resources:
               su - userjenkins -c 'cd /home/userjenkins && git clone https://github.com/KevinGit31/depot_projet_1_file_rouge.git && chmod +x /home/userjenkins/depot_projet_1_file_rouge/infra/ansvlt.sh && exit'
               #cd /tmp && /usr/bin/python3 ssh.py
 
-          elif [[ -n "${PrivateIP} | grep \"10\.80\.140\.11\""  ]]; then
+          elif [[ "${PrivateIP} | grep \"10\.80\.140\.11\""  ]]; then
               CMDSCRIPT2=$(wget -O /tmp/install_nexus.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/${Environnement}/infra/install_nexus.sh && chmod +x /tmp/install_nexus.sh && /bin/bash /tmp/install_nexus.sh)
-          elif [[ -n "${PrivateIP} | grep \"10\.80\.1[1-3]*\.*\""  ]]; then
+          elif [[ "${PrivateIP} | grep \"10\.80\.1[1-3].\.|[01]?[0-9][0-9]?""  ]]; then
               CMDSCRIPT3=$(wget -O /tmp/install_qcm.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/${Environnement}/infra/install_qcm.sh && chmod +x /tmp/install_qcm.sh && /bin/bash /tmp/install_qcm.sh)
           fi
           echo "root:${RootKey}" | chpasswd
