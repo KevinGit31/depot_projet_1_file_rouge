@@ -59,6 +59,9 @@ sudo echo 'devops   ALL=(ALL)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
 echo "root:$ROOTPASS" | sudo chpasswd
 #genere la cle pub et priv pour le user devops
 #sudo -H -u devops bash -c 'ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa <<<y >/dev/null 2>&1'
+whoami > /tmp/nosudo.txt
+sudo whoami > /tmp/sudo.txt
+su - jenkins -c "whoami > /tmp/sujenkins.txt"
 
 
 #Nettoyage /tmp
