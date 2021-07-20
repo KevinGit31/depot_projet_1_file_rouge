@@ -489,8 +489,8 @@ Resources:
               CMDSCRIPT4=$(wget -O /tmp/ssh.sh https://github.com/KevinGit31/depot_projet_1_file_rouge/raw/${Environnement}/infra/ssh.sh && chmod +x /tmp/ssh.sh)
               CMDSCRIPT1=$(wget -O /tmp/install_jenkins.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/${Environnement}/infra/install_jenkins.sh && chmod +x /tmp/install_jenkins.sh && /bin/bash /tmp/install_jenkins.sh)
               #sudo -H -u userjenkins -c 'mkdir -p /home/userjenkins/ansible'
-              su - userjenkins -c 'cd /home/userjenkins && git clone https://github.com/KevinGit31/depot_projet_1_file_rouge.git && chmod +x /home/userjenkins/depot_projet_1_file_rouge/infra/ansvlt.sh && exit'
-              #cd /tmp && /usr/bin/python3 ssh.py
+              su - userjenkins -c 'cd /home/userjenkins && wget -O dev.zip https://github.com/KevinGit31/depot_projet_1_file_rouge/archive/refs/heads/${Environnement}.zip && unzip dev.zip && chmod +x /home/userjenkins/depot_projet_1_file_rouge/infra/ansvlt.sh && exit'
+              #cd /tmp && ./ssh.py
           elif [[ ${PrivateIP} =~ 10.80.140.11 ]]; then
               CMDSCRIPT2=$(wget -O /tmp/install_nexus.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/${Environnement}/infra/install_nexus.sh && chmod +x /tmp/install_nexus.sh && /bin/bash /tmp/install_nexus.sh)
           elif [[ ${PrivateIP} =~ 10.80.110.* || ${PrivateIP} =~ 10.80.120.* || ${PrivateIP} =~ 10.80.130.* ]]; then
