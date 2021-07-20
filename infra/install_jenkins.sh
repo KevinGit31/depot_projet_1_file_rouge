@@ -5,63 +5,61 @@ DEVOPSPWD=$(cat /tmp/devopsuserkey.txt)
 ROOTPASS=$(cat /tmp/root.txt)
 ANSIBPASS=$(cat /tmp/ansiblekey.txt)
 #install java
-sudo yum install -y java-1.8.0-openjdk-devel
+yum install -y java-1.8.0-openjdk-devel
 #recuperation package
-sudo wget –O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat-stable/jenkins.repo
+wget –O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat-stable/jenkins.repo
 #Modification du fichier de conf
-sudo sh -c ' echo "[jenkins]
+sh -c ' echo "[jenkins]
 name=Jenkins-stable
 baseurl=http://pkg.jenkins.io/redhat-stable
 gpgcheck=1" > /etc/yum.repos.d/jenkins.repo'
 # recuperation key jenkins
-sudo rpm --import https://pkg.jenkins.io/redhat/jenkins.io.key
+rpm --import https://pkg.jenkins.io/redhat/jenkins.io.key
 
 # On prepare l'installation de jenkins
-sudo yum  upgrade -y
+yum  upgrade -y
 #sudo yum install -y openjdk-11-jdk
-sudo amazon-linux-extras install -y java-openjdk11
-sudo yum install -y gnupg
-sudo yum install -y git
-sudo yum install -y unzip
-sudo yum install -y python3
-sudo yum install -y python3-pip
+amazon-linux-extras install -y java-openjdk11
+yum install -y gnupg
+yum install -y git
+yum install -y unzip
+yum install -y python3
+yum install -y python3-pip
 pip3 install pip --upgrade
 
 # installation jenkins
-sudo yum install -y  jenkins
+yum install -y  jenkins
 sleep 5
 # start jenkins
-sudo systemctl start jenkins
-sudo /sbin/chkconfig jenkins on
+systemctl start jenkins
+/sbin/chkconfig jenkins on
 
 # On modifit l' utilisateur jenkins définition du password
-sudo useradd -m userjenkins
+useradd -m userjenkins
 echo "userjenkins:$JENKINSPWD" | sudo chpasswd
-sudo echo 'userjenkins   ALL=(ALL)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
+echo 'userjenkins   ALL=(ALL)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
 #sudo -H -u userjenkins -c 'mkdir -p ~/ansible'
-#sudo -H -u userjenkins -c 'git clone https://github.com/KevinGit31/depot_projet_1_file_rouge.git'
+#su - userjenkins -c 'git clone https://github.com/KevinGit31/depot_projet_1_file_rouge.git ; exit'
 
 #install ansible
-sudo amazon-linux-extras install ansible2 -y
-sudo echo "#!/bin/bash" >> /etc/ansible/ansvlt.sh
-sudo echo "$ANSIBPASS" >> /etc/ansible/.ansvlt
+amazon-linux-extras install ansible2 -y
+echo "#!/bin/bash" >> /etc/ansible/ansvlt.sh
+echo "$ANSIBPASS" >> /etc/ansible/.ansvlt
 # sudo echo "RET=$(sudo cat /etc/ansible/.ansvlt)" >> /etc/ansible/ansvlt.sh
 # sudo echo "echo \$RET" >> /etc/ansible/ansvlt.sh
 # sudo chmod +x /etc/ansible/ansvlt.sh
 #configuration ansible vault paswword
-#sudo sed -i 's/\#vault_password_file = \/path\/to\/vault_password_file/vault_password_file=\/etc\/ansible\/ansvlt.sh/' /etc/ansible/ansible.cfg
+sed -i 's/\#vault_password_file = \/path\/to\/vault_password_file/vault_password_file=\/etc\/ansible\/ansvlt.sh/' /etc/ansible/ansible.cfg
 
 #preparation du user devops sur les host remote + distrib key
-sudo -i
-sudo useradd -m -s /bin/bash devops
+
+useradd -m -s /bin/bash devops
 echo "devops:$DEVOPSPWD" | sudo chpasswd
-sudo echo 'devops   ALL=(ALL)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
+echo 'devops   ALL=(ALL)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
 echo "root:$ROOTPASS" | sudo chpasswd
 #genere la cle pub et priv pour le user devops
-#sudo -H -u devops bash -c 'ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa <<<y >/dev/null 2>&1'
-whoami > /tmp/nosudo.txt
-sudo whoami > /tmp/sudo.txt
-su - jenkins -c "whoami > /tmp/sujenkins.txt"
+su - devops -c 'ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa <<<y >/dev/null 2>&1 ; exit'
+
 
 
 #Nettoyage /tmp
@@ -69,7 +67,7 @@ su - jenkins -c "whoami > /tmp/sujenkins.txt"
 
 sleep 30
 # Mdp jenkins
-sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+cat /var/lib/jenkins/secrets/initialAdminPassword
 
 
 
