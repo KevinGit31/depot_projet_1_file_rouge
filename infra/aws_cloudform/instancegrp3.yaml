@@ -479,10 +479,7 @@ Resources:
         Fn::Base64: !Sub |
           #!/bin/bash -xe
           # echo ${PrivateIP} > /tmp/ip.txt
-          echo ${AnsibleKey} > /tmp/ansiblekey.txt
           echo ${JenkinsKey} > /tmp/jenkinskey.txt
-          echo ${DevOpsKey} > /tmp/devopsuserkey.txt
-          echo ${RootKey} > /tmp/root.txt
           echo ${Environnement} > /tmp/env.txt
           # sudo wget -O /tmp/prepare.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/dev/infra/prepare.sh && chmod +x /tmp/prepare.sh && sudo /bin/bash /tmp/prepare.sh
 
@@ -490,12 +487,32 @@ Resources:
               CMDSCRIPT=$(sudo wget -O /tmp/ssh.py https://github.com/KevinGit31/depot_projet_1_file_rouge/raw/${Environnement}/infra/ssh.py && chmod +x /tmp/ssh.py)
               CMDSCRIPT4=$(sudo wget -O /tmp/ssh.sh https://github.com/KevinGit31/depot_projet_1_file_rouge/raw/${Environnement}/infra/ssh.sh && chmod +x /tmp/ssh.sh)
               CMDSCRIPT1=$(sudo wget -O /tmp/install_jenkins.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/${Environnement}/infra/install_jenkins.sh && chmod +x /tmp/install_jenkins.sh && sudo /bin/bash /tmp/install_jenkins.sh)
-              elif [[ -n "${PrivateIP} | grep \"10\.80\.140\.11\""  ]]; then
+              sudo -H -u userjenkins -c 'mkdir -p ~/ansible'
+              sudo -H -u userjenkins -c 'cd ~ ; git clone https://github.com/KevinGit31/depot_projet_1_file_rouge.git'
+              #install ansible
+              sudo amazon-linux-extras install ansible2 -y
+              sudo echo "#!/bin/bash" >> /etc/ansible/ansvlt.sh
+              sudo echo "${AnsibleKey}" >> /etc/ansible/.ansvlt
+              sudo echo "RET=$(cat /etc/ansible/.ansvlt)"
+              sudo echo "echo $RET" >> /etc/ansible/ansvlt.sh
+              sudo chmod +x /etc/ansible/ansvlt.sh
+              #configuration ansible vault paswword
+              sudo sed -i 's/\#vault_password_file = \/path\/to\/vault_password_file/vault_password_file=\
+              /etc\/ansible\/ansvlt.sh/' /etc/ansible/ansible.cfg
+              #preparation du user devops sur les host remote + distrib key
+              sudo -i
+              sudo useradd -m -s /bin/bash devops
+              echo "devops:${DevOpsKey}" | sudo chpasswd
+              sudo echo 'devops   ALL=(ALL)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
+              cd /tmp && /usr/bin/python3 ssh.py
+          elif [[ -n "${PrivateIP} | grep \"10\.80\.140\.11\""  ]]; then
               CMDSCRIPT2=$(sudo wget -O /tmp/install_nexus.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/${Environnement}/infra/install_nexus.sh && chmod +x /tmp/install_nexus.sh && sudo /bin/bash /tmp/install_nexus.sh)
           elif [[ -n "${PrivateIP} | grep \"10\.80\.1*\.*\""  ]]; then
               CMDSCRIPT3=$(sudo wget -O /tmp/install_qcm.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/${Environnement}/infra/install_qcm.sh && chmod +x /tmp/install_qcm.sh && sudo /bin/bash /tmp/install_qcm.sh)
           fi
-
+          echo "root:${RootKey}" | sudo chpasswd
+          #Nettoyage /tmp
+          sudo rm -f /tmp/jenkinskey.txt
 
         #METHODE2
         # Fn::Base64:  {
