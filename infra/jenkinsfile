@@ -60,7 +60,7 @@ agent any
 //            steps {
 //                    sh """#!/bin/bash
 //                    myenv=\$(cat /tmp/env.txt)
-//                    ansible-playbook -i /home/jenkins/depot_projet_1_file_rouge/infra/ansible/inventory/\$myenv/hosts /home/jenkins/depot_projet_1_file_rouge/infra/ansible/\$myenv.yml"
+//                    ansible-playbook -i /home/jenkins/depot_projet_1_file_rouge/infra/ansible/inventory/\$myenv/hosts /home/jenkins/depot_projet_1_file_rouge/infra/ansible/\$myenv.yml --vault-password-file=/home/jenkins/depot_projet_1_file_rouge/infra/ansvlt.sh"
 //                    """
 //
 //                sh '
