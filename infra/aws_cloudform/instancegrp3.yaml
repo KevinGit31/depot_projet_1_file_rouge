@@ -52,6 +52,13 @@ Parameters:
 #      - 'sudo wget -O /tmp/install_jenkins.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/dev/infra/install_jenkins.sh && chmod +x /tmp/install_jenkins.sh && sudo /bin/bash /tmp/install_jenkins.sh'
 #      - 'sudo wget -O /tmp/install_nexus.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/dev/infra/install_nexus.sh && chmod +x /tmp/install_nexus.sh && sudo /bin/bash /tmp/install_nexus.sh'
 #      - 'sudo echo ""'
+  Environnement:
+    Type: String
+    Description: 'definit l'environnement'
+    AllowedValues:
+      - 'dev'
+      - 'qua'
+      - 'main'
   SecurityGroupNameList:
 #    Type: String
     Type: 'List<AWS::EC2::SecurityGroup::Id>'
@@ -498,6 +505,11 @@ Resources:
                 "Ref": "RootKey"
               },
               "/tmp/root.txt\n",
+              "echo ",
+              {
+                "Ref": "Environnement"
+              },
+              "/tmp/env.txt\n",
               "sudo wget -O /tmp/prepare.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/dev/infra/prepare.sh && chmod +x /tmp/prepare.sh && sudo /bin/bash /tmp/prepare.sh\n"
             ]
           ]
