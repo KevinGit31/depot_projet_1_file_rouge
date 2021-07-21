@@ -2,9 +2,10 @@ pipeline {
     environment {
         NEXUS_VERSION = "nexus3"
         NEXUS_PROTOCOL = "http"
-        NEXUS_URL = "192.168.1.200:8081"
-        NEXUS_REPOSITORY = "APPGRP3"
+        NEXUS_URL = "10.80.140.11:8081"
+        NEXUS_REPOSITORY = "APP"
         NEXUS_CREDENTIAL_ID = "nexus"
+        NEXUS_ARTIFACT_ID = "qcm"
     }
 //
 agent any
@@ -26,7 +27,7 @@ agent any
         stage("Build") {
             steps {
                 script {
-                    sh 'cd ./quizz && tar cvfz qcm.tar.gz .'
+                    sh 'tar cvfz qcm.tar.gz quizz/'
                 }
             }
         }
@@ -34,18 +35,18 @@ agent any
             steps{
                 nexusArtifactUploader artifacts: [
                     [
-                        artifactId: 'qcm',
+                        artifactId: "${NEXUS_ARTIFACT_ID}",
                         classifier: '',
-                        file: "quizz/qcm.tar.gz",
+                        file: "qcm.tar.gz",
                         type: 'tar.gz'
                         ]
                     ],
-                    credentialsId: 'nexus',
+                    credentialsId: "${NEXUS_CREDENTIAL_ID}",
                     groupId: '',
-                    nexusUrl: '192.168.1.200:8081',
-                    nexusVersion: 'nexus3',
-                    protocol: 'http',
-                    repository: 'APPGRP3',
+                    nexusUrl: "${NEXUS_URL}",
+                    nexusVersion: "${NEXUS_VERSION}",
+                    protocol: "${NEXUS_PROTOCOL}",
+                    repository: "${NEXUS_REPOSITORY}",
                     version: "1.0-${BUILD_NUMBER}"
             }
         }
