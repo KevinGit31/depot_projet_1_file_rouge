@@ -1,5 +1,10 @@
 #!/usr/bin/bash
 
+JENKINSPWD=$(cat /tmp/jenkinskey.txt)
+DEVOPSPWD=$(cat /tmp/devopsuserkey.txt)
+ROOTPASS=$(cat /tmp/root.txt)
+ANSIBPASS=$(cat /tmp/ansiblekey.txt)
+
 #Test presence du binaire nexus
 RETOUR_BIN_NEXUS=/opt/nexus/bin/nexus
 
@@ -8,20 +13,19 @@ if [[ $RETOUR_INSTALL_OPENJDK = 0 ]] && [[ ! -f $RETOUR_BIN_NEXUS ]]; then
     exit 0
 fi
 
-#Nettoyage /tmp
-sudo rm -f /tmp/*.txt
 
-sudo yum update -y
-sudo yum install wget -y
-sudo yum install java-1.8.0-openjdk.x86_64 -y
+
+yum update -y
+yum install wget -y
+yum install java-1.8.0-openjdk.x86_64 -y
 
 #Test si le user nexus existe
-RETOUR_USER_NEXUS=sudo cat /etc/passwd | grep -i nexus
+RETOUR_USER_NEXUS=cat /etc/passwd | grep -i nexus
 echo $RETOUR_USER_NEXUS
 #creation du user nexus et positionnement dans le sudoers
 if [[ $RETOUR_USER_NEXUS != 0 ]]; then
-    sudo sudo adduser nexus
-    sudo echo 'nexus   ALL=(ALL)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
+    adduser nexus
+    echo 'nexus   ALL=(ALL)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
 fi
 
 #Download des sources
@@ -38,22 +42,22 @@ fi
 
 #creation du dossier cible
 if [ ! -d "/opt/nexus" ]; then
-        sudo mkdir /opt/nexus
+        mkdir /opt/nexus
         #decompression des sources dans le dossier cible
-        sudo tar xzf nexus.tar.gz -C /opt/nexus --strip-components=1
+        tar xzf nexus.tar.gz -C /opt/nexus --strip-components=1
         #positionnement du proprietaire dans le dossier cible
-        sudo chown -R nexus: /opt/nexus /opt/sonatype-work
+        chown -R nexus: /opt/nexus /opt/sonatype-work
 fi
 
 #positionnement du user nexus
 grep "run_as_user=\"nexus\"" /opt/nexus/bin/nexus.rc
 if [[ ! $? = 0 ]]; then
-    sudo sed -i 's/#run_as_user=""/run_as_user="nexus"/' /opt/nexus/bin/nexus.rc
+    sed -i 's/#run_as_user=""/run_as_user="nexus"/' /opt/nexus/bin/nexus.rc
 fi
 
 ## Ajustement des chemins
-sudo sed -i 's/..\/sonatype-work/.\/sonatype-work/g' /opt/nexus/bin/nexus.vmoptions
-sudo sed -i 's/2703/1024/g' /opt/nexus/bin/nexus.vmoptions
+sed -i 's/..\/sonatype-work/.\/sonatype-work/g' /opt/nexus/bin/nexus.vmoptions
+sed -i 's/2703/1024/g' /opt/nexus/bin/nexus.vmoptions
 
 # Creation du serviceService
 sudo bash -c "cat > /etc/systemd/system/nexus.service" <<EOF
@@ -75,13 +79,23 @@ WantedBy=multi-user.target
 EOF
 
 
-sudo chkconfig nexus on
+chkconfig nexus on
 #Demarrage de nexus
-sudo systemctl start nexus
+systemctl start nexus
+
+
+
+useradd -m -s /bin/bash devops
+echo "devops:$DEVOPSPWD" | chpasswd
+echo 'devops   ALL=(ALL)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
+echo "root:$ROOTPASS" | chpasswd
+
+#Nettoyage /tmp
+rm -f /tmp/*.txt
 
 # Affiche le mot de passe
 echo 'Mot de passe admin dans 40s en cours de generation PATIENTEZ SVP...:\n'
 #Attente pour la generation du password
-sleep 40s
-sudo cat /opt/nexus/sonatype-work/nexus3/admin.password
+#sleep 40s
+#cat /opt/nexus/sonatype-work/nexus3/admin.password
 echo '\n\n'

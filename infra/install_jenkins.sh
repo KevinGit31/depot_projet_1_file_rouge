@@ -54,9 +54,9 @@ sed -i 's/\#vault_password_file = \/path\/to\/vault_password_file/vault_password
 #preparation du user devops sur les host remote + distrib key
 
 useradd -m -s /bin/bash devops
-echo "devops:$DEVOPSPWD" | sudo chpasswd
+echo "devops:$DEVOPSPWD" | chpasswd
 echo 'devops   ALL=(ALL)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
-echo "root:$ROOTPASS" | sudo chpasswd
+echo "root:$ROOTPASS" | chpasswd
 #genere la cle pub et priv pour le user devops
 #su - devops -c 'ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa <<<y >/dev/null 2>&1 ; exit'
 
