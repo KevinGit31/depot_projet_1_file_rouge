@@ -57,19 +57,21 @@ agent any
                 sh "curl http://${NEXUS_URL}/repository/${NEXUS_REPOSITORY}/${NEXUS_ARTIFACT_ID}/1.0-${BUILD_NUMBER}/${NEXUS_ARTIFACT_ID}-1.0-${BUILD_NUMBER}.tar.gz"
             }
         }
-//        stage('deployansible') {
-//            steps {
-//                    sh """#!/bin/bash
-//                    myenv=\$(cat /tmp/env.txt)
-//                    ansible-playbook -i /home/jenkins/depot_projet_1_file_rouge/infra/ansible/inventory/\$myenv/hosts /home/jenkins/depot_projet_1_file_rouge/infra/ansible/\$myenv.yml --vault-password-file=/home/jenkins/depot_projet_1_file_rouge/infra/ansvlt.sh"
-//                    """
-//
-//                sh '
-//                sh 'ansible-playbook -i /home/jenkins/depot_projet_1_file_rouge/infra/ansible/inventory/hosts /home/jenkins/depot_projet_1_file_rouge/infra/ansible/playbook.yml'
-//            }
-//        }
-
-//                }
-//            }
+        stage('deleteEC2ansible') {
+            steps {
+                    sh """#!/bin/bash
+                    ansible-playbook -i /home/userjenkins/depot_projet_1_file_rouge/infra/ansible/inventory/${ENVIRONNEMENT}/hosts /home/userjenkins/depot_projet_1_file_rouge/infra/ansible/${ENVIRONNEMENT}.yml --extra-vars \"GOTODEL=yes\" --tags \"clouddelete\" "
+                    """
         }
+//TEST si EC2 DEL
+        stage('createEC2ansible') {
+            steps {
+                    sh """#!/bin/bash
+                    ansible-playbook -i /home/userjenkins/depot_projet_1_file_rouge/infra/ansible/inventory/${ENVIRONNEMENT}/hosts /home/userjenkins/depot_projet_1_file_rouge/infra/ansible/${ENVIRONNEMENT}.yml "
+                    """
+        }
+//TESTsi EC2 OK
+
+
+
 }

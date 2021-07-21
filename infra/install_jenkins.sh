@@ -38,6 +38,7 @@ systemctl start jenkins
 useradd -m userjenkins
 echo "userjenkins:$JENKINSPWD" | sudo chpasswd
 echo 'userjenkins   ALL=(ALL)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
+usermod -a -G jenkins userjenkins
 #sudo -H -u userjenkins -c 'mkdir -p ~/ansible'
 #su - userjenkins -c 'git clone https://github.com/KevinGit31/depot_projet_1_file_rouge.git ; exit'
 
@@ -59,7 +60,6 @@ echo 'devops   ALL=(ALL)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
 echo "root:$ROOTPASS" | chpasswd
 #genere la cle pub et priv pour le user devops
 #su - devops -c 'ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa <<<y >/dev/null 2>&1 ; exit'
-
 
 
 #Nettoyage /tmp

@@ -17,6 +17,8 @@ DBPWD=$(cat sec/dbkey.txt)
 ANSIBKEY=$(cat sec/ansibkey.txt)
 DEVOPSKEY=$(cat sec/devopsuserkey.txt)
 JENKINSKEY=$(cat sec/jenkinskey.txt)
+AAKI=$(cat sec/aaki.txt)
+ASAKI=$(cat sec/asaki.txt)
 ROOTKEY=$(cat sec/root.txt)
 ENV=""
 DBSIZE=5
@@ -380,7 +382,7 @@ select var in "${CHOIX[@]}"; do
             #RETINSTANCEINFOS=$($AWSBIN ec2 --region $REGION --output text )
             RETCODE="254"
 #            PARAM="ParameterKey=KeyName,ParameterValue=$KEYNAME ParameterKey=SubnetIdPub,ParameterValue=\"$SUBNETLISTIDPUBID\" ParameterKey=SSHLocation,ParameterValue=0.0.0.0/0 ParameterKey=SubnetIdPriv,ParameterValue=$SUBNETLISTIDPRIVID ParameterKey=PrivateIP,ParameterValue=$EC2PRIVIP ParameterKey=TypeName,ParameterValue=$TYPEINSTALL ParameterKey=IngressPort,ParameterValue=$PORTAPP ParameterKey=Urlscript,ParameterValue=$CMDSCRIPT ParameterKey=SecurityGroupNameList,ParameterValue=$SECGRPLISTID ParameterKey=SecurityGroupId,ParameterValue=$SECGRPID ParameterKey=InstanceType,ParameterValue=$TYPEINSTANCE"
-            PARAM="ParameterKey=KeyName,ParameterValue=$KEYNAME ParameterKey=Environnement,ParameterValue=dev ParameterKey=RootKey,ParameterValue=$ROOTKEY ParameterKey=JenkinsKey,ParameterValue=$JENKINSKEY ParameterKey=DevOpsKey,ParameterValue=$DEVOPSKEY ParameterKey=AnsibleKey,ParameterValue=$ANSIBKEY ParameterKey=SubnetIdPub,ParameterValue=$SUBNETLISTIDPUBID ParameterKey=SubnetIdPriv,ParameterValue=$SUBNETLISTIDPRIVID ParameterKey=VpcId,ParameterValue=$VPCID ParameterKey=PrivateIP,ParameterValue=$EC2PRIVIP ParameterKey=TypeName,ParameterValue=$TYPEINSTALL ParameterKey=IngressPort,ParameterValue=$PORTAPP ParameterKey=SecurityGroupNameList,ParameterValue=$SECGRPID ParameterKey=Urlscript,ParameterValue=$CMDSCRIPT ParameterKey=SecurityGroupId,ParameterValue=$SECGRPID ParameterKey=InstanceType,ParameterValue=$TYPEINSTANCE"
+            PARAM="ParameterKey=KeyName,ParameterValue=$KEYNAME ParameterKey=Environnement,ParameterValue=dev ParameterKey=RootKey,ParameterValue=$ROOTKEY ParameterKey=JenkinsKey,ParameterValue=$JENKINSKEY ParameterKey=DevOpsKey,ParameterValue=$DEVOPSKEY ParameterKey=AnsibleKey,ParameterValue=$ANSIBKEY ParameterKey=SubnetIdPub,ParameterValue=$SUBNETLISTIDPUBID ParameterKey=SubnetIdPriv,ParameterValue=$SUBNETLISTIDPRIVID ParameterKey=VpcId,ParameterValue=$VPCID ParameterKey=PrivateIP,ParameterValue=$EC2PRIVIP ParameterKey=TypeName,ParameterValue=$TYPEINSTALL ParameterKey=AWSAccessKeyId,ParameterValue=$AAKI ParameterKey=AWSSecretAccessKeyId,ParameterValue=$ASAKI ParameterKey=IngressPort,ParameterValue=$PORTAPP ParameterKey=SecurityGroupNameList,ParameterValue=$SECGRPID ParameterKey=Urlscript,ParameterValue=$CMDSCRIPT ParameterKey=SecurityGroupId,ParameterValue=$SECGRPID ParameterKey=InstanceType,ParameterValue=$TYPEINSTANCE"
             #echo $PARAM
             QUERY="Stacks[0].Outputs[?OutputKey=='GroupeSec1'].OutputValue"
             TEXTDESC="NULL"

@@ -1,0 +1,26 @@
+- name: create a cloudformation stack
+  amazon.aws.cloudformation:
+    stack_name: "{{ TYPENAME }}"
+    state: "present"
+    region: "{{ REGION }}"
+    disable_rollback: true
+    template: "/home/userjenkin/depot_projet_1_file_rouge/infra/aws_cloudformation/instancegrp3.yaml"
+    template_parameters:
+      KeyName: "{{ KEYNAME }}"
+      Environnement: "{{ environnement }}"
+      RootKey: "{{ ROOTKEY }}"
+      JenkinsKey: ""
+      DevOpsKey: "{{ secret_devops }}"
+      AnsibleKey: ""
+      SubnetIdPub: "{{ SubnetIdPub }}"
+      SubnetIdPriv: "{{ SubnetIdPriv }}"
+      VpcId: "{{ VpcId }}"
+      PrivateIP: "{{ PrivateIP }}"
+      TypeName: "{{ TypeName }}"
+      IngressPort: "{{ IngressPort }}"
+      SecurityGroupNameList: "{{ SecurityGroupNameList }}"
+      Urlscript: "{{ Urlscript }}"
+      SecurityGroupId: "{{ SecurityGroupId }}"
+      InstanceType: "{{ InstanceType }}"
+    tags:
+      cloudcreate: "ansible-cloudformation-create"
