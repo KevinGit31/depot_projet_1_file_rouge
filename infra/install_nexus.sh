@@ -99,3 +99,4 @@ echo 'Mot de passe admin dans 40s en cours de generation PATIENTEZ SVP...:\n'
 #sleep 40s
 #cat /opt/nexus/sonatype-work/nexus3/admin.password
 echo '\n\n'
+
