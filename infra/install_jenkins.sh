@@ -80,6 +80,8 @@ echo "root:$ROOTPASS" | chpasswd
 #su - devops -c 'ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa <<<y >/dev/null 2>&1 ; exit'
 
 
+su - userjenkins -c "cd /home/userjenkins && wget -O $ENV1.zip https://github.com/KevinGit31/depot_projet_1_file_rouge/archive/refs/heads/$ENV1.zip && unzip $ENV1.zip && mv depot_projet_1_file_rouge* depot_projet_1_file_rouge && chmod +x /home/userjenkins/depot_projet_1_file_rouge/infra/ansvlt.sh && exit"
+su - devops -c "cd /tmp && /bin/bash ssh.sh && exit"
 su - userjenkins -c "mkdir ~/.aws && cd ~/.aws && echo \"[default]\" >> credentials && echo \"aws_access_key_id=$AAKI1\" >> credentials && echo \"aws_secret_access_key=$ASAKI1\" >> credentials && exit"
 su - userjenkins -c "cd ~/.aws && echo \"[default]\" >> config && echo \"region=$REGION1\" >> config && echo \"output=json\" >> config && exit"
 su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $DEVOPSPWD --name \"secret_devops\" >> all && exit"
@@ -99,7 +101,6 @@ su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $INSTT
 su - userjenkins -c "cd /home/userjenkins && cat /home/userjenkins/all >> /home/userjenkins/depot_projet_1_file_rouge/infra/ansible/inventory/dev/group_vars/all/all"
 su - userjenkins -c "cd /home/userjenkins && cat /home/userjenkins/all >> /home/userjenkins/depot_projet_1_file_rouge/infra/ansible/inventory/qua/group_vars/all/all"
 su - userjenkins -c "cd /home/userjenkins && cat /home/userjenkins/all >> /home/userjenkins/depot_projet_1_file_rouge/infra/ansible/inventory/prod/group_vars/all/all"
-
 
 #Nettoyage /tmp
 #rm -f /tmp/root.txt /tmp/jenkinskey.txt /tmp/devopsuserkey.txt /tmp/ansiblekey.txt
