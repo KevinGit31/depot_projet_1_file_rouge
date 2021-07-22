@@ -96,9 +96,9 @@ su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $SECGR
 su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $USCRIPT --name \"Urlscript\" >> all && exit"
 su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $SECGRPID --name \"SecurityGroupId\" >> all && exit"
 su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $INSTTYPE --name \"InstanceType\" >> all && exit"
-su - userjenkins -c "cd /home/userjenkins && cat all >> depot_projet_1_file_rouge/infra/ansible/inventory/dev/group_vars/all/all"
-su - userjenkins -c "cd /home/userjenkins && cat all >> depot_projet_1_file_rouge/infra/ansible/inventory/qua/group_vars/all/all"
-su - userjenkins -c "cd /home/userjenkins && cat all >> depot_projet_1_file_rouge/infra/ansible/inventory/prod/group_vars/all/all"
+su - userjenkins -c "cd /home/userjenkins && cat /home/userjenkins/all >> /home/userjenkins/depot_projet_1_file_rouge/infra/ansible/inventory/dev/group_vars/all/all"
+su - userjenkins -c "cd /home/userjenkins && cat /home/userjenkins/all >> /home/userjenkins/depot_projet_1_file_rouge/infra/ansible/inventory/qua/group_vars/all/all"
+su - userjenkins -c "cd /home/userjenkins && cat /home/userjenkins/all >> /home/userjenkins/depot_projet_1_file_rouge/infra/ansible/inventory/prod/group_vars/all/all"
 
 
 #Nettoyage /tmp
