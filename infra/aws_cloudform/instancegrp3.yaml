@@ -60,9 +60,10 @@ Parameters:
       - 'qua'
       - 'main'
   SecurityGroupNameList:
-#    Type: String
     Type: 'List<AWS::EC2::SecurityGroup::Id>'
     Description: 'The Security Group'
+#   Type: String
+
   SecurityGroupId:
     Type: String
 #    Type: 'AWS::EC2::SecurityGroup::Id'
@@ -481,51 +482,39 @@ Resources:
         Fn::Base64: !Sub |
           #!/bin/bash -xe
           echo ${PrivateIP} > /tmp/ip.txt
-          echo ${JenkinsKey} > /tmp/jenkinskey.txt
-          echo ${RootKey} > /tmp/root.txt
           echo ${DevOpsKey} > /tmp/devopsuserkey.txt
+          echo ${RootKey} > /tmp/root.txt
+          echo ${KeyName} > /tmp/KeyName.txt
+          echo ${AWS::Region} > /tmp/region.txt
+          echo ${SubnetIdPub} > /tmp/SubnetIdPub.txt
+          echo ${SubnetIdPriv} > /tmp/SubnetIdPriv.txt
+          echo ${VpcId} > /tmp/VpcId.txt
+          echo ${PrivateIP} > /tmp/PrivateIP.txt
+          echo ${IngressPort} > /tmp/IngressPort.txt
+          echo ${SecurityGroupId} > /tmp/SecurityGroupNameList.txt
+          echo ${Urlscript} > /tmp/Urlscript.txt
+          echo ${SecurityGroupId} > /tmp/SecurityGroupId.txt
+          echo ${InstanceType} > /tmp/InstanceType.txt
+          echo ${AWSAccessKeyId} > /tmp/AWSAccessKeyId.txt
+          echo ${AWSSecretAccessKeyId} > /tmp/AWSSecretAccessKeyId.txt
+          echo ${TypeName} > /tmp/TypeName.txt
           echo ${AnsibleKey} > /tmp/ansiblekey.txt
           echo ${Environnement} > /tmp/env.txt
-
           if [[ ${PrivateIP} =~ 10.80.140.10 ]]; then
               CMDSCRIPT=$(wget -O /tmp/ssh.py https://github.com/KevinGit31/depot_projet_1_file_rouge/raw/${Environnement}/infra/ssh.py && chmod +x /tmp/ssh.py)
               CMDSCRIPT4=$(wget -O /tmp/ssh.sh https://github.com/KevinGit31/depot_projet_1_file_rouge/raw/${Environnement}/infra/ssh.sh && chmod +x /tmp/ssh.sh)
               CMDSCRIPT1=$(wget -O /tmp/install_jenkins.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/${Environnement}/infra/install_jenkins.sh && chmod +x /tmp/install_jenkins.sh && /bin/bash /tmp/install_jenkins.sh)
               su - userjenkins -c 'cd /home/userjenkins && wget -O dev.zip https://github.com/KevinGit31/depot_projet_1_file_rouge/archive/refs/heads/${Environnement}.zip && unzip dev.zip && mv depot_projet_1_file_rouge* depot_projet_1_file_rouge && chmod +x /home/userjenkins/depot_projet_1_file_rouge/infra/ansvlt.sh && exit'
               su - devops -c 'cd /tmp && /bin/bash ssh.sh && exit'
-              su - userjenkins -c 'mkdir ~/.aws && cd ~/.aws && echo "[default]" >> credentials && echo "aws_access_key_id=${AWSAccessKeyId}" >> credentials && echo "aws_secret_access_key=${AWSSecretAccessKeyId}" >> credentials && exit'
-              su - userjenkins -c 'cd ~/.aws && echo "[default]" >> config && echo "region=${AWS::Region}" >> config && echo "output=json" >> config && exit'
-              su - userjenkins -c 'cd /home/userjenkin && ansible-vault encrypt_string "${DevOpsKey}" --name "secret_devops" >> all && exit'
-              su - userjenkins -c 'cd /home/userjenkin && ansible-vault encrypt_string "${RootKey}" --name "ROOTKEY" >> all && exit'
-              su - userjenkins -c 'cd /home/userjenkin && ansible-vault encrypt_string "${KeyName}" --name "KEYNAME" >> all && exit'
-              su - userjenkins -c 'cd /home/userjenkin && ansible-vault encrypt_string "${TypeName}" --name "TypeName" >> all && exit'
-              su - userjenkins -c 'cd /home/userjenkin && ansible-vault encrypt_string "${AWS::Region}" --name "REGION" >> all && exit'
-              su - userjenkins -c 'cd /home/userjenkin && ansible-vault encrypt_string "${SubnetIdPub}" --name "SubnetIdPub" >> all && exit'
-              su - userjenkins -c 'cd /home/userjenkin && ansible-vault encrypt_string "${SubnetIdPriv}" --name "SubnetIdPriv" >> all && exit'
-              su - userjenkins -c 'cd /home/userjenkin && ansible-vault encrypt_string "${VpcId}" --name "VpcId" >> all && exit'
-              su - userjenkins -c 'cd /home/userjenkin && ansible-vault encrypt_string "${PrivateIP}" --name "PrivateIP" >> all && exit'
-              su - userjenkins -c 'cd /home/userjenkin && ansible-vault encrypt_string "$IngressPort" --name "IngressPort" >> all && exit'
-              su - userjenkins -c 'cd /home/userjenkin && ansible-vault encrypt_string "${SecurityGroupNameList}" --name "SecurityGroupNameList" >> all && exit'
-              su - userjenkins -c 'cd /home/userjenkin && ansible-vault encrypt_string "${Urlscript}" --name "Urlscript" >> all && exit'
-              su - userjenkins -c 'cd /home/userjenkin && ansible-vault encrypt_string "${SecurityGroupId}" --name "SecurityGroupId" >> all && exit'
-              su - userjenkins -c 'cd /home/userjenkin && ansible-vault encrypt_string "${InstanceType}" --name "InstanceType" >> all && exit'
-              if [[ ${Environnement} = "main" ]]; then
-                CONVENV=prod
-                su - userjenkins -c 'cd /home/userjenkin/depot_projet_1_file_rouge/infra/ansible/inventory/$CONVENV/group_vars/all && ansible-vault encrypt_string "CONVENV" --name "ENVIRONNEMENT" >> all && exit'
-              else
-                su - userjenkins -c 'cd /home/userjenkin/depot_projet_1_file_rouge/infra/ansible/inventory/dev/group_vars/all && ansible-vault encrypt_string "${Environnement}" --name "ENVIRONNEMENT" >> all && exit'
-              fi
-              su - userjenkins -c 'yes | cp -rf /home/userjenkin/all /home/userjenkin/depot_projet_1_file_rouge/infra/ansible/inventory/dev/group_vars/all/all'
-              su - userjenkins -c 'yes | cp -rf /home/userjenkin/all /home/userjenkin/depot_projet_1_file_rouge/infra/ansible/inventory/qua/group_vars/all/all'
-              su - userjenkins -c 'yes | cp -rf /home/userjenkin/all /home/userjenkin/depot_projet_1_file_rouge/infra/ansible/inventory/prod/group_vars/all/all'
-              elif [[ ${PrivateIP} =~ 10.80.140.11 ]]; then
+          elif [[ ${PrivateIP} =~ 10.80.140.11 ]]; then
               CMDSCRIPT2=$(wget -O /tmp/install_nexus.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/${Environnement}/infra/install_nexus.sh && chmod +x /tmp/install_nexus.sh && /bin/bash /tmp/install_nexus.sh)
-          elif [[ ${PrivateIP} =~ 10.80.110.* || ${PrivateIP} =~ 10.80.120.* || ${PrivateIP} =~ 10.80.130.* ]]; then
-          #    CMDSCRIPT3=$(wget -O /tmp/install_qcm.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/${Environnement}/infra/install_qcm.sh && chmod +x /tmp/install_qcm.sh && /bin/bash /tmp/install_qcm.sh)
           fi
           echo "root:${RootKey}" | chpasswd
-          #Nettoyage /tmp
-          sudo rm -f /tmp/jenkinskey.txt /tmp/ansiblekey.txt /tmp/root.txt /tmp/devopsuserkey.txt
+          sudo rm -f /tmp/*.txt
+
+#          elif [[ ${PrivateIP} =~ 10.80.110.* || ${PrivateIP} =~ 10.80.120.* || ${PrivateIP} =~ 10.80.130.* ]]; then
+#              CMDSCRIPT3=$(wget -O /tmp/install_qcm.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/${Environnement}/infra/install_qcm.sh && chmod +x /tmp/install_qcm.sh && /bin/bash /tmp/install_qcm.sh)
+
 
         #METHODE2
         # Fn::Base64:  {
