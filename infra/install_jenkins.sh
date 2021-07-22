@@ -82,33 +82,33 @@ echo "root:$ROOTPASS" | chpasswd
 
 su - userjenkins -c "mkdir ~/.aws && cd ~/.aws && echo \"[default]\" >> credentials && echo \"aws_access_key_id=$AAKI1\" >> credentials && echo \"aws_secret_access_key=$ASAKI1\" >> credentials && exit"
 su - userjenkins -c "cd ~/.aws && echo \"[default]\" >> config && echo \"region=$REGION1\" >> config && echo \"output=json\" >> config && exit"
-su - userjenkins -c "cd /home/userjenkin && ansible-vault encrypt_string $DEVOPSPWD --name \"secret_devops\" >> all && exit"
-su - userjenkins -c "cd /home/userjenkin && ansible-vault encrypt_string $ROOTPASS --name \"ROOTKEY\" >> all && exit"
-su - userjenkins -c "cd /home/userjenkin && ansible-vault encrypt_string $KEYNAME1 --name \"KEYNAME\" >> all && exit"
-su - userjenkins -c "cd /home/userjenkin && ansible-vault encrypt_string $TYPENAME1 --name \"TypeName\" >> all && exit"
-su - userjenkins -c "cd /home/userjenkin && ansible-vault encrypt_string $REGION1 --name \"REGION\" >> all && exit"
-su - userjenkins -c "cd /home/userjenkin && ansible-vault encrypt_string $SUBIDPUB1 --name \"SubnetIdPub\" >> all && exit"
-su - userjenkins -c "cd /home/userjenkin && ansible-vault encrypt_string $SUBIDPRIV1 --name \"SubnetIdPriv\" >> all && exit"
-su - userjenkins -c "cd /home/userjenkin && ansible-vault encrypt_string $VPCID1 --name \"VpcId\" >> all && exit"
-su - userjenkins -c "cd /home/userjenkin && ansible-vault encrypt_string $PRIVIP1 --name \"PrivateIP\" >> all && exit"
-su - userjenkins -c "cd /home/userjenkin && ansible-vault encrypt_string $INGRPORT --name \"IngressPort\" >> all && exit"
-su - userjenkins -c "cd /home/userjenkin && ansible-vault encrypt_string $SECGRPNLST --name \"SecurityGroupNameList\" >> all && exit"
-su - userjenkins -c "cd /home/userjenkin && ansible-vault encrypt_string $USCRIPT --name \"Urlscript\" >> all && exit"
-su - userjenkins -c "cd /home/userjenkin && ansible-vault encrypt_string $SECGRPID --name \"SecurityGroupId\" >> all && exit"
-su - userjenkins -c "cd /home/userjenkin && ansible-vault encrypt_string $INSTTYPE --name \"InstanceType\" >> all && exit"
+su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $DEVOPSPWD --name \"secret_devops\" >> all && exit"
+su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $ROOTPASS --name \"ROOTKEY\" >> all && exit"
+su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $KEYNAME1 --name \"KEYNAME\" >> all && exit"
+su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $TYPENAME1 --name \"TypeName\" >> all && exit"
+su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $REGION1 --name \"REGION\" >> all && exit"
+su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $SUBIDPUB1 --name \"SubnetIdPub\" >> all && exit"
+su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $SUBIDPRIV1 --name \"SubnetIdPriv\" >> all && exit"
+su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $VPCID1 --name \"VpcId\" >> all && exit"
+su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $PRIVIP1 --name \"PrivateIP\" >> all && exit"
+su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $INGRPORT --name \"IngressPort\" >> all && exit"
+su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $SECGRPNLST --name \"SecurityGroupNameList\" >> all && exit"
+su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $USCRIPT --name \"Urlscript\" >> all && exit"
+su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $SECGRPID --name \"SecurityGroupId\" >> all && exit"
+su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $INSTTYPE --name \"InstanceType\" >> all && exit"
 if [[ $ENV1 = "main" ]]; then
     CONVENV=prod
-    su - userjenkins -c "cd /home/userjenkin/depot_projet_1_file_rouge/infra/ansible/inventory/$CONVENV/group_vars/all && ansible-vault encrypt_string $CONVENV --name \"ENVIRONNEMENT\" >> all && exit"
+    su - userjenkins -c "cd /home/userjenkins/depot_projet_1_file_rouge/infra/ansible/inventory/$CONVENV/group_vars/all && ansible-vault encrypt_string $CONVENV --name \"ENVIRONNEMENT\" >> all && exit"
 else
-    su - userjenkins -c "cd /home/userjenkin/depot_projet_1_file_rouge/infra/ansible/inventory/dev/group_vars/all && ansible-vault encrypt_string $ENV1 --name \"ENVIRONNEMENT\" >> all && exit"
+    su - userjenkins -c "cd /home/userjenkins/depot_projet_1_file_rouge/infra/ansible/inventory/dev/group_vars/all && ansible-vault encrypt_string $ENV1 --name \"ENVIRONNEMENT\" >> all && exit"
 fi
-su - userjenkins -c "yes | cp -rf /home/userjenkin/all /home/userjenkin/depot_projet_1_file_rouge/infra/ansible/inventory/dev/group_vars/all/all"
-su - userjenkins -c "yes | cp -rf /home/userjenkin/all /home/userjenkin/depot_projet_1_file_rouge/infra/ansible/inventory/qua/group_vars/all/all"
-su - userjenkins -c "yes | cp -rf /home/userjenkin/all /home/userjenkin/depot_projet_1_file_rouge/infra/ansible/inventory/prod/group_vars/all/all"
+su - userjenkins -c "yes | cp -rf /home/userjenkins/all /home/userjenkins/depot_projet_1_file_rouge/infra/ansible/inventory/dev/group_vars/all/all"
+su - userjenkins -c "yes | cp -rf /home/userjenkins/all /home/userjenkins/depot_projet_1_file_rouge/infra/ansible/inventory/qua/group_vars/all/all"
+su - userjenkins -c "yes | cp -rf /home/userjenkins/all /home/userjenkins/depot_projet_1_file_rouge/infra/ansible/inventory/prod/group_vars/all/all"
 
 
 #Nettoyage /tmp
-rm -f /tmp/root.txt /tmp/jenkinskey.txt /tmp/devopsuserkey.txt /tmp/ansiblekey.txt
+#rm -f /tmp/root.txt /tmp/jenkinskey.txt /tmp/devopsuserkey.txt /tmp/ansiblekey.txt
 
 sleep 30
 # Mdp jenkins
