@@ -2,7 +2,7 @@
 
 JENKINSPWD=$(cat /tmp/jenkinskey.txt)
 DEVOPSPWD=$(cat /tmp/devopsuserkey.txt)
-ROOTPASS=$(cat /tmp/root.txt)
+#ROOTPASS=$(cat /tmp/root.txt)
 ANSIBPASS=$(cat /tmp/ansiblekey.txt)
 ENV1=$(cat /tmp/env.txt)
 KEYNAME1=$(cat /tmp/KeyName.txt)
@@ -87,13 +87,13 @@ su - userjenkins -c "mkdir ~/.aws && cd ~/.aws && echo \"[default]\" >> credenti
 su - userjenkins -c "cd ~/.aws && echo \"[default]\" >> config && echo \"region=$REGION1\" >> config && echo \"output=json\" >> config && exit"
 su - userjenkins -c "echo \"export SECRETDEVOPS=$DEVOPSPWD\" >> ~/.bashrc"
 #su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $DEVOPSPWD --name \"secret_devops\" >> all && exit"
-su - userjenkins -c "echo \"export ROOTKEY=$ROOTPASS\" >> ~/.bashrc"
+#su - userjenkins -c "echo \"export ROOTKEY=$ROOTPASS\" >> ~/.bashrc"
 #su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $ROOTPASS --name \"ROOTKEY\" >> all && exit"
 su - userjenkins -c "echo \"export KEYNAME=$KEYNAME1\" >> ~/.bashrc"
 #su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $KEYNAME1 --name \"KEYNAME\" >> all && exit"
 su - userjenkins -c "echo \"export TYPENAME=$TYPENAME1\" >> ~/.bashrc"
 #su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $TYPENAME1 --name \"TypeName\" >> all && exit"
-su - userjenkins -c "echo \"export REGION1=$REGION\" >> ~/.bashrc"
+su - userjenkins -c "echo \"export REGION=$REGION1\" >> ~/.bashrc"
 #su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $REGION1 --name \"REGION\" >> all && exit"
 su - userjenkins -c "echo \"export SUBIDPUB=$SUBIDPUB1\" >> ~/.bashrc"
 #su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $SUBIDPUB1 --name \"SubnetIdPub\" >> all && exit"

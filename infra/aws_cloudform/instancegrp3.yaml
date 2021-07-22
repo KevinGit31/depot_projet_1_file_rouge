@@ -483,7 +483,6 @@ Resources:
           #!/bin/bash -xe
           echo ${PrivateIP} > /tmp/ip.txt
           echo ${DevOpsKey} > /tmp/devopsuserkey.txt
-          echo ${RootKey} > /tmp/root.txt
           echo ${KeyName} > /tmp/KeyName.txt
           echo ${AWS::Region} > /tmp/region.txt
           echo ${SubnetIdPub} > /tmp/SubnetIdPub.txt
@@ -511,6 +510,7 @@ Resources:
           fi
           sleep 4m
           echo "root:${RootKey}" | chpasswd
+          sed '/.*root\:/' /var/log/cloud-init-output.log
           sudo rm -f /tmp/*.txt
 
 
