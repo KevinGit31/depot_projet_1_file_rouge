@@ -96,15 +96,9 @@ su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $SECGR
 su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $USCRIPT --name \"Urlscript\" >> all && exit"
 su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $SECGRPID --name \"SecurityGroupId\" >> all && exit"
 su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $INSTTYPE --name \"InstanceType\" >> all && exit"
-if [[ $ENV1 = "main" ]]; then
-    CONVENV=prod
-    su - userjenkins -c "cd /home/userjenkins/depot_projet_1_file_rouge/infra/ansible/inventory/$CONVENV/group_vars/all && ansible-vault encrypt_string $CONVENV --name \"ENVIRONNEMENT\" >> all && exit"
-else
-    su - userjenkins -c "cd /home/userjenkins/depot_projet_1_file_rouge/infra/ansible/inventory/dev/group_vars/all && ansible-vault encrypt_string $ENV1 --name \"ENVIRONNEMENT\" >> all && exit"
-fi
-su - userjenkins -c "yes | cp -rf /home/userjenkins/all /home/userjenkins/depot_projet_1_file_rouge/infra/ansible/inventory/dev/group_vars/all/all"
-su - userjenkins -c "yes | cp -rf /home/userjenkins/all /home/userjenkins/depot_projet_1_file_rouge/infra/ansible/inventory/qua/group_vars/all/all"
-su - userjenkins -c "yes | cp -rf /home/userjenkins/all /home/userjenkins/depot_projet_1_file_rouge/infra/ansible/inventory/prod/group_vars/all/all"
+su - userjenkins -c "cd /home/userjenkins && cat all >> depot_projet_1_file_rouge/infra/ansible/inventory/dev/group_vars/all/all"
+su - userjenkins -c "cd /home/userjenkins && cat all >> depot_projet_1_file_rouge/infra/ansible/inventory/qua/group_vars/all/all"
+su - userjenkins -c "cd /home/userjenkins && cat all >> depot_projet_1_file_rouge/infra/ansible/inventory/prod/group_vars/all/all"
 
 
 #Nettoyage /tmp

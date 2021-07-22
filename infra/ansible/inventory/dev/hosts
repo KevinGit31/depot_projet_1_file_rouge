@@ -8,4 +8,4 @@ ansible_python_interpreter=/usr/bin/python3
 #10.80.120.10 ansible_host=10.80.120.10 environnement=qua
 
 #[PROD]
-#10.80.130.10 ansible_host=10.80.130.10 environnement=prod
+#10.80.130.10 ansible_host=10.80.130.10 environnement=main
