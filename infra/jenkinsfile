@@ -6,6 +6,21 @@ pipeline {
         NEXUS_REPOSITORY = "APP"
         NEXUS_CREDENTIAL_ID = "nexus"
         NEXUS_ARTIFACT_ID = "qcm"
+        ENVIRONNEMENT = "dev"
+        SECRETDEVOPS_ENV = sh(script: 'su - userjenkins -c "echo $SECRETDEVOPS', returnStdout: true)
+        ROOTKEY_ENV = sh(script: 'su - userjenkins -c "echo $ROOTKEY', returnStdout: true)
+        KEYNAME_ENV = sh(script: 'su - userjenkins -c "echo $KEYNAME', returnStdout: true)
+        TYPENAME_ENV = sh(script: 'su - userjenkins -c "echo $TYPENAME', returnStdout: true)
+        REGION1_ENV = sh(script: 'su - userjenkins -c "echo $REGION1', returnStdout: true)
+        SUBIDPUB_ENV = sh(script: 'su - userjenkins -c "echo $SUBIDPUB', returnStdout: true)
+        SUBIDPRIV_ENV = sh(script: 'su - userjenkins -c "echo $SUBIDPRIV', returnStdout: true)
+        VPCID_ENV = sh(script: 'su - userjenkins -c "echo $VPCID', returnStdout: true)
+        PRIVIP_ENV = sh(script: 'su - userjenkins -c "echo $PRIVIP', returnStdout: true)
+        INGRPORT_ENV = sh(script: 'su - userjenkins -c "echo $INGRPORT', returnStdout: true)
+        SECGRPNLST_ENV = sh(script: 'su - userjenkins -c "echo $SECGRPNLST', returnStdout: true)
+        USCRIPT_ENV = sh(script: 'su - userjenkins -c "echo $USCRIPT', returnStdout: true)
+        SECGRPID_ENV = sh(script: 'su - userjenkins -c "echo $SECGRPID', returnStdout: true)
+        INSTTYPE_ENV = sh(script: 'su - userjenkins -c "echo $INSTTYPE', returnStdout: true)
     }
 //
 agent any
@@ -14,7 +29,6 @@ agent any
             steps {
                 sh 'rm -rf depot_projet_1_file_rouge'
                 git branch: 'dev', url: 'https://github.com/KevinGit31/depot_projet_1_file_rouge.git'
-
             }
         }
 //        stage('test'){
@@ -57,21 +71,24 @@ agent any
                 sh "curl http://${NEXUS_URL}/repository/${NEXUS_REPOSITORY}/${NEXUS_ARTIFACT_ID}/1.0-${BUILD_NUMBER}/${NEXUS_ARTIFACT_ID}-1.0-${BUILD_NUMBER}.tar.gz"
             }
         }
+
         stage('deleteEC2ansible') {
             steps {
                     sh """#!/bin/bash
-                    ansible-playbook -i /home/userjenkins/depot_projet_1_file_rouge/infra/ansible/inventory/${ENVIRONNEMENT}/hosts /home/userjenkins/depot_projet_1_file_rouge/infra/ansible/${ENVIRONNEMENT}.yml --extra-vars \"GOTODEL=yes\" --tags \"clouddelete\" "
+                    ansible-playbook -i infra/ansible/inventory/${ENVIRONNEMENT}/hosts infra/ansible/${ENVIRONNEMENT}.yml --extra-vars \"GOTODEL=yes secret_devops=${env.SECRETDEVOPS_ENV} ROOTKEY=${env.ROOTKEY_ENV} KEYNAME=${env.ROOTKEY_ENV} TypeName=${env.TYPENAME_ENV} REGION=${env.REGION1_ENV} SubnetIdPub=${env.SUBIDPUB_ENV} SubnetIdPriv=${env.SUBIDPRIV_ENV} VpcId=${env.VPCID_ENV} PrivateIP=${env.PRIVIP_ENV} IngressPort=${env.INGRPORT_ENV} SecurityGroupNameList=${env.SECGRPNLST_ENV} Urlscript=${env.USCRIPT_ENV} SecurityGroupId=${env.SECGRPID_ENV} InstanceType=${env.INSTTYPE_ENV}\" --tags \"clouddelete\"
                     """
+            }
         }
-//TEST si EC2 DEL
+//A FAIRE TEST si EC2 DEL
         stage('createEC2ansible') {
             steps {
                     sh """#!/bin/bash
-                    ansible-playbook -i /home/userjenkins/depot_projet_1_file_rouge/infra/ansible/inventory/${ENVIRONNEMENT}/hosts /home/userjenkins/depot_projet_1_file_rouge/infra/ansible/${ENVIRONNEMENT}.yml "
+                    ansible-playbook -i infra/ansible/inventory/${ENVIRONNEMENT}/hosts infra/ansible/${ENVIRONNEMENT}.yml --extra-vars \"secret_devops=${env.SECRETDEVOPS_ENV} ROOTKEY=${env.ROOTKEY_ENV} KEYNAME=${env.ROOTKEY_ENV} TypeName=${env.TYPENAME_ENV} REGION=${env.REGION1_ENV} SubnetIdPub=${env.SUBIDPUB_ENV} SubnetIdPriv=${env.SUBIDPRIV_ENV} VpcId=${env.VPCID_ENV} PrivateIP=${env.PRIVIP_ENV} IngressPort=${env.INGRPORT_ENV} SecurityGroupNameList=${env.SECGRPNLST_ENV} Urlscript=${env.USCRIPT_ENV} SecurityGroupId=${env.SECGRPID_ENV} InstanceType=${env.INSTTYPE_ENV}\"
                     """
+            }
+
         }
-//TESTsi EC2 OK
 
-
-
+//A FAIRE TEST si EC2 OK
+    }
 }

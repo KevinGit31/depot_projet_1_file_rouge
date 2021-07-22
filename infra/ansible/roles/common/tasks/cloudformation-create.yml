@@ -4,7 +4,7 @@
     state: "present"
     region: "{{ REGION }}"
     disable_rollback: true
-    template: "/home/userjenkin/depot_projet_1_file_rouge/infra/aws_cloudformation/instancegrp3.yaml"
+    template: "/var/lib/jenkins/workspace/{{ environnement }}/depot_projet_1_file_rouge/infra/aws_cloudformation/instancegrp3.yaml"
     template_parameters:
       KeyName: "{{ KEYNAME }}"
       Environnement: "{{ environnement }}"
