@@ -102,8 +102,6 @@ su - userjenkins -c "cd /home/userjenkins && cat /home/userjenkins/all >> /home/
 su - userjenkins -c "cd /home/userjenkins && cat /home/userjenkins/all >> /home/userjenkins/depot_projet_1_file_rouge/infra/ansible/inventory/qua/group_vars/all/all"
 su - userjenkins -c "cd /home/userjenkins && cat /home/userjenkins/all >> /home/userjenkins/depot_projet_1_file_rouge/infra/ansible/inventory/prod/group_vars/all/all"
 
-#Nettoyage /tmp
-#rm -f /tmp/root.txt /tmp/jenkinskey.txt /tmp/devopsuserkey.txt /tmp/ansiblekey.txt
 
 sleep 30
 # Mdp jenkins
