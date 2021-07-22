@@ -80,43 +80,43 @@ echo "root:$ROOTPASS" | chpasswd
 #genere la cle pub et priv pour le user devops
 #su - devops -c 'ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa <<<y >/dev/null 2>&1 ; exit'
 
-
+sed -i 's/\/jenkins:\/bin\/false/\/jenkins:\/bin\/bash/' /etc/passwd
 #su - userjenkins -c "cd /home/userjenkins && wget -O $ENV1.zip https://github.com/KevinGit31/depot_projet_1_file_rouge/archive/refs/heads/$ENV1.zip && unzip $ENV1.zip && mv depot_projet_1_file_rouge* depot_projet_1_file_rouge && chmod +x /home/userjenkins/depot_projet_1_file_rouge/infra/ansvlt.sh && exit"
 su - devops -c "cd /tmp && /bin/bash ssh.sh && exit"
 su - userjenkins -c "mkdir ~/.aws && cd ~/.aws && echo \"[default]\" >> credentials && echo \"aws_access_key_id=$AAKI1\" >> credentials && echo \"aws_secret_access_key=$ASAKI1\" >> credentials && exit"
 su - userjenkins -c "cd ~/.aws && echo \"[default]\" >> config && echo \"region=$REGION1\" >> config && echo \"output=json\" >> config && exit"
-su - userjenkins -c "echo \"export SECRETDEVOPS=$DEVOPSPWD\" >> ~/.bashrc"
+su - jenkins -c "echo \"export SECRETDEVOPS=$DEVOPSPWD\" >> ~/.bashrc"
 #su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $DEVOPSPWD --name \"secret_devops\" >> all && exit"
 #su - userjenkins -c "echo \"export ROOTKEY=$ROOTPASS\" >> ~/.bashrc"
 #su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $ROOTPASS --name \"ROOTKEY\" >> all && exit"
-su - userjenkins -c "echo \"export KEYNAME=$KEYNAME1\" >> ~/.bashrc"
+su - jenkins -c "echo \"export KEYNAME=$KEYNAME1\" >> ~/.bashrc"
 #su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $KEYNAME1 --name \"KEYNAME\" >> all && exit"
-su - userjenkins -c "echo \"export TYPENAME=$TYPENAME1\" >> ~/.bashrc"
+su - jenkins -c "echo \"export TYPENAME=$TYPENAME1\" >> ~/.bashrc"
 #su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $TYPENAME1 --name \"TypeName\" >> all && exit"
-su - userjenkins -c "echo \"export REGION=$REGION1\" >> ~/.bashrc"
+su - jenkins -c "echo \"export REGION=$REGION1\" >> ~/.bashrc"
 #su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $REGION1 --name \"REGION\" >> all && exit"
-su - userjenkins -c "echo \"export SUBIDPUB=$SUBIDPUB1\" >> ~/.bashrc"
+su - jenkins -c "echo \"export SUBIDPUB=$SUBIDPUB1\" >> ~/.bashrc"
 #su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $SUBIDPUB1 --name \"SubnetIdPub\" >> all && exit"
-su - userjenkins -c "echo \"export SUBIDPRIV=$SUBIDPRIV1\" >> ~/.bashrc"
+su - jenkins -c "echo \"export SUBIDPRIV=$SUBIDPRIV1\" >> ~/.bashrc"
 #su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $SUBIDPRIV1 --name \"SubnetIdPriv\" >> all && exit"
-su - userjenkins -c "echo \"export VPCID=$VPCID1\" >> ~/.bashrc"
+su - jenkins -c "echo \"export VPCID=$VPCID1\" >> ~/.bashrc"
 #su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $VPCID1 --name \"VpcId\" >> all && exit"
-su - userjenkins -c "echo \"export PRIVIP=$PRIVIP1\" >> ~/.bashrc"
+su - jenkins -c "echo \"export PRIVIP=$PRIVIP1\" >> ~/.bashrc"
 #su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $PRIVIP1 --name \"PrivateIP\" >> all && exit"
-su - userjenkins -c "echo \"export INGRPORT=$INGRPORT1\" >> ~/.bashrc"
+su - jenkins -c "echo \"export INGRPORT=$INGRPORT1\" >> ~/.bashrc"
 #su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $INGRPORT --name \"IngressPort\" >> all && exit"
-su - userjenkins -c "echo \"export SECGRPNLST=$SECGRPNLST\" >> ~/.bashrc"
+su - jenkins -c "echo \"export SECGRPNLST=$SECGRPNLST\" >> ~/.bashrc"
 #su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $SECGRPNLST --name \"SecurityGroupNameList\" >> all && exit"
-su - userjenkins -c "echo \"export USCRIPT=$USCRIPT1\" >> ~/.bashrc"
+su - jenkins -c "echo \"export USCRIPT=$USCRIPT1\" >> ~/.bashrc"
 #su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $USCRIPT --name \"Urlscript\" >> all && exit"
-su - userjenkins -c "echo \"export SECGRPID=$SECGRPID1\" >> ~/.bashrc"
+su - jenkins -c "echo \"export SECGRPID=$SECGRPID1\" >> ~/.bashrc"
 #su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $SECGRPID --name \"SecurityGroupId\" >> all && exit"
-su - userjenkins -c "echo \"export INSTTYPE=$INSTTYPE1\" >> ~/.bashrc"
+su - jenkins -c "echo \"export INSTTYPE=$INSTTYPE1\" >> ~/.bashrc"
 #su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $INSTTYPE --name \"InstanceType\" >> all && exit"
 #su - userjenkins -c "cd /home/userjenkins && cat /home/userjenkins/all >> /home/userjenkins/depot_projet_1_file_rouge/infra/ansible/inventory/dev/group_vars/all/all"
 #su - userjenkins -c "cd /home/userjenkins && cat /home/userjenkins/all >> /home/userjenkins/depot_projet_1_file_rouge/infra/ansible/inventory/qua/group_vars/all/all"
 #su - userjenkins -c "cd /home/userjenkins && cat /home/userjenkins/all >> /home/userjenkins/depot_projet_1_file_rouge/infra/ansible/inventory/prod/group_vars/all/all"
-
+sed -i 's/\/jenkins:\/bin\/bash/\/jenkins:\/bin\/false/' /etc/passwd
 #Install docker
 yum install -y yum-utils
 yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
