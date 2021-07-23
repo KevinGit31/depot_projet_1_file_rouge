@@ -2,10 +2,10 @@
 ansible_python_interpreter=/usr/bin/python3
 
 [DEV]
-#10.80.110.10 ansible_host=10.80.110.10
+#10.80.110.10 ansible_host=10.80.110.10 ansible_environnement=dev
 
-#[QUA]
-10.80.120.10 ansible_host=10.80.120.10
+[QUA]
+10.80.120.10 ansible_host=10.80.120.10 ansible_environnement=qua
 
-#[PROD]
-#10.80.130.10 ansible_host=10.80.130.10
+[PROD]
+#10.80.130.10 ansible_host=10.80.130.10 ansible_environnement=main

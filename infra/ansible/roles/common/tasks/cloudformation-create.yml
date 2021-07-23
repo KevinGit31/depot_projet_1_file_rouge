@@ -4,10 +4,10 @@
     state: "present"
     region: "{{ REGION }}"
     disable_rollback: true
-    template: "/var/lib/jenkins/workspace/{{ environnement }}/depot_projet_1_file_rouge/infra/aws_cloudformation/instancegrp3.yaml"
+    template: "/var/lib/jenkins/workspace/{{ ansible_environnement }}/depot_projet_1_file_rouge/infra/aws_cloudformation/instancegrp3.yaml"
     template_parameters:
       KeyName: "{{ KEYNAME }}"
-      Environnement: "{{ environnement }}"
+      Environnement: "{{ ansible_environnement }}"
       RootKey: "{{ ROOTKEY }}"
       JenkinsKey: ""
       DevOpsKey: "{{ secret_devops }}"
