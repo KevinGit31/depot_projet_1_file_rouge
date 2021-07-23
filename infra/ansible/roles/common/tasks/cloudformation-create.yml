@@ -5,11 +5,9 @@
   gather_facts: false
 
   tasks:
-  - name: create a cloudformation stack
+  - name: create a cloudformation stack task
     cloudformation:
-      hosts: localhost
-      connection: local
-      stack_name: "{{ TYPENAME }}"
+      stack_name: "{{ TypeName }}"
       state: "present"
       region: "{{ REGION }}"
       disable_rollback: true
@@ -31,8 +29,8 @@
         Urlscript: "{{ Urlscript }}"
         SecurityGroupId: "{{ SecurityGroupId }}"
         InstanceType: "{{ InstanceType }}"
-      tags:
-        - cloudcreate: "ansible-cloudformation-create"
+#      tags:
+#        - cloudcreate: "ansible-cloudformation-create"
     register: stack
   - name: stack outputs
     debug: msg="Stack outputs are {{stack.stack_outputs}}"

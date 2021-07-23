@@ -44,6 +44,7 @@ yum install -y unzip
 yum install -y python3
 yum install -y python3-pip
 pip3 install pip --upgrade
+pip3 install ansible
 
 # installation jenkins
 yum install -y  jenkins
@@ -62,7 +63,6 @@ usermod -a -G userjenkins jenkins
 #su - userjenkins -c 'git clone https://github.com/KevinGit31/depot_projet_1_file_rouge.git ; exit'
 
 #install ansible
-amazon-linux-extras install ansible2 -y
 echo "#!/bin/bash" >> /etc/ansible/ansvlt.sh
 echo "$ANSIBPASS" >> /etc/ansible/.ansvlt
 echo "RET=$(sudo cat /etc/ansible/.ansvlt)" >> /etc/ansible/ansvlt.sh
