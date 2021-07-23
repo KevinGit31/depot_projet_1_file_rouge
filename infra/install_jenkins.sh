@@ -52,8 +52,8 @@ yum -y install openssl-devel bzip2-devel libffi-devel
 wget https://www.python.org/ftp/python/3.8.3/Python-3.8.3.tgz
 yum install -y python3-pip
 ln -s /usr/bin/python3 /usr/bin/python3.8
-tar xvf Python-3.8.3.tgz
-cd Python-3.8*
+cd /tmp && tar xvf Python-3.8.3.tgz
+cd /tmp/Python-3.8*
 ./configure --enable-optimizations
 make altinstall
 
