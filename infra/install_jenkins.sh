@@ -45,7 +45,8 @@ yum install -y python3
 yum install -y python3-pip
 pip3 install pip --upgrade
 pip3 install ansible
-
+pip3 install boto3
+pip3 install botocore
 # installation jenkins
 yum install -y  jenkins
 sleep 5

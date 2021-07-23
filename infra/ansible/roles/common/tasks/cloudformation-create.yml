@@ -15,7 +15,7 @@
       template_parameters:
         KeyName: "{{ KEYNAME }}"
         Environnement: "{{ ansible_environnement }}"
-        RootKey: "{{ ROOTKEY }}"
+        RootKey: ""
         JenkinsKey: ""
         DevOpsKey: "{{ secret_devops }}"
         AnsibleKey: ""
