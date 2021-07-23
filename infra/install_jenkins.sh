@@ -117,6 +117,8 @@ su - jenkins -c "echo \"export INSTTYPE=$INSTTYPE1\" >> ~/.bashrc"
 #su - userjenkins -c "cd /home/userjenkins && cat /home/userjenkins/all >> /home/userjenkins/depot_projet_1_file_rouge/infra/ansible/inventory/qua/group_vars/all/all"
 #su - userjenkins -c "cd /home/userjenkins && cat /home/userjenkins/all >> /home/userjenkins/depot_projet_1_file_rouge/infra/ansible/inventory/prod/group_vars/all/all"
 sed -i 's/\/jenkins:\/bin\/bash/\/jenkins:\/bin\/false/' /etc/passwd
+#sudo su -s /bin/bash jenkins
+
 #Install docker
 yum install -y yum-utils
 yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
