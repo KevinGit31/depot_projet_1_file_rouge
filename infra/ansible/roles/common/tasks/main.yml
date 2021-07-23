@@ -13,7 +13,7 @@
 - name: Delete EC2 instance
   include_tasks: cloudformation-delete.yml
   tags:
-    clouddelete: "ansible-cloudformation-delete"
+    - clouddelete: "ansible-cloudformation-delete"
   when: GOTODEL == "yes"
 
 - name: install qcm

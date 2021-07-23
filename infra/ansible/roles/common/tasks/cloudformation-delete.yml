@@ -6,5 +6,5 @@
     stack_name: "{{ TYPENAME }}"
     state: "absent"
   tags:
-    clouddelete: "ansible-cloudformation-delete"
+    - clouddelete: "ansible-cloudformation-delete"
   when: GOTODEL == "yes"

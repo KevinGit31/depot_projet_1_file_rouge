@@ -23,4 +23,4 @@
       SecurityGroupId: "{{ SecurityGroupId }}"
       InstanceType: "{{ InstanceType }}"
     tags:
-      cloudcreate: "ansible-cloudformation-create"
+      - cloudcreate: "ansible-cloudformation-create"

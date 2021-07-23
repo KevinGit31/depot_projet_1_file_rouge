@@ -7,20 +7,20 @@ pipeline {
         NEXUS_CREDENTIAL_ID = "nexus"
         NEXUS_ARTIFACT_ID = "qcm"
         ENVIRONNEMENT = "dev"
-        SECRETDEVOPS_ENV = sh(script: 'su - userjenkins -c "echo $SECRETDEVOPS', returnStdout: true)
-        ROOTKEY_ENV = sh(script: 'su - userjenkins -c "echo $ROOTKEY', returnStdout: true)
-        KEYNAME_ENV = sh(script: 'su - userjenkins -c "echo $KEYNAME', returnStdout: true)
-        TYPENAME_ENV = sh(script: 'su - userjenkins -c "echo $TYPENAME', returnStdout: true)
-        REGION1_ENV = sh(script: 'su - userjenkins -c "echo $REGION1', returnStdout: true)
-        SUBIDPUB_ENV = sh(script: 'su - userjenkins -c "echo $SUBIDPUB', returnStdout: true)
-        SUBIDPRIV_ENV = sh(script: 'su - userjenkins -c "echo $SUBIDPRIV', returnStdout: true)
-        VPCID_ENV = sh(script: 'su - userjenkins -c "echo $VPCID', returnStdout: true)
-        PRIVIP_ENV = sh(script: 'su - userjenkins -c "echo $PRIVIP', returnStdout: true)
-        INGRPORT_ENV = sh(script: 'su - userjenkins -c "echo $INGRPORT', returnStdout: true)
-        SECGRPNLST_ENV = sh(script: 'su - userjenkins -c "echo $SECGRPNLST', returnStdout: true)
-        USCRIPT_ENV = sh(script: 'su - userjenkins -c "echo $USCRIPT', returnStdout: true)
-        SECGRPID_ENV = sh(script: 'su - userjenkins -c "echo $SECGRPID', returnStdout: true)
-        INSTTYPE_ENV = sh(script: 'su - userjenkins -c "echo $INSTTYPE', returnStdout: true)
+        SECRETDEVOPS_ENV = "${env.SECRETDEVOPS}"
+        ROOTKEY_ENV = "${env.$ROOTKEY}"
+        KEYNAME_ENV = "${env.$KEYNAME}"
+        TYPENAME_ENV = "${env.$TYPENAME}"
+        REGION1_ENV = "${env.$REGION1}"
+        SUBIDPUB_ENV = "${env.$SUBIDPUB}"
+        SUBIDPRIV_ENV = "${env.$SUBIDPRIV}"
+        VPCID_ENV = "${env.$VPCID}"
+        PRIVIP_ENV = "${env.$PRIVIP}"
+        INGRPORT_ENV = "${env.$INGRPORT}"
+        SECGRPNLST_ENV = "${env.$SECGRPNLST}"
+        USCRIPT_ENV = "${env.$USCRIPT}"
+        SECGRPID_ENV = "${env.$SECGRPID}"
+        INSTTYPE_ENV = "${env.$INSTTYPE}"
     }
 //
 agent any
