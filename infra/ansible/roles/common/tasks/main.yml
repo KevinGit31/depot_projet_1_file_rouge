@@ -2,7 +2,7 @@
 - name: Create EC2 instance
   include_tasks: cloudformation-create.yml
   tags:
-    cloudcreate: "ansible-cloudformation-create"
+    - cloudcreate: "ansible-cloudformation-create"
 
 - name: Create devops user + distribution de la clé ssh
   include_tasks: add-user-ssh.yml
