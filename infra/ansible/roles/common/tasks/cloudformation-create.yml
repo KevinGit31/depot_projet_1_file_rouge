@@ -7,7 +7,7 @@
 
   tasks:
   - name: create a cloudformation stack
-    amazon.aws.cloudformation:
+    cloudformation:
       hosts: localhost
       connection: local
       stack_name: "{{ TYPENAME }}"
