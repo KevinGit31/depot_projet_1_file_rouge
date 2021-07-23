@@ -1,5 +1,7 @@
 - name: create a cloudformation stack
   amazon.aws.cloudformation:
+    hosts: localhost
+    connection: local
     stack_name: "{{ TYPENAME }}"
     state: "present"
     region: "{{ REGION }}"
