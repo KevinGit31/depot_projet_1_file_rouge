@@ -1,28 +1,35 @@
 - name: create a cloudformation stack
-  amazon.aws.cloudformation:
-    hosts: localhost
-    connection: local
-    stack_name: "{{ TYPENAME }}"
-    state: "present"
-    region: "{{ REGION }}"
-    disable_rollback: true
-    template: "/var/lib/jenkins/workspace/{{ ansible_environnement }}/depot_projet_1_file_rouge/infra/aws_cloudformation/instancegrp3.yaml"
-    template_parameters:
-      KeyName: "{{ KEYNAME }}"
-      Environnement: "{{ ansible_environnement }}"
-      RootKey: "{{ ROOTKEY }}"
-      JenkinsKey: ""
-      DevOpsKey: "{{ secret_devops }}"
-      AnsibleKey: ""
-      SubnetIdPub: "{{ SubnetIdPub }}"
-      SubnetIdPriv: "{{ SubnetIdPriv }}"
-      VpcId: "{{ VpcId }}"
-      PrivateIP: "{{ PrivateIP }}"
-      TypeName: "{{ TypeName }}"
-      IngressPort: "{{ IngressPort }}"
-      SecurityGroupNameList: "{{ SecurityGroupNameList }}"
-      Urlscript: "{{ Urlscript }}"
-      SecurityGroupId: "{{ SecurityGroupId }}"
-      InstanceType: "{{ InstanceType }}"
-    tags:
-      - cloudcreate: "ansible-cloudformation-create"
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+
+  tasks:
+  - name:
+    amazon.aws.cloudformation:
+      hosts: localhost
+      connection: local
+      stack_name: "{{ TYPENAME }}"
+      state: "present"
+      region: "{{ REGION }}"
+      disable_rollback: true
+      template: "/var/lib/jenkins/workspace/{{ ansible_environnement }}/depot_projet_1_file_rouge/infra/aws_cloudformation/instancegrp3.yaml"
+      template_parameters:
+        KeyName: "{{ KEYNAME }}"
+        Environnement: "{{ ansible_environnement }}"
+        RootKey: "{{ ROOTKEY }}"
+        JenkinsKey: ""
+        DevOpsKey: "{{ secret_devops }}"
+        AnsibleKey: ""
+        SubnetIdPub: "{{ SubnetIdPub }}"
+        SubnetIdPriv: "{{ SubnetIdPriv }}"
+        VpcId: "{{ VpcId }}"
+        PrivateIP: "{{ PrivateIP }}"
+        TypeName: "{{ TypeName }}"
+        IngressPort: "{{ IngressPort }}"
+        SecurityGroupNameList: "{{ SecurityGroupNameList }}"
+        Urlscript: "{{ Urlscript }}"
+        SecurityGroupId: "{{ SecurityGroupId }}"
+        InstanceType: "{{ InstanceType }}"
+      tags:
+        - cloudcreate: "ansible-cloudformation-create"
