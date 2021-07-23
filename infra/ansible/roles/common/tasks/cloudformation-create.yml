@@ -4,7 +4,6 @@
   connection: local
   gather_facts: false
 
-
   tasks:
   - name: create a cloudformation stack
     cloudformation:
@@ -34,3 +33,6 @@
         InstanceType: "{{ InstanceType }}"
       tags:
         - cloudcreate: "ansible-cloudformation-create"
+    register: stack
+  - name: stack outputs
+    debug: msg="Stack outputs are {{stack.stack_outputs}}"
