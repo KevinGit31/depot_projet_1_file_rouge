@@ -41,12 +41,22 @@ amazon-linux-extras install -y java-openjdk11
 yum install -y gnupg
 yum install -y git
 yum install -y unzip
-yum install -y python3
-yum install -y python3-pip
+#yum install -y python3
+
 pip3 install pip --upgrade
 pip3 install ansible
 pip3 install boto3
 pip3 install botocore
+yum -y groupinstall "Development Tools"
+yum -y install openssl-devel bzip2-devel libffi-devel
+wget https://www.python.org/ftp/python/3.8.3/Python-3.8.3.tgz
+yum install -y python3-pip
+ln -s /usr/bin/python3 /usr/bin/python3.8
+tar xvf Python-3.8.3.tgz
+cd Python-3.8*
+./configure --enable-optimizations
+make altinstall
+
 # installation jenkins
 yum install -y  jenkins
 sleep 5
@@ -121,13 +131,13 @@ sed -i 's/\/jenkins:\/bin\/bash/\/jenkins:\/bin\/false/' /etc/passwd
 #sudo su -s /bin/bash jenkins
 
 #Install docker
-yum install -y yum-utils
-yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-yum install -y docker-ce docker-ce-cli containerd.io
-systemctl start docker
+#yum install -y yum-utils
+#yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+#yum install -y docker-ce docker-ce-cli containerd.io
+#systemctl start docker
 #Install docker compose
-curl -L "https://github.com/docker/compose/releases/download/1.29.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-chmod +x /usr/local/bin/docker-compose
+#curl -L "https://github.com/docker/compose/releases/download/1.29.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+#chmod +x /usr/local/bin/docker-compose
 
 sleep 30
 # Mdp jenkins
