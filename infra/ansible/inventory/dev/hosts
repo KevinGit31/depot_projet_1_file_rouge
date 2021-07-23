@@ -1,6 +1,9 @@
 [all:vars]
 #ansible_python_interpreter=/usr/bin/python3
 
+[localsrv]
+localhost
+
 [DEV]
 10.80.110.10 ansible_host=10.80.110.10 environnement=dev
 
