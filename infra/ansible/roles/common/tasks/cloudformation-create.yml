@@ -6,7 +6,7 @@
 
 
   tasks:
-  - name:
+  - name: create a cloudformation stack
     amazon.aws.cloudformation:
       hosts: localhost
       connection: local
