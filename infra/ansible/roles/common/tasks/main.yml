@@ -1,14 +1,22 @@
 
 - name: Create EC2 instance
   include_tasks: cloudformation-create.yml
+  hosts: localhost
+  connection: local  
   tags:
     - cloudcreate: "ansible-cloudformation-create"
 
 - name: Create devops user + distribution de la clé ssh
   include_tasks: add-user-ssh.yml
+  gather_facts: no
+  remote_user: ec2-user
+  become: true
 
 - name: Installation des package
   include_tasks: install-pkg.yml
+  gather_facts: no
+  remote_user: ec2-user
+  become: true
 
 - name: Delete EC2 instance
   include_tasks: cloudformation-delete.yml
@@ -18,3 +26,6 @@
 
 - name: install qcm
   include_tasks: install-qcm.yml
+  gather_facts: no
+  remote_user: ec2-user
+  become: true
