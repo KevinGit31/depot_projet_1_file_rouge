@@ -16,7 +16,7 @@ class Subject(db.Model):
     description = db.Column(db.String(200))
         
     # Collection des parties
-    subjects = db.relationship("game")
+    #subjects = db.relationship("game")
 
     # La collection de question
     subject_question = db.Table('subject_question', db.metadata,
@@ -25,8 +25,8 @@ class Subject(db.Model):
     questions = db.relationship("question",secondary=subject_question)
 
     # Meta data
-    quizz_metadata_id = db.Column(db.Integer, db.ForeignKey('metadata.id'))
-    quizz_metadata = db.relationship("Metadata", back_populates="subject")
+    #quizz_metadata_id = db.Column(db.Integer, db.ForeignKey('metadata.id'))
+    #quizz_metadata = db.relationship("Metadata", back_populates="subject")
 
     def __init__(self,name,description):
         self.name = name

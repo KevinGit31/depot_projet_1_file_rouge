@@ -18,14 +18,14 @@ class Mode(db.Model):
     img = db.Column(db.LargeBinary)
 
     # La collection de sujet
-    mode_subject = db.Table('mode_subject', db.metadata,
-                            db.Column('mode_id', db.Integer, db.ForeignKey('mode.id')),
-                            db.Column('subject_id', db.Integer, db.ForeignKey('subject.id')))
-    subjects = db.relationship("subject", secondary=mode_subject)
+    #mode_subject = db.Table('mode_subject', db.metadata,
+    #                        db.Column('mode_id', db.Integer, db.ForeignKey('mode.id')),
+    #                        db.Column('subject_id', db.Integer, db.ForeignKey('subject.id')))
+    #subjects = db.relationship("subject", secondary=mode_subject)
 
     # Meta data
-    quizz_metadata_id = db.Column(db.Integer, db.ForeignKey('metadata.id'))
-    quizz_metadata = db.relationship("Metadata", back_populates="mode")
+    #quizz_metadata_id = db.Column(db.Integer, db.ForeignKey('metadata.id'))
+    #quizz_metadata = db.relationship("Metadata", back_populates="mode")
 
     def __init__(self, name, description, nbrQ):
         self.name = name
