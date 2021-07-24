@@ -1,6 +1,8 @@
+from models.quizz.answer import AnswerSchema
 import requests
 import json
 from flask import render_template, request, redirect, url_for
+answer_schema = AnswerSchema()
 
 url = '/api/v1/question'
 url_answer = '/api/v1/answer'
@@ -77,13 +79,15 @@ def configure_routes_question(app):
             # Action pour ajouter une mauvaise réponse
             if request.form.get('btn-answer') == "ADD_FALSE":
 
-                str_answer = request.form.get('answer').strip()
-                if str_answer != "":
+                #str_answer = request.form.get('answer').strip()
+                _answer = request.form.get('answer') 
+                _answer = checkIfAnswerExist(_answer)
+                str_answer =_answer
+
+                if str_answer['answer'] != "":
 
                     answer = {
-                        'answer': {
-                            'answer': str_answer
-                        },
+                        'answer':str_answer,
                         'isAnswer': ''
                     }
 
@@ -101,13 +105,16 @@ def configure_routes_question(app):
             # Action pour ajouter une bonne réponse
             if request.form.get('btn-answer') == "ADD_TRUE":
 
-                str_answer = request.form.get('answer').strip()
-                if str_answer != "":
+                # str_answer = request.form.get('answer').strip()
+                _answer = request.form.get('answer') 
+                _answer = checkIfAnswerExist(_answer)
+                str_answer =_answer
+
+                
+                if str_answer['answer'] != "":
 
                     answer = {
-                        'answer': {
-                            'answer': str_answer
-                        },
+                        'answer': str_answer,
                         'isAnswer': 'True'
                     }
 
@@ -354,3 +361,18 @@ def configure_routes_question(app):
         if request.method == "POST":
             requests.delete(newurl)
             return redirect(url_for("question")) 
+
+
+    def checkIfAnswerExist(_answer):
+
+        if "answer" in json.dumps(_answer): 
+            _answer = _answer.replace("\'", "\"")
+            _answer =json.loads(_answer)
+
+            if _answer["id"] > 0 :
+                return _answer
+        _answer = {
+            'answer': _answer
+        }
+        return _answer
+
