@@ -9,13 +9,15 @@ parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 
 from models.app import db, ma
-
+from models.quizz.question_answer  import QuestionAnswer
 
 class Answer(db.Model):
 
     __tablename__ = 'answer'
     id = db.Column(db.Integer, primary_key=True)
     answer = db.Column(db.String(1024))
+
+    #questions = db.relationship("QuestionAnswer", back_populates="answer")
 
     def __init__(self,answer):
         self.answer = answer

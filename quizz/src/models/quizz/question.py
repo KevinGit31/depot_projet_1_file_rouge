@@ -1,3 +1,4 @@
+import json
 import os
 import sys
 import inspect
@@ -7,7 +8,7 @@ parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 
 from models.app  import db,ma
-from models.quizz.question_answer  import QuestionAnswer
+from models.quizz.question_answer import QuestionAnswer, QuestionAnswerSchema
 
 class Question(db.Model):
 
@@ -16,12 +17,17 @@ class Question(db.Model):
     question = db.Column(db.String(1024))
 
     # La collection de reponse
-    answers = db.relationship("QuestionAnswer")
+    answers =  db.relationship("QuestionAnswer", cascade="all, delete-orphan")
 
     def __init__(self,question):
         self.question = question
 
+    def __str__(self) -> str:
+        return json.dumps({ 'question' : self.question,"answers":self.answers})
+
 # Question Schema
 class QuestionSchema(ma.Schema):
+    answers = ma.Nested(QuestionAnswerSchema(many=True))
     class Meta:
-        fields=('id','question')
+        fields=('id','question','answers')
+

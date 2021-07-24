@@ -3,7 +3,7 @@ body,
 .container-fluid-menu,
 .nav-pills-menu,
 .row-menu{ 
-    height:100%;
+    min-height:100%;
 }
 
 .nav-pills-menu{

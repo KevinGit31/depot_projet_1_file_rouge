@@ -6,7 +6,9 @@ import inspect
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
+
 from controllers.controller_answer import controller_answer
+from controllers.controller_question import controller_question 
 from routes.rt_answer import configure_routes_answer
 from routes.rt_subject import configure_routes_subject
 from routes.rt_mode import configure_routes_mode
@@ -17,6 +19,7 @@ from api.__init__ import app
 
 # Configuration des chemins vers les pages html
 controller_answer(app)
+controller_question(app)
 configure_routes(app)
 configure_routes_answer(app)
 configure_routes_game(app)

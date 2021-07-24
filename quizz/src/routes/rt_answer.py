@@ -16,18 +16,28 @@ menu_list=[
          {"name":"Réponse","isActive":"active","url":"answer"}
       ]
 
+tableInfo={
+   "headers":[
+      {"name":"answer","display":"Réponse","class":""}
+   ],
+   "actions":[
+      {"icon":"fa-pen-square","class":"","url":"update_answer"},
+      {"icon":"fa-trash-alt","class":"btn-icon-danger","url":"delete_answer"}
+   ]
+}
+
 def configure_routes_answer(app):
 
    @app.route('/answer')
    def answer():
       
-
-
       rep_list = requests.get(baseUrl+url).json()
-
       rep_list = json.loads(rep_list)
 
-      return render_template('quizz/answer/index.html',menu_list=menu_list, rep_list=rep_list)
+      return render_template('quizz/answer/index.html',
+      tableInfo=tableInfo,
+      menu_list=menu_list, 
+      rep_list=rep_list)
 
    @app.route('/answer/create',methods=['GET', 'POST'])
    def create_answer():
