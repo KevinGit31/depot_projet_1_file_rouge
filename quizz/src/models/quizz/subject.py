@@ -5,6 +5,7 @@ import inspect
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
+from models.quizz.subject_question import SubjectQuestion, SubjectQuestionSchema
 
 from models.app  import db,ma
 
@@ -19,10 +20,7 @@ class Subject(db.Model):
     #subjects = db.relationship("game")
 
     # La collection de question
-    subject_question = db.Table('subject_question', db.metadata,
-    db.Column('subject_id', db.Integer, db.ForeignKey('subject.id')),
-    db.Column('question_id', db.Integer, db.ForeignKey('question.id')))
-    questions = db.relationship("question",secondary=subject_question)
+    questions =  db.relationship("SubjectQuestion", cascade="all, delete-orphan")
 
     # Meta data
     #quizz_metadata_id = db.Column(db.Integer, db.ForeignKey('metadata.id'))
@@ -35,5 +33,6 @@ class Subject(db.Model):
 
 # Subject Schema
 class SubjectSchema(ma.Schema):
+    questions = ma.Nested(SubjectQuestionSchema(many=True))
     class Meta:
         fields=('id','name','description')
