@@ -102,7 +102,6 @@ def _question_answer(new_question,_answers):
 
     for answer in _answers:
         if answer != None:
-            print(answer)
             _queryAnswer = answer.get('answer').get('answer')
             _queryId = answer.get('answer').get('id')
             _queryIsAnswer = answer.get('isAnswer')

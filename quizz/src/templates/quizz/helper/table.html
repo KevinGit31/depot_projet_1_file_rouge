@@ -15,7 +15,11 @@
             {% if head.name == 'answers'  %}
             <td>{{ row[head.name] | length}}</td>
             {% else %}
-                    <td>{{ row[head.name] }}</td>
+                    {% if head.name == 'mode'  %}
+                        <td>{{ row[head.name].name }}</td>
+                    {% else %}
+                        <td>{{ row[head.name] }}</td>
+                    {% endif  %}
             {% endif  %}
           
             {% endfor %}

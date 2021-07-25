@@ -1,0 +1,85 @@
+{% extends "quizz/subject/index.html" %}
+
+{% block pills %}
+<link href="{{ url_for('static', filename='css/subject/form.css') }}" rel="stylesheet">
+<h3>{% block subtitletext %}Form{% endblock %}</h3>
+
+<form method="post">
+    <div class="row">
+
+        <div class="col-12">
+            <hr>
+            <div class="form-group">
+                {% if modes|length == 0 %}
+                <div class="text-center">Vous ne disposez pas de mode de jeu</div>
+                <a class="btn btn-primary btn-lg btn-block" href="{{ url_for('create_mode') }}">Créer un mode de jeu
+                    ...</a>
+                {% else %}
+                <div class="row">
+                    <div class="col-12">
+                        <label for="name">Mode</label>
+                        <div class="form-group">
+                            <select name="mode_id" class="form-control">
+                                {% for mode in modes %}
+                                <option class="q_option" value="{{mode.id}}">{{mode.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <label for="name">Nom</label>
+                        <input type="text" class="form-control" name="name" id="name">
+                    </div>
+                    <div class="col-12">
+                        <label for="name">Description</label>
+                        <textarea class="form-control" name="description" id="description" rows="5"></textarea>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="col-12">
+            <hr>
+            <div class="form-group">
+                <label for="question">Question</label>
+                <div class="form-group">
+                    <select name="question" class="form-control">
+                        {% for question in questions %}
+                        <option class="q_option" value="{{question}}">{{question.question}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="float-right">
+                <button type="submit" name="btn-question" value="ADD" class="btn btn-outline-primary">Ajouter une
+                    question</button>
+            </div>
+        </div>
+        <!-- Liste des questions -->
+        <div class="col-12">
+            <div class="form-group">
+                <label for="answer_list">Liste des questions</label>
+                <input type="hidden" name="questions" value="{{subject.questions}}">
+                <div class="list_question" value={{subject.questions}}>
+                    {% for question in subject.questions %}
+                    <span class="hide">{{loop.index}}</span>
+                    {% include "quizz/subject/question.html" %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="float-right">
+                <a class="btn btn-second" href="{{ url_for('subject') }}">Annuler</a>
+                <button type="submit" class="btn btn-primary">Valider</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+{% endblock %}

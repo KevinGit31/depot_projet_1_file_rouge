@@ -12,7 +12,7 @@ menu_list=[
          {"name":"Jouer","isActive":"","url":"game"},
          {"name":"Mode","isActive":"active","url":"mode"},
          {"name":"Sujet","isActive":"","url":"subject"},
-         {"name":"Question","isActive":"","url":"mode"},
+         {"name":"Question","isActive":"","url":"question"},
          {"name":"Réponse","isActive":"","url":"answer"}
       ]
 

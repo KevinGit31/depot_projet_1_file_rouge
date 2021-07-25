@@ -1,14 +1,10 @@
 <link href="{{ url_for('static', filename='css/question/answer.css') }}" rel="stylesheet">
-{% if answer.isAnswer=='True' %}
-    {% set row_class = "border-primary" %}
-{% else %}
-    {% set row_class = "border-danger" %}
-{% endif %}
-<div class="card {{row_class}} mb-3" >
+
+<div class="card border-primary mb-3" >
     <div class="card-body container-fluid" id="newsHeading">
         <div class="row">
             <div class="col">
-                <h6>{{answer.answer.answer}}</h6>
+                <h6>{{question.question}}</h6>
                 <textarea class="hide" name="index_answer" >{{loop.index}}</textarea>
             </div>
             <div class="col">

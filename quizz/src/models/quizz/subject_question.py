@@ -8,6 +8,7 @@ parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 
 from models.app  import db,ma
+from models.quizz.question import QuestionSchema
 
 # La collection de reponse
 class SubjectQuestion(db.Model):
@@ -24,5 +25,6 @@ class SubjectQuestion(db.Model):
 
 # QuestionAnswer Schema
 class SubjectQuestionSchema(ma.Schema):
+    question = ma.Nested(QuestionSchema())
     class Meta:
-        fields=('subject_id','question_id')
+        fields=('subject_id','question_id','question')
