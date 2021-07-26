@@ -502,8 +502,6 @@ Resources:
           echo ${Environnement} > /tmp/env.txt
           if [[ ${PrivateIP} =~ 10.80.140.10 ]]; then
               amazon-linux-extras install python3.8
-              rm /usr/bin/python
-              ln -s /usr/bin/python3.8 /usr/bin/python
               curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
               python3.8 get-pip.py
               pip install --user pip --upgrade
