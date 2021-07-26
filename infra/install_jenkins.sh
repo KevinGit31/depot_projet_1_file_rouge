@@ -60,15 +60,6 @@ usermod -a -G userjenkins jenkins
 #sudo -H -u userjenkins -c 'mkdir -p ~/ansible'
 #su - userjenkins -c 'git clone https://github.com/KevinGit31/depot_projet_1_file_rouge.git ; exit'
 
-#install ansible
-#amazon-linux-extras install ansible2 -y
-echo "#!/bin/bash" >> /etc/ansible/ansvlt.sh
-echo "$ANSIBPASS" >> /etc/ansible/.ansvlt
-echo "RET=$(sudo cat /etc/ansible/.ansvlt)" >> /etc/ansible/ansvlt.sh
-echo "echo \$RET" >> /etc/ansible/ansvlt.sh
-chmod +x /etc/ansible/ansvlt.sh
-#configuration ansible vault paswword
-sed -i 's/\#vault_password_file = \/path\/to\/vault_password_file/vault_password_file=\/etc\/ansible\/ansvlt.sh/' /etc/ansible/ansible.cfg
 
 #preparation du user devops sur les host remote + distrib key
 
@@ -87,8 +78,20 @@ ln -s /usr/bin/python3.8 /usr/bin/python
 python3.8 /tmp/get-pip.py
 
 pip install pip --upgrade
+pip install ansible
 pip install boto3
 pip install botocore
+
+#install ansible
+#amazon-linux-extras install ansible2 -y
+echo "#!/bin/bash" >> /etc/ansible/ansvlt.sh
+echo "$ANSIBPASS" >> /etc/ansible/.ansvlt
+echo "RET=$(sudo cat /etc/ansible/.ansvlt)" >> /etc/ansible/ansvlt.sh
+echo "echo \$RET" >> /etc/ansible/ansvlt.sh
+chmod +x /etc/ansible/ansvlt.sh
+#configuration ansible vault paswword
+sed -i 's/\#vault_password_file = \/path\/to\/vault_password_file/vault_password_file=\/etc\/ansible\/ansvlt.sh/' /etc/ansible/ansible.cfg
+
 
 
 sed -i 's/\/jenkins:\/bin\/false/\/jenkins:\/bin\/bash/' /etc/passwd
