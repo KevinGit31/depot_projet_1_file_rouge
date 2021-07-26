@@ -40,6 +40,8 @@ amazon-linux-extras install -y java-openjdk11
 yum install -y gnupg
 yum install -y git
 yum install -y unzip
+yum install -y python2
+yum install -y python2-pip
 yum install -y python3
 yum install -y python3-pip
 
@@ -79,12 +81,10 @@ echo "$ANSIBPASS" >> /etc/ansible/.ansvlt
 echo "RET=$(sudo cat /etc/ansible/.ansvlt)" >> /etc/ansible/ansvlt.sh
 echo "echo \$RET" >> /etc/ansible/ansvlt.sh
 
-wget https://bootstrap.pypa.io/get-pip.py
-python get-pip.py
-pip2 install --user pip --upgrade
+#pip2 install --user pip --upgrade
 #pip install --user ansible
-pip2 install --user boto3
-pip2 install --user botocore
+#pip2 install --user boto3
+#pip2 install --user botocore
 
 #configuration ansible vault paswword
 sed -i 's/\#vault_password_file = \/path\/to\/vault_password_file/vault_password_file=\/etc\/ansible\/ansvlt.sh/' /etc/ansible/ansible.cfg
