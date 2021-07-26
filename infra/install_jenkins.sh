@@ -20,6 +20,7 @@ AAKI1=$(cat /tmp/AWSAccessKeyId.txt)
 ASAKI1=$(cat /tmp/AWSSecretAccessKeyId.txt)
 TYPENAME1=$(cat /tmp/TypeName.txt)
 
+
 #install java
 yum install -y java-1.8.0-openjdk-devel
 #recuperation package
@@ -39,10 +40,7 @@ amazon-linux-extras install -y java-openjdk11
 yum install -y gnupg
 yum install -y git
 yum install -y unzip
-#yum install -y python3
-amazon-linux-extras install python3.8
-rm /usr/bin/python
-ln -s /usr/bin/python3.8 /usr/bin/python
+yum install -y python3
 yum install -y python3-pip
 pip3 install pip --upgrade
 
@@ -82,7 +80,9 @@ echo "root:$ROOTPASS" | chpasswd
 #su - devops -c 'ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa <<<y >/dev/null 2>&1 ; exit'
 
 
-
+amazon-linux-extras install python3.8
+rm /usr/bin/python
+ln -s /usr/bin/python3.8 /usr/bin/python
 
 su - jenkins -c "sudo pip3 install pip --upgrade"
 su - jenkins -c "sudo pip3 install ansible"
