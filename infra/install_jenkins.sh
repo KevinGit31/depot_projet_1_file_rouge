@@ -49,11 +49,12 @@ yum install -y unzip
 amazon-linux-extras install python3.8
 rm /usr/bin/python
 ln -s /usr/bin/python3.8 /usr/bin/python
-pip3 install pip --upgrade
-pip3 install ansible
-pip3 install boto3
-pip3 install botocore
 yum install -y python3-pip
+su - jenkins -c "sudo pip3 install pip --upgrade"
+su - jenkins -c "sudo pip3 install ansible"
+su - jenkins -c "sudo pip3 install boto3"
+su - jenkins -c "sudo pip3 install botocore"
+
 
 
 # installation jenkins
