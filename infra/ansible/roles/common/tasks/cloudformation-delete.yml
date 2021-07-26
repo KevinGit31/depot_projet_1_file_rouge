@@ -2,7 +2,7 @@
 
 #
 - name: delete a stack
-  sh: aws cloudformation delete-stack --stack-name "{{ TYPENAME }}"
+  shell: aws cloudformation delete-stack --stack-name "{{ TYPENAME }}"
   tags:
     - clouddelete: "ansible-cloudformation-delete"
   when: GOTODEL == "yes"
