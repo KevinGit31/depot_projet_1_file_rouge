@@ -20,7 +20,7 @@ AAKI1=$(cat /tmp/AWSAccessKeyId.txt)
 ASAKI1=$(cat /tmp/AWSSecretAccessKeyId.txt)
 TYPENAME1=$(cat /tmp/TypeName.txt)
 
-sleep 120s
+sleep 45s
 #install java
 yum install -y java-1.8.0-openjdk-devel
 #recuperation package
@@ -70,12 +70,6 @@ echo "root:$ROOTPASS" | chpasswd
 #genere la cle pub et priv pour le user devops
 #su - devops -c 'ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa <<<y >/dev/null 2>&1 ; exit'
 
-
-amazon-linux-extras install python3.8
-rm /usr/bin/python
-ln -s /usr/bin/python3.8 /usr/bin/python
-
-python3.8 /tmp/get-pip.py
 
 pip install pip --upgrade
 pip install ansible
