@@ -75,12 +75,10 @@ echo "root:$ROOTPASS" | chpasswd
 #amazon-linux-extras install ansible2 -y
 
 echo "#!/bin/bash" >> /var/lib/jenkins/ansvlt.sh
-echo "$ANSIBPASS" >> /var/lib/jenkins/.ansvlt
-echo "RET=$(sudo cat /etc/ansible/.ansvlt)" >> /var/lib/jenkins/ansvlt.sh
-echo "echo \$RET" >> /var/lib/jenkins/ansvlt.sh
+echo "echo \$ANS" >> /var/lib/jenkins/ansvlt.sh
 chmod +x /var/lib/jenkins/ansvlt.sh
 chown jenkins: /var/lib/jenkins/ansvlt.sh
-chown jenkins: /var/lib/jenkins/.ansvlt
+
 #configuration ansible vault paswword
 #sed -i 's/\#vault_password_file = \/path\/to\/vault_password_file/vault_password_file=\/etc\/ansible\/ansvlt.sh/' /etc/ansible/ansible.cfg
 #--vault-password-file /etc/ansible/ansvlt.sh
@@ -95,6 +93,7 @@ su - devops -c "cd /tmp && /bin/bash ssh.sh && exit"
 su - jenkins -c "mkdir ~/.aws && cd ~/.aws && echo \"[default]\" >> credentials && echo \"aws_access_key_id=$AAKI1\" >> credentials && echo \"aws_secret_access_key=$ASAKI1\" >> credentials && exit"
 su - jenkins -c "cd ~/.aws && echo \"[default]\" >> config && echo \"region=$REGION1\" >> config && echo \"output=json\" >> config && exit"
 su - jenkins -c "echo \"export SECRETDEVOPS=$DEVOPSPWD\" >> ~/.bashrc"
+su - jenkins -c "echo \"export ANS=$ANSIBPASS\" >> ~/.bashrc"
 #su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $DEVOPSPWD --name \"secret_devops\" >> all && exit"
 #su - userjenkins -c "echo \"export ROOTKEY=$ROOTPASS\" >> ~/.bashrc"
 #su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $ROOTPASS --name \"ROOTKEY\" >> all && exit"

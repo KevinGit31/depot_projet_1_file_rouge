@@ -75,7 +75,7 @@ agent any
         stage('deleteEC2ansible') {
             steps {
                     sh """#!/bin/bash
-                    ansible-playbook -i infra/ansible/inventory/${ENVIRONNEMENT}/hosts infra/ansible/${ENVIRONNEMENT}.yml --vault-password-file /etc/ansible/ansvlt.sh --extra-vars \"GOTODEL=yes secret_devops=${env.SECRETDEVOPS_ENV} ROOTKEY=${env.ROOTKEY_ENV} KEYNAME=${env.ROOTKEY_ENV} TypeName=${env.TYPENAME_ENV} REGION=${env.REGION1_ENV} SubnetIdPub=${env.SUBIDPUB_ENV} SubnetIdPriv=${env.SUBIDPRIV_ENV} VpcId=${env.VPCID_ENV} PrivateIP=${env.PRIVIP_ENV} IngressPort=${env.INGRPORT_ENV} SecurityGroupNameList=${env.SECGRPNLST_ENV} Urlscript=${env.USCRIPT_ENV} SecurityGroupId=${env.SECGRPID_ENV} InstanceType=${env.INSTTYPE_ENV}\" --tags \"clouddelete\"
+                    /var/lib/jenkins/.local/bin/ansible-playbook -i infra/ansible/inventory/${ENVIRONNEMENT}/hosts infra/ansible/${ENVIRONNEMENT}.yml --vault-password-file /var/lib/jenkins/ansvlt.sh --extra-vars \"GOTODEL=yes secret_devops=${env.SECRETDEVOPS_ENV} ROOTKEY=${env.ROOTKEY_ENV} KEYNAME=${env.ROOTKEY_ENV} TypeName=${env.TYPENAME_ENV} REGION=${env.REGION1_ENV} SubnetIdPub=${env.SUBIDPUB_ENV} SubnetIdPriv=${env.SUBIDPRIV_ENV} VpcId=${env.VPCID_ENV} PrivateIP=${env.PRIVIP_ENV} IngressPort=${env.INGRPORT_ENV} SecurityGroupNameList=${env.SECGRPNLST_ENV} Urlscript=${env.USCRIPT_ENV} SecurityGroupId=${env.SECGRPID_ENV} InstanceType=${env.INSTTYPE_ENV}\" --tags \"clouddelete\"
                     """
             }
         }
@@ -83,7 +83,7 @@ agent any
         stage('createEC2ansible') {
             steps {
                     sh """#!/bin/bash
-                    ansible-playbook -i infra/ansible/inventory/${ENVIRONNEMENT}/hosts infra/ansible/${ENVIRONNEMENT}.yml --vault-password-file /etc/ansible/ansvlt.sh --extra-vars \"ansible_environnement=dev VpcId=${VPCID_ENV} PrivateIP=${PRIVIP_ENV} secret_devops=${env.SECRETDEVOPS_ENV} ROOTKEY="" KEYNAME=${env.ROOTKEY_ENV} TypeName=${env.TYPENAME_ENV} REGION=${env.REGION1_ENV} SubnetIdPub=${env.SUBIDPUB_ENV} SubnetIdPriv=${env.SUBIDPRIV_ENV} VpcId=${env.VPCID_ENV} PrivateIP=${env.PRIVIP_ENV} IngressPort=${env.INGRPORT_ENV} SecurityGroupNameList=${env.SECGRPNLST_ENV} Urlscript=${env.USCRIPT_ENV} SecurityGroupId=${env.SECGRPID_ENV} InstanceType=${env.INSTTYPE_ENV}\"
+                    /var/lib/jenkins/.local/bin/ansible-playbook -i infra/ansible/inventory/${ENVIRONNEMENT}/hosts infra/ansible/${ENVIRONNEMENT}.yml --vault-password-file /var/lib/jenkins/ansvlt.sh --extra-vars \"ansible_environnement=dev VpcId=${VPCID_ENV} PrivateIP=${PRIVIP_ENV} secret_devops=${env.SECRETDEVOPS_ENV} ROOTKEY="" KEYNAME=${env.ROOTKEY_ENV} TypeName=${env.TYPENAME_ENV} REGION=${env.REGION1_ENV} SubnetIdPub=${env.SUBIDPUB_ENV} SubnetIdPriv=${env.SUBIDPRIV_ENV} VpcId=${env.VPCID_ENV} PrivateIP=${env.PRIVIP_ENV} IngressPort=${env.INGRPORT_ENV} SecurityGroupNameList=${env.SECGRPNLST_ENV} Urlscript=${env.USCRIPT_ENV} SecurityGroupId=${env.SECGRPID_ENV} InstanceType=${env.INSTTYPE_ENV}\"
                     """
             }
 
