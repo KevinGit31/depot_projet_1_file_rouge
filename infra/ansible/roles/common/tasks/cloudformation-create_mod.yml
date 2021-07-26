@@ -1,0 +1,36 @@
+---
+- name: create a cloudformation stack
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+  - name: create a cloudformation stack task
+    cloudformation:
+      stack_name: "{{ TypeName }}"
+      state: "present"
+      region: "{{ REGION }}"
+      disable_rollback: true
+      template: "/var/lib/jenkins/workspace/{{ ansible_environnement }}/depot_projet_1_file_rouge/infra/aws_cloudformation/instancegrp3.yaml"
+      template_parameters:
+        KeyName: "{{ KEYNAME }}"
+        Environnement: "{{ ansible_environnement }}"
+        RootKey: ""
+        JenkinsKey: ""
+        DevOpsKey: "{{ secret_devops }}"
+        AnsibleKey: ""
+        SubnetIdPub: "{{ SubnetIdPub }}"
+        SubnetIdPriv: "{{ SubnetIdPriv }}"
+        VpcId: "{{ VpcId }}"
+        PrivateIP: "{{ PrivateIP }}"
+        TypeName: "{{ TypeName }}"
+        IngressPort: "{{ IngressPort }}"
+        SecurityGroupNameList: "{{ SecurityGroupNameList }}"
+        Urlscript: "{{ Urlscript }}"
+        SecurityGroupId: "{{ SecurityGroupId }}"
+        InstanceType: "{{ InstanceType }}"
+#      tags:
+#        - cloudcreate: "ansible-cloudformation-create"
+    register: stack
+  - name: stack outputs
+    debug: msg="Stack outputs are {{stack.stack_outputs}}"
