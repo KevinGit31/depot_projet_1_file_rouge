@@ -8,7 +8,7 @@ pipeline {
         NEXUS_ARTIFACT_ID = "qcm"
         ENVIRONNEMENT = "dev"
         SECRETDEVOPS_ENV = "${env.SECRETDEVOPS}"
-        ROOTKEY_ENV = "" //"${env.$ROOTKEY}"
+        ROOTKEY_ENV = "NULL" //"${env.$ROOTKEY}"
         JENKINS_KEY = "NULL"
         ANSIBLE_KEY = "NULL"
         KEYNAME_ENV = "${env.$KEYNAME}"
