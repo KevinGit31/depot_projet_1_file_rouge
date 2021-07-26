@@ -28,7 +28,7 @@ yum install -y java-1.8.0-openjdk-devel
 
 # On prepare l'installation de jenkins
 yum  upgrade -y
-sleep 45s
+
 #sudo yum install -y openjdk-11-jdk
 amazon-linux-extras install -y java-openjdk11
 yum install -y gnupg
