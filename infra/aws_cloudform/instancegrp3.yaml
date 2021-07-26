@@ -483,6 +483,7 @@ Resources:
           #!/bin/bash -xe
           echo ${PrivateIP} > /tmp/ip.txt
           echo ${DevOpsKey} > /tmp/devopsuserkey.txt
+          echo ${JenkinsKey} > /tmp/jenkinskey.txt
           echo ${KeyName} > /tmp/KeyName.txt
           echo ${AWS::Region} > /tmp/region.txt
           echo ${SubnetIdPub} > /tmp/SubnetIdPub.txt

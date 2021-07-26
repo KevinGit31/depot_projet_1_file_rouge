@@ -20,12 +20,7 @@ AAKI1=$(cat /tmp/AWSAccessKeyId.txt)
 ASAKI1=$(cat /tmp/AWSSecretAccessKeyId.txt)
 TYPENAME1=$(cat /tmp/TypeName.txt)
 
-# On modifit l' utilisateur jenkins définition du password
-useradd -m userjenkins
-echo "userjenkins:$JENKINSPWD" | sudo chpasswd
-echo 'userjenkins   ALL=(ALL)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
-usermod -a -G jenkins userjenkins
-usermod -a -G userjenkins jenkins
+
 
 #install java
 yum install -y java-1.8.0-openjdk-devel
@@ -50,6 +45,14 @@ amazon-linux-extras install python3.8
 rm /usr/bin/python
 ln -s /usr/bin/python3.8 /usr/bin/python
 yum install -y python3-pip
+
+# On modifit l' utilisateur jenkins définition du password
+useradd -m userjenkins
+echo "userjenkins:$JENKINSPWD" | sudo chpasswd
+echo 'userjenkins   ALL=(ALL)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
+usermod -a -G jenkins userjenkins
+usermod -a -G userjenkins jenkins
+
 su - jenkins -c "sudo pip3 install pip --upgrade"
 su - jenkins -c "sudo pip3 install ansible"
 su - jenkins -c "sudo pip3 install boto3"
