@@ -42,7 +42,7 @@ yum install -y git
 yum install -y unzip
 yum install -y python3
 yum install -y python3-pip
-pip3 install pip --upgrade
+
 
 # installation jenkins
 yum install -y  jenkins
@@ -83,11 +83,13 @@ echo "root:$ROOTPASS" | chpasswd
 amazon-linux-extras install python3.8
 rm /usr/bin/python
 ln -s /usr/bin/python3.8 /usr/bin/python
+curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+python3.8 get-pip.py
 
-su - jenkins -c "sudo pip3 install pip --upgrade"
-su - jenkins -c "sudo pip3 install ansible"
-su - jenkins -c "sudo pip3 install boto3"
-su - jenkins -c "sudo pip3 install botocore"
+pip install --user pip --upgrade
+pip install --user ansible
+pip install --user boto3
+pip install --user botocore
 
 
 sed -i 's/\/jenkins:\/bin\/false/\/jenkins:\/bin\/bash/' /etc/passwd
