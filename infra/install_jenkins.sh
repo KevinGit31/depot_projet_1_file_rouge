@@ -20,7 +20,12 @@ AAKI1=$(cat /tmp/AWSAccessKeyId.txt)
 ASAKI1=$(cat /tmp/AWSSecretAccessKeyId.txt)
 TYPENAME1=$(cat /tmp/TypeName.txt)
 
-
+# On modifit l' utilisateur jenkins définition du password
+useradd -m userjenkins
+echo "userjenkins:$JENKINSPWD" | sudo chpasswd
+echo 'userjenkins   ALL=(ALL)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
+usermod -a -G jenkins userjenkins
+usermod -a -G userjenkins jenkins
 
 #install java
 yum install -y java-1.8.0-openjdk-devel
@@ -58,14 +63,8 @@ sleep 5
 systemctl start jenkins
 /sbin/chkconfig jenkins on
 
-# On modifit l' utilisateur jenkins définition du password
-useradd -m userjenkins
-echo "userjenkins:$JENKINSPWD" | sudo chpasswd
-echo 'userjenkins   ALL=(ALL)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
-usermod -a -G jenkins userjenkins
-usermod -a -G userjenkins jenkins
-#sudo -H -u userjenkins -c 'mkdir -p ~/ansible'
-#su - userjenkins -c 'git clone https://github.com/KevinGit31/depot_projet_1_file_rouge.git ; exit'
+
+
 
 #install ansible
 echo "#!/bin/bash" >> /etc/ansible/ansvlt.sh
