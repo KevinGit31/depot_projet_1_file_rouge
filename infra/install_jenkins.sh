@@ -69,12 +69,7 @@ echo 'devops   ALL=(ALL)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
 echo "root:$ROOTPASS" | chpasswd
 #genere la cle pub et priv pour le user devops
 #su - devops -c 'ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa <<<y >/dev/null 2>&1 ; exit'
-
-
-pip install pip --upgrade
-pip install ansible
-pip install boto3
-pip install botocore
+echo \"export PATH=$PATH:/usr/local/bin\" >> ~/.bashrc
 
 #install ansible
 #amazon-linux-extras install ansible2 -y
