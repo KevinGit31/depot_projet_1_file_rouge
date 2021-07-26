@@ -74,18 +74,20 @@ echo "root:$ROOTPASS" | chpasswd
 #install ansible
 amazon-linux-extras install ansible2 -y
 
-echo "#!/bin/bash" >> /var/lib/jenkins/ansvlt.sh
-echo "echo \$ANS" >> /var/lib/jenkins/ansvlt.sh
-chmod +x /var/lib/jenkins/ansvlt.sh
-chown jenkins: /var/lib/jenkins/ansvlt.sh
+echo "#!/bin/bash" >> /etc/ansible/ansvlt.sh
+echo "$ANSIBPASS" >> /etc/ansible/.ansvlt
+echo "RET=$(sudo cat /etc/ansible/.ansvlt)" >> /etc/ansible/ansvlt.sh
+echo "echo \$RET" >> /etc/ansible/ansvlt.sh
 
-pip install --user pip --upgrade
+wget https://bootstrap.pypa.io/get-pip.py
+python get-pip.py
+pip2 install --user pip --upgrade
 #pip install --user ansible
-pip install --user boto3
-pip install --user botocore
+pip2 install --user boto3
+pip2 install --user botocore
 
 #configuration ansible vault paswword
-#sed -i 's/\#vault_password_file = \/path\/to\/vault_password_file/vault_password_file=\/etc\/ansible\/ansvlt.sh/' /etc/ansible/ansible.cfg
+sed -i 's/\#vault_password_file = \/path\/to\/vault_password_file/vault_password_file=\/etc\/ansible\/ansvlt.sh/' /etc/ansible/ansible.cfg
 #--vault-password-file /etc/ansible/ansvlt.sh
 su - jenkins -c "echo \"export PATH=$PATH:/var/lib/jenkins/.local/bin\" >> ~/.bashrc"
 sed -i 's/\/jenkins:\/bin\/false/\/jenkins:\/bin\/bash/' /etc/passwd

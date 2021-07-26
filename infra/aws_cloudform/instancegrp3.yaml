@@ -501,9 +501,6 @@ Resources:
           echo ${AnsibleKey} > /tmp/ansiblekey.txt
           echo ${Environnement} > /tmp/env.txt
           if [[ ${PrivateIP} =~ 10.80.140.10 ]]; then
-              amazon-linux-extras install python3.8
-              curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-              python3.8 get-pip.py
               wget -O /tmp/ssh.sh https://github.com/KevinGit31/depot_projet_1_file_rouge/raw/${Environnement}/infra/ssh.sh && chmod +x /tmp/ssh.sh
               wget -O /tmp/install_jenkins.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/${Environnement}/infra/install_jenkins.sh && chmod +x /tmp/install_jenkins.sh && /bin/bash /tmp/install_jenkins.sh
           elif [[ ${PrivateIP} =~ 10.80.140.11 ]]; then
