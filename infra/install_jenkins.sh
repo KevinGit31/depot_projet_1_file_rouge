@@ -20,7 +20,7 @@ AAKI1=$(cat /tmp/AWSAccessKeyId.txt)
 ASAKI1=$(cat /tmp/AWSSecretAccessKeyId.txt)
 TYPENAME1=$(cat /tmp/TypeName.txt)
 
-sleep 45s
+
 #install java
 yum install -y java-1.8.0-openjdk-devel
 #recuperation package
@@ -73,6 +73,7 @@ echo \"export PATH=$PATH:/usr/local/bin\" >> ~/.bashrc
 
 #install ansible
 #amazon-linux-extras install ansible2 -y
+mkdir -p /etc/ansible
 echo "#!/bin/bash" >> /etc/ansible/ansvlt.sh
 echo "$ANSIBPASS" >> /etc/ansible/.ansvlt
 echo "RET=$(sudo cat /etc/ansible/.ansvlt)" >> /etc/ansible/ansvlt.sh
