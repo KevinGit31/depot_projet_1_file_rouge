@@ -85,6 +85,8 @@ echo "echo \$RET" >> /etc/ansible/ansvlt.sh
 #pip install --user ansible
 #pip2 install --user boto3
 #pip2 install --user botocore
+#pip uninstall -y s3transfer
+#pip install s3transfer==0.3.4
 
 #configuration ansible vault paswword
 sed -i 's/\#vault_password_file = \/path\/to\/vault_password_file/vault_password_file=\/etc\/ansible\/ansvlt.sh/' /etc/ansible/ansible.cfg
