@@ -20,26 +20,8 @@ AAKI1=$(cat /tmp/AWSAccessKeyId.txt)
 ASAKI1=$(cat /tmp/AWSSecretAccessKeyId.txt)
 TYPENAME1=$(cat /tmp/TypeName.txt)
 
-
-
 #install java
 yum install -y java-1.8.0-openjdk-devel
-
-
-# On prepare l'installation de jenkins
-yum  upgrade -y
-
-#sudo yum install -y openjdk-11-jdk
-amazon-linux-extras install -y java-openjdk11
-yum install -y gnupg
-yum install -y git
-yum install -y unzip
-amazon-linux-extras install python3.8
-rm /usr/bin/python
-ln -s /usr/bin/python3.8 /usr/bin/python
-yum install -y python3-pip
-
-
 #recuperation package
 wget –O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat-stable/jenkins.repo
 #Modification du fichier de conf
@@ -50,12 +32,19 @@ gpgcheck=1" > /etc/yum.repos.d/jenkins.repo'
 # recuperation key jenkins
 rpm --import https://pkg.jenkins.io/redhat/jenkins.io.key
 
-# On modifit l' utilisateur jenkins définition du password
-useradd -m userjenkins
-echo "userjenkins:$JENKINSPWD" | sudo chpasswd
-echo 'userjenkins   ALL=(ALL)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
-usermod -a -G jenkins userjenkins
-usermod -a -G userjenkins jenkins
+# On prepare l'installation de jenkins
+yum  upgrade -y
+#sudo yum install -y openjdk-11-jdk
+amazon-linux-extras install -y java-openjdk11
+yum install -y gnupg
+yum install -y git
+yum install -y unzip
+#yum install -y python3
+amazon-linux-extras install python3.8
+rm /usr/bin/python
+ln -s /usr/bin/python3.8 /usr/bin/python
+yum install -y python3-pip
+pip3 install pip --upgrade
 
 # installation jenkins
 yum install -y  jenkins
@@ -64,15 +53,17 @@ sleep 5
 systemctl start jenkins
 /sbin/chkconfig jenkins on
 
-
-su - jenkins -c "sudo pip3 install pip --upgrade"
-su - jenkins -c "sudo pip3 install ansible"
-su - jenkins -c "sudo pip3 install boto3"
-su - jenkins -c "sudo pip3 install botocore"
-
-
+# On modifit l' utilisateur jenkins définition du password
+useradd -m userjenkins
+echo "userjenkins:$JENKINSPWD" | sudo chpasswd
+echo 'userjenkins   ALL=(ALL)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
+usermod -a -G jenkins userjenkins
+usermod -a -G userjenkins jenkins
+#sudo -H -u userjenkins -c 'mkdir -p ~/ansible'
+#su - userjenkins -c 'git clone https://github.com/KevinGit31/depot_projet_1_file_rouge.git ; exit'
 
 #install ansible
+#amazon-linux-extras install ansible2 -y
 echo "#!/bin/bash" >> /etc/ansible/ansvlt.sh
 echo "$ANSIBPASS" >> /etc/ansible/.ansvlt
 echo "RET=$(sudo cat /etc/ansible/.ansvlt)" >> /etc/ansible/ansvlt.sh
@@ -89,6 +80,15 @@ echo 'devops   ALL=(ALL)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
 echo "root:$ROOTPASS" | chpasswd
 #genere la cle pub et priv pour le user devops
 #su - devops -c 'ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa <<<y >/dev/null 2>&1 ; exit'
+
+
+
+
+su - jenkins -c "sudo pip3 install pip --upgrade"
+su - jenkins -c "sudo pip3 install ansible"
+su - jenkins -c "sudo pip3 install boto3"
+su - jenkins -c "sudo pip3 install botocore"
+
 
 sed -i 's/\/jenkins:\/bin\/false/\/jenkins:\/bin\/bash/' /etc/passwd
 #su - userjenkins -c "cd /home/userjenkins && wget -O $ENV1.zip https://github.com/KevinGit31/depot_projet_1_file_rouge/archive/refs/heads/$ENV1.zip && unzip $ENV1.zip && mv depot_projet_1_file_rouge* depot_projet_1_file_rouge && chmod +x /home/userjenkins/depot_projet_1_file_rouge/infra/ansvlt.sh && exit"
