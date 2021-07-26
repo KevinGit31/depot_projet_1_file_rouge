@@ -79,14 +79,15 @@ echo "echo \$ANS" >> /var/lib/jenkins/ansvlt.sh
 chmod +x /var/lib/jenkins/ansvlt.sh
 chown jenkins: /var/lib/jenkins/ansvlt.sh
 
+pip install --user pip --upgrade
+pip install --user ansible
+pip install --user boto3
+pip install --user botocore
+
 #configuration ansible vault paswword
 #sed -i 's/\#vault_password_file = \/path\/to\/vault_password_file/vault_password_file=\/etc\/ansible\/ansvlt.sh/' /etc/ansible/ansible.cfg
 #--vault-password-file /etc/ansible/ansvlt.sh
 su - jenkins -c "echo \"export PATH=$PATH:/var/lib/jenkins/.local/bin\" >> ~/.bashrc"
-su - jenkins -c "/usr/local/bin/pip install --user pip --upgrade"
-su - jenkins -c "/usr/local/bin/pip install --user ansible"
-su - jenkins -c "/usr/local/bin/pip install --user boto3"
-su - jenkins -c "/usr/local/bin/pip install --user botocore"
 sed -i 's/\/jenkins:\/bin\/false/\/jenkins:\/bin\/bash/' /etc/passwd
 #su - userjenkins -c "cd /home/userjenkins && wget -O $ENV1.zip https://github.com/KevinGit31/depot_projet_1_file_rouge/archive/refs/heads/$ENV1.zip && unzip $ENV1.zip && mv depot_projet_1_file_rouge* depot_projet_1_file_rouge && chmod +x /home/userjenkins/depot_projet_1_file_rouge/infra/ansvlt.sh && exit"
 su - devops -c "cd /tmp && /bin/bash ssh.sh && exit"

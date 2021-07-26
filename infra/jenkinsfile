@@ -21,6 +21,7 @@ pipeline {
         USCRIPT_ENV = "${env.$USCRIPT}"
         SECGRPID_ENV = "${env.$SECGRPID}"
         INSTTYPE_ENV = "${env.$INSTTYPE}"
+        ANS_ENV = "${env.$ANS}"
     }
 //
 agent any
@@ -71,23 +72,33 @@ agent any
                 sh "curl http://${NEXUS_URL}/repository/${NEXUS_REPOSITORY}/${NEXUS_ARTIFACT_ID}/1.0-${BUILD_NUMBER}/${NEXUS_ARTIFACT_ID}-1.0-${BUILD_NUMBER}.tar.gz"
             }
         }
-
-        stage('deleteEC2ansible') {
+        stage('ansible'){
             steps {
-                    sh """#!/bin/bash
-                    /var/lib/jenkins/.local/bin/ansible-playbook -i infra/ansible/inventory/${ENVIRONNEMENT}/hosts infra/ansible/${ENVIRONNEMENT}.yml --vault-password-file /var/lib/jenkins/ansvlt.sh --extra-vars \"GOTODEL=yes secret_devops=${env.SECRETDEVOPS_ENV} ROOTKEY=${env.ROOTKEY_ENV} KEYNAME=${env.ROOTKEY_ENV} TypeName=${env.TYPENAME_ENV} REGION=${env.REGION1_ENV} SubnetIdPub=${env.SUBIDPUB_ENV} SubnetIdPriv=${env.SUBIDPRIV_ENV} VpcId=${env.VPCID_ENV} PrivateIP=${env.PRIVIP_ENV} IngressPort=${env.INGRPORT_ENV} SecurityGroupNameList=${env.SECGRPNLST_ENV} Urlscript=${env.USCRIPT_ENV} SecurityGroupId=${env.SECGRPID_ENV} InstanceType=${env.INSTTYPE_ENV}\" --tags \"clouddelete\"
-                    """
+                ansiblePlaybook(
+                playbook: "infra/ansible/${ENVIRONNEMENT}.yml",
+                inventory: "infra/ansible/inventory/${ENVIRONNEMENT}/hosts",
+                vaultCredentialsId: "${ANS_ENV}",
+                extras: "ansible_environnement=dev VpcId=${VPCID_ENV} PrivateIP=${PRIVIP_ENV} secret_devops=${env.SECRETDEVOPS_ENV} ROOTKEY="" KEYNAME=${env.ROOTKEY_ENV} TypeName=${env.TYPENAME_ENV} REGION=${env.REGION1_ENV} SubnetIdPub=${env.SUBIDPUB_ENV} SubnetIdPriv=${env.SUBIDPRIV_ENV} VpcId=${env.VPCID_ENV} PrivateIP=${env.PRIVIP_ENV} IngressPort=${env.INGRPORT_ENV} SecurityGroupNameList=${env.SECGRPNLST_ENV} Urlscript=${env.USCRIPT_ENV} SecurityGroupId=${env.SECGRPID_ENV} InstanceType=${env.INSTTYPE_ENV}"
+                )
             }
         }
+
+//        stage('deleteEC2ansible') {
+//            steps {
+//                    sh """#!/bin/bash
+//                    /var/lib/jenkins/.local/bin/ansible-playbook -i infra/ansible/inventory/${ENVIRONNEMENT}/hosts infra/ansible/${ENVIRONNEMENT}.yml --vault-password-file /var/lib/jenkins/ansvlt.sh --extra-vars \"GOTODEL=yes secret_devops=${env.SECRETDEVOPS_ENV} ROOTKEY=${env.ROOTKEY_ENV} KEYNAME=${env.ROOTKEY_ENV} TypeName=${env.TYPENAME_ENV} REGION=${env.REGION1_ENV} SubnetIdPub=${env.SUBIDPUB_ENV} SubnetIdPriv=${env.SUBIDPRIV_ENV} VpcId=${env.VPCID_ENV} PrivateIP=${env.PRIVIP_ENV} IngressPort=${env.INGRPORT_ENV} SecurityGroupNameList=${env.SECGRPNLST_ENV} Urlscript=${env.USCRIPT_ENV} SecurityGroupId=${env.SECGRPID_ENV} InstanceType=${env.INSTTYPE_ENV}\" --tags \"clouddelete\"
+//                    """
+//            }
+//        }
 //A FAIRE TEST si EC2 DEL
-        stage('createEC2ansible') {
-            steps {
-                    sh """#!/bin/bash
-                    /var/lib/jenkins/.local/bin/ansible-playbook -i infra/ansible/inventory/${ENVIRONNEMENT}/hosts infra/ansible/${ENVIRONNEMENT}.yml --vault-password-file /var/lib/jenkins/ansvlt.sh --extra-vars \"ansible_environnement=dev VpcId=${VPCID_ENV} PrivateIP=${PRIVIP_ENV} secret_devops=${env.SECRETDEVOPS_ENV} ROOTKEY="" KEYNAME=${env.ROOTKEY_ENV} TypeName=${env.TYPENAME_ENV} REGION=${env.REGION1_ENV} SubnetIdPub=${env.SUBIDPUB_ENV} SubnetIdPriv=${env.SUBIDPRIV_ENV} VpcId=${env.VPCID_ENV} PrivateIP=${env.PRIVIP_ENV} IngressPort=${env.INGRPORT_ENV} SecurityGroupNameList=${env.SECGRPNLST_ENV} Urlscript=${env.USCRIPT_ENV} SecurityGroupId=${env.SECGRPID_ENV} InstanceType=${env.INSTTYPE_ENV}\"
-                    """
-            }
+//        stage('createEC2ansible') {
+//            steps {
+//                    sh """#!/bin/bash
+//                    /var/lib/jenkins/.local/bin/ansible-playbook -i infra/ansible/inventory/${ENVIRONNEMENT}/hosts infra/ansible/${ENVIRONNEMENT}.yml --vault-password-file /var/lib/jenkins/ansvlt.sh --extra-vars \"ansible_environnement=dev VpcId=${VPCID_ENV} PrivateIP=${PRIVIP_ENV} secret_devops=${env.SECRETDEVOPS_ENV} ROOTKEY="" KEYNAME=${env.ROOTKEY_ENV} TypeName=${env.TYPENAME_ENV} REGION=${env.REGION1_ENV} SubnetIdPub=${env.SUBIDPUB_ENV} SubnetIdPriv=${env.SUBIDPRIV_ENV} VpcId=${env.VPCID_ENV} PrivateIP=${env.PRIVIP_ENV} IngressPort=${env.INGRPORT_ENV} SecurityGroupNameList=${env.SECGRPNLST_ENV} Urlscript=${env.USCRIPT_ENV} SecurityGroupId=${env.SECGRPID_ENV} InstanceType=${env.INSTTYPE_ENV}\"
+//                    """
+//            }
 
-        }
+//        }
 
 //A FAIRE TEST si EC2 OK
     }
