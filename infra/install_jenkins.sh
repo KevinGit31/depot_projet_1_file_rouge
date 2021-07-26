@@ -80,8 +80,8 @@ echo "RET=$(sudo cat /etc/ansible/.ansvlt)" >> /etc/ansible/ansvlt.sh
 echo "echo \$RET" >> /etc/ansible/ansvlt.sh
 chmod +x /etc/ansible/ansvlt.sh
 #configuration ansible vault paswword
-sed -i 's/\#vault_password_file = \/path\/to\/vault_password_file/vault_password_file=\/etc\/ansible\/ansvlt.sh/' /etc/ansible/ansible.cfg
-
+#sed -i 's/\#vault_password_file = \/path\/to\/vault_password_file/vault_password_file=\/etc\/ansible\/ansvlt.sh/' /etc/ansible/ansible.cfg
+#--vault-password-file /etc/ansible/ansvlt.sh
 
 
 sed -i 's/\/jenkins:\/bin\/false/\/jenkins:\/bin\/bash/' /etc/passwd
