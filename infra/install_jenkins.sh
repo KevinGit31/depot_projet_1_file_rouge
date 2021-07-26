@@ -41,6 +41,7 @@ amazon-linux-extras install -y java-openjdk11
 yum install -y gnupg
 yum install -y git
 yum install -y unzip
+yum install -y gcc
 #yum install -y python3
 
 pip3 install pip --upgrade
@@ -54,10 +55,10 @@ yum install -y python3-pip
 curl -L  https://www.python.org/ftp/python/3.8.3/Python-3.8.3.tgz -o /tmp/Python-3.8.3.tgz
 cd /tmp && tar xvf Python-3.8.3.tgz
 cd /tmp/Python-3.8.3
-./configure
+./configure --enable-optimizations
 make install
-cd /usr/bin && ln -s /usr/local/bin/python3.8 python3
-cd /usr/bin && ln -s /usr/local/bin/pip3 pip
+
+
 
 # installation jenkins
 yum install -y  jenkins
