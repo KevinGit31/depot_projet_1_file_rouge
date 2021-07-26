@@ -51,9 +51,11 @@ yum install -y python3-pip
 
 #yum -y groupinstall "Development Tools"
 #yum -y install openssl-devel bzip2-devel libffi-devel
-su - jenkins -c " curl -L  https://www.python.org/ftp/python/3.8.3/Python-3.8.3.tgz -o /tmp/Python-3.8.3.tgz"
-su - jenkins -c "cd /tmp && tar xvf Python-3.8.3.tgz"
-su - jenkins -c " cd /tmp/Python-3.8.3 && ./configure --enable-optimizations && make altinstall"
+curl -L  https://www.python.org/ftp/python/3.8.3/Python-3.8.3.tgz -o /tmp/Python-3.8.3.tgz
+cd /tmp && tar xvf Python-3.8.3.tgz
+cd /tmp/Python-3.8.3
+./configure
+make install
 cd /usr/bin && ln -s /usr/local/bin/python3.8 python3
 cd /usr/bin && ln -s /usr/local/bin/pip3 pip
 
