@@ -41,23 +41,14 @@ amazon-linux-extras install -y java-openjdk11
 yum install -y gnupg
 yum install -y git
 yum install -y unzip
-yum install -y gcc
-#yum install -y python3
-
+amazon-linux-extras install python3.8
+rm /usr/bin/python
+ln -s /usr/bin/python3.8 /usr/bin/python
 pip3 install pip --upgrade
 pip3 install ansible
 pip3 install boto3
 pip3 install botocore
 yum install -y python3-pip
-
-#yum -y groupinstall "Development Tools"
-#yum -y install openssl-devel bzip2-devel libffi-devel
-curl -L  https://www.python.org/ftp/python/3.8.3/Python-3.8.3.tgz -o /tmp/Python-3.8.3.tgz
-cd /tmp && tar xvf Python-3.8.3.tgz
-cd /tmp/Python-3.8.3
-./configure --enable-optimizations
-make install
-
 
 
 # installation jenkins
@@ -98,7 +89,7 @@ sed -i 's/\/jenkins:\/bin\/false/\/jenkins:\/bin\/bash/' /etc/passwd
 #su - userjenkins -c "cd /home/userjenkins && wget -O $ENV1.zip https://github.com/KevinGit31/depot_projet_1_file_rouge/archive/refs/heads/$ENV1.zip && unzip $ENV1.zip && mv depot_projet_1_file_rouge* depot_projet_1_file_rouge && chmod +x /home/userjenkins/depot_projet_1_file_rouge/infra/ansvlt.sh && exit"
 su - devops -c "cd /tmp && /bin/bash ssh.sh && exit"
 su - jenkins -c "mkdir ~/.aws && cd ~/.aws && echo \"[default]\" >> credentials && echo \"aws_access_key_id=$AAKI1\" >> credentials && echo \"aws_secret_access_key=$ASAKI1\" >> credentials && exit"
-su - jenkins -c "echo \"export PATH=$PATH:/usr/local/bin\" >> ~/.bashrc"
+#su - jenkins -c "echo \"export PATH=$PATH:/usr/local/bin\" >> ~/.bashrc"
 su - jenkins -c "cd ~/.aws && echo \"[default]\" >> config && echo \"region=$REGION1\" >> config && echo \"output=json\" >> config && exit"
 su - jenkins -c "echo \"export SECRETDEVOPS=$DEVOPSPWD\" >> ~/.bashrc"
 #su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $DEVOPSPWD --name \"secret_devops\" >> all && exit"
