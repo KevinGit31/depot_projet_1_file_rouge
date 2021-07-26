@@ -501,12 +501,13 @@ Resources:
           echo ${AnsibleKey} > /tmp/ansiblekey.txt
           echo ${Environnement} > /tmp/env.txt
           if [[ ${PrivateIP} =~ 10.80.140.10 ]]; then
-              CMDSCRIPT4=$(wget -O /tmp/ssh.sh https://github.com/KevinGit31/depot_projet_1_file_rouge/raw/${Environnement}/infra/ssh.sh && chmod +x /tmp/ssh.sh)
-              CMDSCRIPT1=$(wget -O /tmp/install_jenkins.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/${Environnement}/infra/install_jenkins.sh && chmod +x /tmp/install_jenkins.sh && /bin/bash /tmp/install_jenkins.sh)
+              wget -O /tmp/ssh.sh https://github.com/KevinGit31/depot_projet_1_file_rouge/raw/${Environnement}/infra/ssh.sh && chmod +x /tmp/ssh.sh
+              wget -O /tmp/install_jenkins.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/${Environnement}/infra/install_jenkins.sh && chmod +x /tmp/install_jenkins.sh && /bin/bash /tmp/install_jenkins.sh
+              curl https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py
           elif [[ ${PrivateIP} =~ 10.80.140.11 ]]; then
-              CMDSCRIPT2=$(wget -O /tmp/install_nexus.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/${Environnement}/infra/install_nexus.sh && chmod +x /tmp/install_nexus.sh && /bin/bash /tmp/install_nexus.sh)
+              wget -O /tmp/install_nexus.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/${Environnement}/infra/install_nexus.sh && chmod +x /tmp/install_nexus.sh && /bin/bash /tmp/install_nexus.sh
           elif [[ ${PrivateIP} =~ 10.80.110.* || ${PrivateIP} =~ 10.80.120.* || ${PrivateIP} =~ 10.80.130.* ]]; then
-              CMDSCRIPT3=$(wget -O /tmp/install_qcm.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/${Environnement}/infra/install_qcm.sh && chmod +x /tmp/install_qcm.sh && /bin/bash /tmp/install_qcm.sh)
+              wget -O /tmp/install_qcm.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/${Environnement}/infra/install_qcm.sh && chmod +x /tmp/install_qcm.sh && /bin/bash /tmp/install_qcm.sh
               echo "5000" > /tmp/IngressPort.txt
           fi
           sleep 4m

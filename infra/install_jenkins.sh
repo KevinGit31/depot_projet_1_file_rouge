@@ -20,7 +20,7 @@ AAKI1=$(cat /tmp/AWSAccessKeyId.txt)
 ASAKI1=$(cat /tmp/AWSSecretAccessKeyId.txt)
 TYPENAME1=$(cat /tmp/TypeName.txt)
 
-
+sleep 120s
 #install java
 yum install -y java-1.8.0-openjdk-devel
 #recuperation package
@@ -83,13 +83,12 @@ echo "root:$ROOTPASS" | chpasswd
 amazon-linux-extras install python3.8
 rm /usr/bin/python
 ln -s /usr/bin/python3.8 /usr/bin/python
-curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-python3.8 get-pip.py
 
-pip install --user pip --upgrade
-pip install --user ansible
-pip install --user boto3
-pip install --user botocore
+python3.8 /tmp/get-pip.py
+
+pip install pip --upgrade
+pip install boto3
+pip install botocore
 
 
 sed -i 's/\/jenkins:\/bin\/false/\/jenkins:\/bin\/bash/' /etc/passwd
