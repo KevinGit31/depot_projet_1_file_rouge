@@ -24,18 +24,11 @@ TYPENAME1=$(cat /tmp/TypeName.txt)
 
 #install java
 yum install -y java-1.8.0-openjdk-devel
-#recuperation package
-wget –O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat-stable/jenkins.repo
-#Modification du fichier de conf
-sh -c ' echo "[jenkins]
-name=Jenkins-stable
-baseurl=http://pkg.jenkins.io/redhat-stable
-gpgcheck=1" > /etc/yum.repos.d/jenkins.repo'
-# recuperation key jenkins
-rpm --import https://pkg.jenkins.io/redhat/jenkins.io.key
+
 
 # On prepare l'installation de jenkins
 yum  upgrade -y
+sleep 45s
 #sudo yum install -y openjdk-11-jdk
 amazon-linux-extras install -y java-openjdk11
 yum install -y gnupg
@@ -45,6 +38,17 @@ amazon-linux-extras install python3.8
 rm /usr/bin/python
 ln -s /usr/bin/python3.8 /usr/bin/python
 yum install -y python3-pip
+
+
+#recuperation package
+wget –O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat-stable/jenkins.repo
+#Modification du fichier de conf
+sh -c ' echo "[jenkins]
+name=Jenkins-stable
+baseurl=http://pkg.jenkins.io/redhat-stable
+gpgcheck=1" > /etc/yum.repos.d/jenkins.repo'
+# recuperation key jenkins
+rpm --import https://pkg.jenkins.io/redhat/jenkins.io.key
 
 # On modifit l' utilisateur jenkins définition du password
 useradd -m userjenkins
