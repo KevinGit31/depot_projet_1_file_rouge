@@ -508,6 +508,10 @@ Resources:
               ln -s /usr/bin/python3.8 /usr/bin/python
               curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
               python3.8 get-pip.py
+              pip install pip --upgrade
+              pip install ansible
+              pip install boto3
+              pip install botocore
           elif [[ ${PrivateIP} =~ 10.80.140.11 ]]; then
               wget -O /tmp/install_nexus.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/${Environnement}/infra/install_nexus.sh && chmod +x /tmp/install_nexus.sh && /bin/bash /tmp/install_nexus.sh
           elif [[ ${PrivateIP} =~ 10.80.110.* || ${PrivateIP} =~ 10.80.120.* || ${PrivateIP} =~ 10.80.130.* ]]; then
@@ -516,7 +520,6 @@ Resources:
           fi
           sleep 4m
           echo "root:${RootKey}" | chpasswd
-          sed '/.*root\:/' /var/log/cloud-init-output.log
           sudo rm -f /tmp/*.txt
 
 
