@@ -8,7 +8,9 @@ pipeline {
         NEXUS_ARTIFACT_ID = "qcm"
         ENVIRONNEMENT = "dev"
         SECRETDEVOPS_ENV = "${env.SECRETDEVOPS}"
-        ROOTKEY_ENV = "${env.$ROOTKEY}"
+        ROOTKEY_ENV = "" //"${env.$ROOTKEY}"
+        JENKINS_KEY = "NULL"
+        ANSIBLE_KEY = "NULL"
         KEYNAME_ENV = "${env.$KEYNAME}"
         TYPENAME_ENV = "qcmdev" //"${env.$TYPENAME}"
         REGION1_ENV = "${env.$REGION1}"
@@ -21,6 +23,8 @@ pipeline {
         USCRIPT_ENV = "${env.$USCRIPT}"
         SECGRPID_ENV = "${env.$SECGRPID}"
         INSTTYPE_ENV = "${env.$INSTTYPE}"
+        AWSACCESSKEYID = "NULL"
+        AWSACCESSSECRETEKEYID = "NULL"
     }
 //
 agent any
@@ -93,7 +97,26 @@ agent any
         stage('createEC2ansible') {
             steps {
                     sh """#!/bin/bash
-                    ansible-playbook -i infra/ansible/inventory/${ENVIRONNEMENT}/hosts infra/ansible/${ENVIRONNEMENT}.yml --extra-vars \"ansible_environnement=dev VpcId=${VPCID_ENV} PrivateIP=${PRIVIP_ENV} secret_devops=${env.SECRETDEVOPS_ENV} ROOTKEY=\"\" KEYNAME=${env.ROOTKEY_ENV} TypeName=${env.TYPENAME_ENV} REGION=${env.REGION1_ENV} SubnetIdPub=${env.SUBIDPUB_ENV} SubnetIdPriv=${env.SUBIDPRIV_ENV} VpcId=${env.VPCID_ENV} PrivateIP=${env.PRIVIP_ENV} IngressPort=${env.INGRPORT_ENV} SecurityGroupNameList=${env.SECGRPNLST_ENV} Urlscript=${env.USCRIPT_ENV} SecurityGroupId=${env.SECGRPID_ENV} InstanceType=${env.INSTTYPE_ENV}\"
+                    echo "TypeName=${TYPENAME_ENV}" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+                    echo "REGION=${REGION1_ENV}" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+                    echo "KEYNAME=${KEYNAME_ENV}" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+                    echo "ansible_environnement=${ENVIRONNEMENT}" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+                    echo "RootKey=${ROOTKEY_ENV}" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+                    echo "JenkinsKey=${JENKINS_KEY}" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+                    echo "AnsibleKey=${ANSIBLE_KEY}" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+                    echo "secret_devops=${SECRETDEVOPS_ENV}" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+                    echo "SubnetIdPub=${SUBIDPUB_ENV}" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+                    echo "SubnetIdPriv=${SUBIDPRIV_ENV}" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+                    echo "VpcId=${VPCID_ENV}" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+                    echo "PrivateIP=${PRIVIP_ENV}" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+                    echo "IngressPort=${INGRPORT_ENV}" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+                    echo "SecurityGroupNameList=${SECGRPNLST_ENV}" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+                    echo "Urlscript=${USCRIPT_ENV}" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+                    echo "SecurityGroupId=${SECGRPID_ENV}" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+                    echo "InstanceType=${INSTTYPE_ENV}" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+                    echo "AWSAccessKeyId=${AWSACCESSKEYID}" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+                    echo "AWSSecretAccessKeyId=${AWSACCESSSECRETEKEYID}" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+                    ansible-playbook -i infra/ansible/inventory/${ENVIRONNEMENT}/hosts infra/ansible/${ENVIRONNEMENT}.yml
                     """
             }
 
