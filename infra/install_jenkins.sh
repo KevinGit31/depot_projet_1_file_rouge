@@ -57,13 +57,6 @@ echo 'userjenkins   ALL=(ALL)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
 usermod -a -G jenkins userjenkins
 usermod -a -G userjenkins jenkins
 
-su - jenkins -c "sudo pip3 install pip --upgrade"
-su - jenkins -c "sudo pip3 install ansible"
-su - jenkins -c "sudo pip3 install boto3"
-su - jenkins -c "sudo pip3 install botocore"
-
-
-
 # installation jenkins
 yum install -y  jenkins
 sleep 5
@@ -71,6 +64,11 @@ sleep 5
 systemctl start jenkins
 /sbin/chkconfig jenkins on
 
+
+su - jenkins -c "sudo pip3 install pip --upgrade"
+su - jenkins -c "sudo pip3 install ansible"
+su - jenkins -c "sudo pip3 install boto3"
+su - jenkins -c "sudo pip3 install botocore"
 
 
 
