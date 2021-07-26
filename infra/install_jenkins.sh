@@ -72,7 +72,7 @@ echo "root:$ROOTPASS" | chpasswd
 #echo \"export PATH=$PATH:/usr/local/bin\" >> ~/.bashrc
 
 #install ansible
-#amazon-linux-extras install ansible2 -y
+amazon-linux-extras install ansible2 -y
 
 echo "#!/bin/bash" >> /var/lib/jenkins/ansvlt.sh
 echo "echo \$ANS" >> /var/lib/jenkins/ansvlt.sh
@@ -80,7 +80,7 @@ chmod +x /var/lib/jenkins/ansvlt.sh
 chown jenkins: /var/lib/jenkins/ansvlt.sh
 
 pip install --user pip --upgrade
-pip install --user ansible
+#pip install --user ansible
 pip install --user boto3
 pip install --user botocore
 
