@@ -12,7 +12,7 @@
       stack_name: "{{ TypeName }}"
       region: "{{ REGION }}"
       state: "absent"
-    backoff_max_delay: 105
+    backoff_max_delay: 40
     # tags:
     #   - clouddelete: "ansible-cloudformation-delete"
     # when: GOTODEL == "yes"
