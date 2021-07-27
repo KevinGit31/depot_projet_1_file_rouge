@@ -9,6 +9,14 @@ KEYNAME1=$(cat /tmp/KeyName.txt)
 REGION1=$(cat /tmp/region.txt)
 SUBIDPUB1=$(cat /tmp/SubnetIdPub.txt)
 SUBIDPRIV1=$(cat /tmp/SubnetIdPriv.txt)
+SUBIDPUBADM1=$(cat /tmp/SubnetIdPubADM.txt)
+SUBIDPRIVADM1=$(cat /tmp/SubnetIdPrivADM.txt)
+SUBIDPUBDEV1=$(cat /tmp/SubnetIdPubDEV.txt)
+SUBIDPRIVDEV1=$(cat /tmp/SubnetIdPrivDEV.txt)
+SUBIDPUBQUA1=$(cat /tmp/SubnetIdPubQUA.txt)
+SUBIDPRIVQUA1=$(cat /tmp/SubnetIdPrivQUA.txt)
+SUBIDPUBPROD1=$(cat /tmp/SubnetIdPubPROD.txt)
+SUBIDPRIVPROD1=$(cat /tmp/SubnetIdPrivPROD.txt)
 VPCID1=$(cat /tmp/VpcId.txt)
 PRIVIP1=$(cat /tmp/PrivateIP.txt)
 INGRPORT1=$(cat /tmp/IngressPort.txt)
@@ -87,7 +95,9 @@ echo "echo \$RET" >> /etc/ansible/ansvlt.sh
 #pip2 install --user botocore
 #pip uninstall -y s3transfer
 #pip install s3transfer==0.3.4
-
+pip install boto3==1.15.16
+pip uninstall -y botocore
+pip install botocore==1.18.6
 #configuration ansible vault paswword
 sed -i 's/\#vault_password_file = \/path\/to\/vault_password_file/vault_password_file=\/etc\/ansible\/ansvlt.sh/' /etc/ansible/ansible.cfg
 #--vault-password-file /etc/ansible/ansvlt.sh
@@ -103,28 +113,28 @@ su - jenkins -c "echo \"export ANS=$ANSIBPASS\" >> ~/.bashrc"
 #su - userjenkins -c "echo \"export ROOTKEY=$ROOTPASS\" >> ~/.bashrc"
 #su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $ROOTPASS --name \"ROOTKEY\" >> all && exit"
 su - jenkins -c "echo \"export KEYNAME=$KEYNAME1\" >> ~/.bashrc"
-#su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $KEYNAME1 --name \"KEYNAME\" >> all && exit"
 su - jenkins -c "echo \"export TYPENAME=$TYPENAME1\" >> ~/.bashrc"
-#su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $TYPENAME1 --name \"TypeName\" >> all && exit"
 su - jenkins -c "echo \"export REGION=$REGION1\" >> ~/.bashrc"
-#su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $REGION1 --name \"REGION\" >> all && exit"
+
 su - jenkins -c "echo \"export SUBIDPUB=$SUBIDPUB1\" >> ~/.bashrc"
-#su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $SUBIDPUB1 --name \"SubnetIdPub\" >> all && exit"
 su - jenkins -c "echo \"export SUBIDPRIV=$SUBIDPRIV1\" >> ~/.bashrc"
-#su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $SUBIDPRIV1 --name \"SubnetIdPriv\" >> all && exit"
+su - jenkins -c "echo \"export SUBIDPUBADM=$SUBIDPUBADM1\" >> ~/.bashrc"
+su - jenkins -c "echo \"export SUBIDPRIVADM=$SUBIDPRIVADM1\" >> ~/.bashrc"
+su - jenkins -c "echo \"export SUBIDPUBDEV=$SUBIDPUBDEV1\" >> ~/.bashrc"
+su - jenkins -c "echo \"export SUBIDPRIVDEV=$SUBIDPRIVDEV1\" >> ~/.bashrc"
+su - jenkins -c "echo \"export SUBIDPUBQUA=$SUBIDPUBQUA1\" >> ~/.bashrc"
+su - jenkins -c "echo \"export SUBIDPRIVQUA=$SUBIDPRIVQUA1\" >> ~/.bashrc"
+su - jenkins -c "echo \"export SUBIDPUBPROD=$SUBIDPUBPROD1\" >> ~/.bashrc"
+su - jenkins -c "echo \"export SUBIDPRIVPROD=$SUBIDPRIVPROD1\" >> ~/.bashrc"
+
 su - jenkins -c "echo \"export VPCID=$VPCID1\" >> ~/.bashrc"
-#su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $VPCID1 --name \"VpcId\" >> all && exit"
 su - jenkins -c "echo \"export PRIVIP=$PRIVIP1\" >> ~/.bashrc"
-#su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $PRIVIP1 --name \"PrivateIP\" >> all && exit"
 su - jenkins -c "echo \"export INGRPORT=$INGRPORT1\" >> ~/.bashrc"
-#su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $INGRPORT --name \"IngressPort\" >> all && exit"
-su - jenkins -c "echo \"export SECGRPNLST=$SECGRPNLST\" >> ~/.bashrc"
-#su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $SECGRPNLST --name \"SecurityGroupNameList\" >> all && exit"
+su - jenkins -c "echo \"export SECGRPNLST=$SECGRPNLST1\" >> ~/.bashrc"
 su - jenkins -c "echo \"export USCRIPT=$USCRIPT1\" >> ~/.bashrc"
-#su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $USCRIPT --name \"Urlscript\" >> all && exit"
 su - jenkins -c "echo \"export SECGRPID=$SECGRPID1\" >> ~/.bashrc"
-#su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $SECGRPID --name \"SecurityGroupId\" >> all && exit"
 su - jenkins -c "echo \"export INSTTYPE=$INSTTYPE1\" >> ~/.bashrc"
+
 #su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $INSTTYPE --name \"InstanceType\" >> all && exit"
 #su - userjenkins -c "cd /home/userjenkins && cat /home/userjenkins/all >> /home/userjenkins/depot_projet_1_file_rouge/infra/ansible/inventory/dev/group_vars/all/all"
 #su - userjenkins -c "cd /home/userjenkins && cat /home/userjenkins/all >> /home/userjenkins/depot_projet_1_file_rouge/infra/ansible/inventory/qua/group_vars/all/all"

@@ -17,14 +17,38 @@ Parameters:
     Type: String
 #    Type: AWS::EC2::VPC::Id
     Description: 'The VPC ID'
-  SubnetIdPub:
+  SubnetIdPubADM:
     Type: String
 #    Type: AWS::EC2::Subnet::Id
-    Description: 'The Subnet ID public'
-  SubnetIdPriv:
+    Description: 'The Subnet ID public ADM'
+  SubnetIdPubDEV:
     Type: String
 #    Type: AWS::EC2::Subnet::Id
-    Description: 'The Subnet ID private'
+    Description: 'The Subnet ID public DEV'
+  SubnetIdPubQUA:
+    Type: String
+#    Type: AWS::EC2::Subnet::Id
+    Description: 'The Subnet ID public QUA'
+  SubnetIdPubPROD:
+    Type: String
+#    Type: AWS::EC2::Subnet::Id
+    Description: 'The Subnet ID public PROD'
+  SubnetIdPrivADM:
+    Type: String
+#    Type: AWS::EC2::Subnet::Id
+    Description: 'The Subnet ID private ADM'
+  SubnetIdPrivDEV:
+    Type: String
+#    Type: AWS::EC2::Subnet::Id
+    Description: 'The Subnet ID private DEV'
+  SubnetIdPrivQUA:
+    Type: String
+#    Type: AWS::EC2::Subnet::Id
+    Description: 'The Subnet ID private QUA'
+  SubnetIdPrivPROD:
+    Type: String
+#    Type: AWS::EC2::Subnet::Id
+    Description: 'The Subnet ID private PROD'
   PrivateIP:
     Type: String
     Description: 'Exemple ip 10.80.140.x'
@@ -146,6 +170,17 @@ Parameters:
       - cc2.8xlarge
       - cg1.4xlarge
     ConstraintDescription: must be a valid EC2 instance type.
+Conditions:
+  SubnetChoicejenkins:
+    !Equals [!Ref TypeName, 'jenkins']
+  SubnetChoicenexus:
+    !Equals [!Ref TypeName, 'nexus']
+  SubnetChoiceqcmdev:
+    !Equals [!Ref TypeName, 'qcmdev']
+  SubnetChoiceqcmqua:
+    !Equals [!Ref TypeName, 'qcmqua']
+  SubnetChoiceqcmprod:
+    !Equals [!Ref TypeName, 'qcmprod']
 Mappings:
   AWSInstanceType2Arch:
     t1.micro:
@@ -436,6 +471,8 @@ Mappings:
       HVMG2: ami-0fe84a5b4563d8f27
 
 Resources:
+  SubnetIdPriv: !If [SubnetChoicejenkins,!Ref SubnetIdPrivADM, !If [SubnetChoicenexus,!Ref SubnetIdPrivADM, !If [SubnetChoiceqcmdev,!Ref SubnetIdPrivDEV, !If [SubnetChoiceqcmqua,!Ref SubnetIdPrivQUA, !If [SubnetChoiceqcmprod,!Ref SubnetIdPrivPROD, !Ref SubnetIdPrivADM]]]] ]
+  SubnetIdPub: !If [SubnetChoicejenkins,!Ref SubnetIdPubADM, !If [SubnetChoicenexus,!Ref SubnetIdPubADM, !If [SubnetChoiceqcmdev,!Ref SubnetIdPubDEV, !If [SubnetChoiceqcmqua,!Ref SubnetIdPubQUA, !If [SubnetChoiceqcmprod,!Ref SubnetIdPubPROD, !Ref SubnetIdPubADM]]]] ]
   Grp3SecurityGroupingress:
     Type: 'AWS::EC2::SecurityGroupIngress'
     Properties:
@@ -488,6 +525,14 @@ Resources:
           echo ${AWS::Region} > /tmp/region.txt
           echo ${SubnetIdPub} > /tmp/SubnetIdPub.txt
           echo ${SubnetIdPriv} > /tmp/SubnetIdPriv.txt
+          echo ${SubnetIdPubADM} > /tmp/SubnetIdPubADM.txt
+          echo ${SubnetIdPrivADM} > /tmp/SubnetIdPrivADM.txt
+          echo ${SubnetIdPubDEV} > /tmp/SubnetIdPubDEV.txt
+          echo ${SubnetIdPrivDEV} > /tmp/SubnetIdPrivDEV.txt
+          echo ${SubnetIdPubQUA} > /tmp/SubnetIdPubQUA.txt
+          echo ${SubnetIdPrivQUA} > /tmp/SubnetIdPrivQUA.txt
+          echo ${SubnetIdPubPROD} > /tmp/SubnetIdPubPROD.txt
+          echo ${SubnetIdPrivPROD} > /tmp/SubnetIdPrivPROD.txt
           echo ${VpcId} > /tmp/VpcId.txt
           echo ${PrivateIP} > /tmp/PrivateIP.txt
           echo ${IngressPort} > /tmp/IngressPort.txt

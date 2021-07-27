@@ -2,9 +2,7 @@
 
 #
 - name: delete a stack
-  amazon.aws.cloudformation:
-    stack_name: "{{ TYPENAME }}"
-    state: "absent"
+  shell: aws cloudformation delete-stack --stack-name "{{ TYPENAME }}"
   tags:
     - clouddelete: "ansible-cloudformation-delete"
   when: GOTODEL == "yes"

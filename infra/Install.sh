@@ -334,7 +334,6 @@ echo ""
 
 ######### START CREATION DE LA STACK INSTANCE  jenkins et nexus + UPDATE ET DELETE DE LA STACK #########
 ##
-
 select var in "${CHOIX[@]}"; do
     case $var in
         "CREATE")
@@ -348,12 +347,11 @@ select var in "${CHOIX[@]}"; do
             SVCTYPE="ec2"
             DESCRIBECMD="describe-security-groups"
             ##<==
-
             #Retour du tableau en index 0 SECGRPLISTID et index 1 SECGRPID
             eval $(FXAWS_DESCRIBE "$SVCTYPE" "$DESCRIBECMD" "$REGION" "$QUERY" "$FXDESC_FILTER1")
             SECGRPLISTID=$T1FXAWS_DESCRETURN
-
             SECGRPID=$T2FXAWS_DESCRETURN
+
 
             #Recuperation de la liste de subnet PRIVATE ADM
             FXDESC_FILTER1="PrivateSubnetADM"
@@ -362,11 +360,12 @@ select var in "${CHOIX[@]}"; do
             SVCTYPE="ec2"
             DESCRIBECMD="describe-subnets"
             ##<==
-
             #Retour du tableau SUBNETLISTIDPUB SUBNETLISTIDPUB et SUBNETLISTIDPRIV
             eval $(FXAWS_DESCRIBE "$SVCTYPE" "$DESCRIBECMD" "$REGION" "$QUERY" "$FXDESC_FILTER1")
             SUBNETLISTIDPRIVID=$T2FXAWS_DESCRETURN
             SUBNETLISTIDPRIV=$T1FXAWS_DESCRETURN
+
+
             #Recuperation de la liste de subnet public ADM
             FXDESC_FILTER1="PublicSubnetADM"
             #Filtre sur DBINSTANCE et cherche 2 éléments
@@ -374,17 +373,95 @@ select var in "${CHOIX[@]}"; do
             SVCTYPE="ec2"
             DESCRIBECMD="describe-subnets"
             ##<==
-
             #Retour du tableau SUBNETLISTIDPUB SUBNETLISTIDPUB et SUBNETLISTIDPRIV
             eval $(FXAWS_DESCRIBE "$SVCTYPE" "$DESCRIBECMD" "$REGION" "$QUERY" "$FXDESC_FILTER1")
             SUBNETLISTIDPUBID=$T2FXAWS_DESCRETURN
             SUBNETLISTIDPUB=$T1FXAWS_DESCRETURN
+
+
+            #Recuperation de la liste de subnet PRIVATE DEV
+            FXDESC_FILTER1="PrivateSubnetDEV"
+            #Filtre sur DBINSTANCE et cherche 2 éléments
+            QUERY="Subnets[*].[ [Tags[?Key==\`aws:cloudformation:logical-id\`].Value],[SubnetId] ]"
+            SVCTYPE="ec2"
+            DESCRIBECMD="describe-subnets"
+            ##<==
+            #Retour du tableau SUBNETLISTIDPUB SUBNETLISTIDPUB et SUBNETLISTIDPRIV
+            eval $(FXAWS_DESCRIBE "$SVCTYPE" "$DESCRIBECMD" "$REGION" "$QUERY" "$FXDESC_FILTER1")
+            SUBNETLISTIDPRIVDEVID=$T2FXAWS_DESCRETURN
+            SUBNETLISTIDPRIVDEV=$T1FXAWS_DESCRETURN
+
+
+            #Recuperation de la liste de subnet PUBLIC DEV
+            FXDESC_FILTER1="PublicSubnetDEV"
+            #Filtre sur DBINSTANCE et cherche 2 éléments
+            QUERY="Subnets[*].[ [Tags[?Key==\`aws:cloudformation:logical-id\`].Value],[SubnetId] ]"
+            SVCTYPE="ec2"
+            DESCRIBECMD="describe-subnets"
+            ##<==
+            #Retour du tableau SUBNETLISTIDPUB SUBNETLISTIDPUB et SUBNETLISTIDPRIV
+            eval $(FXAWS_DESCRIBE "$SVCTYPE" "$DESCRIBECMD" "$REGION" "$QUERY" "$FXDESC_FILTER1")
+            SUBNETLISTIDPUBDEVID=$T2FXAWS_DESCRETURN
+            SUBNETLISTIDPUBDEV=$T1FXAWS_DESCRETURN
+
+
+            #Recuperation de la liste de subnet PRIVATE QUA
+            FXDESC_FILTER1="PrivateSubnetQUA"
+            #Filtre sur DBINSTANCE et cherche 2 éléments
+            QUERY="Subnets[*].[ [Tags[?Key==\`aws:cloudformation:logical-id\`].Value],[SubnetId] ]"
+            SVCTYPE="ec2"
+            DESCRIBECMD="describe-subnets"
+            ##<==
+            #Retour du tableau SUBNETLISTIDPUB SUBNETLISTIDPUB et SUBNETLISTIDPRIV
+            eval $(FXAWS_DESCRIBE "$SVCTYPE" "$DESCRIBECMD" "$REGION" "$QUERY" "$FXDESC_FILTER1")
+            SUBNETLISTIDPRIVQUAID=$T2FXAWS_DESCRETURN
+            SUBNETLISTIDPRIVQUA=$T1FXAWS_DESCRETURN
+
+            #Recuperation de la liste de subnet PUBLIC QUA
+            FXDESC_FILTER1="PublicSubnetQUA"
+            #Filtre sur DBINSTANCE et cherche 2 éléments
+            QUERY="Subnets[*].[ [Tags[?Key==\`aws:cloudformation:logical-id\`].Value],[SubnetId] ]"
+            SVCTYPE="ec2"
+            DESCRIBECMD="describe-subnets"
+            ##<==
+            #Retour du tableau SUBNETLISTIDPUB SUBNETLISTIDPUB et SUBNETLISTIDPRIV
+            eval $(FXAWS_DESCRIBE "$SVCTYPE" "$DESCRIBECMD" "$REGION" "$QUERY" "$FXDESC_FILTER1")
+            SUBNETLISTIDPUBQUAID=$T2FXAWS_DESCRETURN
+            SUBNETLISTIDPUBQUA=$T1FXAWS_DESCRETURN
+
+
+            #Recuperation de la liste de subnet PRIVATE PROD
+            FXDESC_FILTER1="PrivateSubnetPROD"
+            #Filtre sur DBINSTANCE et cherche 2 éléments
+            QUERY="Subnets[*].[ [Tags[?Key==\`aws:cloudformation:logical-id\`].Value],[SubnetId] ]"
+            SVCTYPE="ec2"
+            DESCRIBECMD="describe-subnets"
+            ##<==
+            #Retour du tableau SUBNETLISTIDPUB SUBNETLISTIDPUB et SUBNETLISTIDPRIV
+            eval $(FXAWS_DESCRIBE "$SVCTYPE" "$DESCRIBECMD" "$REGION" "$QUERY" "$FXDESC_FILTER1")
+            SUBNETLISTIDPRIVPRODID=$T2FXAWS_DESCRETURN
+            SUBNETLISTIDPRIVPROD=$T1FXAWS_DESCRETURN
+
+
+            #Recuperation de la liste de subnet PUBLIC PROD
+            FXDESC_FILTER1="PublicSubnetPROD"
+            #Filtre sur DBINSTANCE et cherche 2 éléments
+            QUERY="Subnets[*].[ [Tags[?Key==\`aws:cloudformation:logical-id\`].Value],[SubnetId] ]"
+            SVCTYPE="ec2"
+            DESCRIBECMD="describe-subnets"
+            ##<==
+            #Retour du tableau SUBNETLISTIDPUB SUBNETLISTIDPUB et SUBNETLISTIDPRIV
+            eval $(FXAWS_DESCRIBE "$SVCTYPE" "$DESCRIBECMD" "$REGION" "$QUERY" "$FXDESC_FILTER1")
+            SUBNETLISTIDPUBPRODID=$T2FXAWS_DESCRETURN
+            SUBNETLISTIDPUBPROD=$T1FXAWS_DESCRETURN
+
+
             #Creation de l'instance
             #Retour instance Infos
             #RETINSTANCEINFOS=$($AWSBIN ec2 --region $REGION --output text )
             RETCODE="254"
 #            PARAM="ParameterKey=KeyName,ParameterValue=$KEYNAME ParameterKey=SubnetIdPub,ParameterValue=\"$SUBNETLISTIDPUBID\" ParameterKey=SSHLocation,ParameterValue=0.0.0.0/0 ParameterKey=SubnetIdPriv,ParameterValue=$SUBNETLISTIDPRIVID ParameterKey=PrivateIP,ParameterValue=$EC2PRIVIP ParameterKey=TypeName,ParameterValue=$TYPEINSTALL ParameterKey=IngressPort,ParameterValue=$PORTAPP ParameterKey=Urlscript,ParameterValue=$CMDSCRIPT ParameterKey=SecurityGroupNameList,ParameterValue=$SECGRPLISTID ParameterKey=SecurityGroupId,ParameterValue=$SECGRPID ParameterKey=InstanceType,ParameterValue=$TYPEINSTANCE"
-            PARAM="ParameterKey=KeyName,ParameterValue=$KEYNAME ParameterKey=Environnement,ParameterValue=dev ParameterKey=RootKey,ParameterValue=$ROOTKEY ParameterKey=JenkinsKey,ParameterValue=$JENKINSKEY ParameterKey=DevOpsKey,ParameterValue=$DEVOPSKEY ParameterKey=AnsibleKey,ParameterValue=$ANSIBKEY ParameterKey=SubnetIdPub,ParameterValue=$SUBNETLISTIDPUBID ParameterKey=SubnetIdPriv,ParameterValue=$SUBNETLISTIDPRIVID ParameterKey=VpcId,ParameterValue=$VPCID ParameterKey=PrivateIP,ParameterValue=$EC2PRIVIP ParameterKey=TypeName,ParameterValue=$TYPEINSTALL ParameterKey=IngressPort,ParameterValue=$PORTAPP ParameterKey=SecurityGroupNameList,ParameterValue=$SECGRPID ParameterKey=Urlscript,ParameterValue=$CMDSCRIPT ParameterKey=SecurityGroupId,ParameterValue=$SECGRPID ParameterKey=InstanceType,ParameterValue=$TYPEINSTANCE ParameterKey=AWSAccessKeyId,ParameterValue=$AAKI ParameterKey=AWSSecretAccessKeyId,ParameterValue=$ASAKI "
+            PARAM="ParameterKey=KeyName,ParameterValue=$KEYNAME ParameterKey=Environnement,ParameterValue=dev ParameterKey=RootKey,ParameterValue=$ROOTKEY ParameterKey=JenkinsKey,ParameterValue=$JENKINSKEY ParameterKey=DevOpsKey,ParameterValue=$DEVOPSKEY ParameterKey=AnsibleKey,ParameterValue=$ANSIBKEY ParameterKey=SubnetIdPubADM,ParameterValue=$SUBNETLISTIDPUBID ParameterKey=SubnetIdPrivADM,ParameterValue=$SUBNETLISTIDPRIVID ParameterKey=SubnetIdPubDEV,ParameterValue=$SUBNETLISTIDPUBDEVID ParameterKey=SubnetIdPrivDEV,ParameterValue=$SUBNETLISTIDPRIVDEVID ParameterKey=SubnetIdPubQUA,ParameterValue=$SUBNETLISTIDPUBQUAID ParameterKey=SubnetIdPrivQUA,ParameterValue=$SUBNETLISTIDPRIVQUAID ParameterKey=SubnetIdPubPROD,ParameterValue=$SUBNETLISTIDPUBPRODID ParameterKey=SubnetIdPrivPROD,ParameterValue=$SUBNETLISTIDPRIVPRODID ParameterKey=VpcId,ParameterValue=$VPCID ParameterKey=PrivateIP,ParameterValue=$EC2PRIVIP ParameterKey=TypeName,ParameterValue=$TYPEINSTALL ParameterKey=IngressPort,ParameterValue=$PORTAPP ParameterKey=SecurityGroupNameList,ParameterValue=$SECGRPID ParameterKey=Urlscript,ParameterValue=$CMDSCRIPT ParameterKey=SecurityGroupId,ParameterValue=$SECGRPID ParameterKey=InstanceType,ParameterValue=$TYPEINSTANCE ParameterKey=AWSAccessKeyId,ParameterValue=$AAKI ParameterKey=AWSSecretAccessKeyId,ParameterValue=$ASAKI "
 
             #echo $PARAM
             QUERY="Stacks[0].Outputs[?OutputKey=='GroupeSec1'].OutputValue"
