@@ -454,7 +454,7 @@ select var in "${CHOIX[@]}"; do
             eval $(FXAWS_DESCRIBE "$SVCTYPE" "$DESCRIBECMD" "$REGION" "$QUERY" "$FXDESC_FILTER1")
             SUBNETLISTIDPUBPRODID=$T2FXAWS_DESCRETURN
             SUBNETLISTIDPUBPROD=$T1FXAWS_DESCRETURN
-
+            echo "SUBNETLISTIDPUBPRODID $SUBNETLISTIDPUBPRODID"
 
             #Creation de l'instance
             #Retour instance Infos

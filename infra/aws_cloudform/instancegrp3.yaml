@@ -170,17 +170,6 @@ Parameters:
       - cc2.8xlarge
       - cg1.4xlarge
     ConstraintDescription: must be a valid EC2 instance type.
-Conditions:
-  SubnetChoicejenkins:
-    !Equals [!Ref TypeName, 'jenkins']
-  SubnetChoicenexus:
-    !Equals [!Ref TypeName, 'nexus']
-  SubnetChoiceqcmdev:
-    !Equals [!Ref TypeName, 'qcmdev']
-  SubnetChoiceqcmqua:
-    !Equals [!Ref TypeName, 'qcmqua']
-  SubnetChoiceqcmprod:
-    !Equals [!Ref TypeName, 'qcmprod']
 Mappings:
   AWSInstanceType2Arch:
     t1.micro:
@@ -471,8 +460,6 @@ Mappings:
       HVMG2: ami-0fe84a5b4563d8f27
 
 Resources:
-  SubnetIdPriv: !If [SubnetChoicejenkins,!Ref SubnetIdPrivADM, !If [SubnetChoicenexus,!Ref SubnetIdPrivADM, !If [SubnetChoiceqcmdev,!Ref SubnetIdPrivDEV, !If [SubnetChoiceqcmqua,!Ref SubnetIdPrivQUA, !If [SubnetChoiceqcmprod,!Ref SubnetIdPrivPROD, !Ref SubnetIdPrivADM]]]] ]
-  SubnetIdPub: !If [SubnetChoicejenkins,!Ref SubnetIdPubADM, !If [SubnetChoicenexus,!Ref SubnetIdPubADM, !If [SubnetChoiceqcmdev,!Ref SubnetIdPubDEV, !If [SubnetChoiceqcmqua,!Ref SubnetIdPubQUA, !If [SubnetChoiceqcmprod,!Ref SubnetIdPubPROD, !Ref SubnetIdPubADM]]]] ]
   Grp3SecurityGroupingress:
     Type: 'AWS::EC2::SecurityGroupIngress'
     Properties:
@@ -486,7 +473,7 @@ Resources:
     Type: 'AWS::EC2::Instance'
     Properties:
       InstanceType: !Ref InstanceType
-      SubnetId: !Ref SubnetIdPub
+      SubnetId: !Ref SubnetIdPubADM
       SecurityGroupIds:
         - !Ref SecurityGroupId
       KeyName: !Ref KeyName
@@ -637,7 +624,7 @@ Resources:
       - PrivateIpAddress: !Ref 'PrivateIP'
         Primary: 'True'
       SourceDestCheck: 'true'
-      SubnetId: !Ref 'SubnetIdPriv'
+      SubnetId: !Ref 'SubnetIdPrivADM'
       Tags:
       - Key: Name
         Value: Interface 1
