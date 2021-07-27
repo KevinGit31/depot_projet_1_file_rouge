@@ -12,6 +12,6 @@
       stack_name: "{{ TypeName }}"
       region: "{{ REGION }}"
       state: "absent"
-    tags:
-      - clouddelete: "ansible-cloudformation-delete"
+    # tags:
+    #   - clouddelete: "ansible-cloudformation-delete"
     # when: GOTODEL == "yes"
