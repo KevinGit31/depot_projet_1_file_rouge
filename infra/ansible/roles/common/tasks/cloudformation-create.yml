@@ -35,8 +35,8 @@
         Urlscript: "{{ Urlscript }}"
         SecurityGroupId: "{{ SecurityGroupId }}"
         InstanceType: "{{ InstanceType }}"
-        AWSAccessKeyId: "{{ AWSAccessKeyId }}"
-        AWSSecretAccessKeyId: "{{ AWSSecretAccessKeyId }}"
+        AWSAccessKeyId: "NONE"
+        AWSSecretAccessKeyId: "NONE"
       on_create_failure: DELETE
       backoff_max_delay: 300
 
