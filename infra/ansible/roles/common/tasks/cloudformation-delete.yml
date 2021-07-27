@@ -9,7 +9,7 @@
     cloudformation:
       aws_access_key: "{{ AWSAccessKeyId }}"
       aws_secret_key: "{{ AWSSecretAccessKeyId }}"
-      stack_name: "{{ TYPENAME }}"
+      stack_name: "{{ TypeName }}"
       region: "{{ REGION }}"
       state: "absent"
     tags:
