@@ -4,6 +4,7 @@
 - name: delete a stack
   amazon.aws.cloudformation:
     stack_name: "{{ TYPENAME }}"
+    region: "{{ REGION }}"
     state: "absent"
   tags:
     - clouddelete: "ansible-cloudformation-delete"
