@@ -7,6 +7,8 @@
   tasks:
   - name: create a cloudformation stack task
     cloudformation:
+      aws_access_key: "{{ AWSAccessKeyId }}"
+      aws_secret_key: "{{ AWSSecretAccessKeyId }}"
       stack_name: "{{ TypeName }}"
       state: "present"
       region: "{{ REGION }}"
