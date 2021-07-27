@@ -37,6 +37,9 @@
         InstanceType: "{{ InstanceType }}"
         AWSAccessKeyId: "{{ AWSAccessKeyId }}"
         AWSSecretAccessKeyId: "{{ AWSSecretAccessKeyId }}"
+      on_create_failure: DELETE
+      backoff_max_delay: 300
+
 #      tags:
 #        - cloudcreate: "ansible-cloudformation-create"
     register: stack

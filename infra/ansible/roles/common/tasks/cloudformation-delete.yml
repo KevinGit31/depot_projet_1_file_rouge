@@ -2,7 +2,7 @@
 
 #
 - name: delete a stack
-  amazon.aws.cloudformation:
+  cloudformation:
     stack_name: "{{ TYPENAME }}"
     region: "{{ REGION }}"
     state: "absent"
