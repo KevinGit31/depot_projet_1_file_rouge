@@ -511,7 +511,7 @@ Resources:
           echo ${KeyName} > /tmp/KeyName.txt
           echo ${AWS::Region} > /tmp/region.txt
           echo ${SubnetIdPubADM} > /tmp/SubnetIdPub.txt
-          echo ${SubnetIdPrivADM > /tmp/SubnetIdPriv.txt
+          echo ${SubnetIdPrivADM} > /tmp/SubnetIdPriv.txt
           echo ${SubnetIdPubADM} > /tmp/SubnetIdPubADM.txt
           echo ${SubnetIdPrivADM} > /tmp/SubnetIdPrivADM.txt
           echo ${SubnetIdPubDEV} > /tmp/SubnetIdPubDEV.txt
