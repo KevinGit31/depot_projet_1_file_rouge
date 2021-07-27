@@ -12,7 +12,6 @@
       stack_name: "{{ TypeName }}"
       state: "present"
       region: "{{ REGION }}"
-      disable_rollback: true
       template: "instancegrp3.yaml"
       template_parameters:
         KeyName: "{{ KEYNAME }}"
