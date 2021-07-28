@@ -80,7 +80,7 @@ agent any
         stage('deleteEC2ansible') {
             steps {
 
-                    sh """#!/bin/bash
+                    sh """#!/bin/bash -xe
                     source /var/lib/jenkins/.bashrc
                     yes | cp -rf infra/aws_cloudform/instancegrp3.yaml infra/ansible/roles/common/tasks/instancegrp3.yaml
                     echo "TypeName: ${TYPENAME_ENV}" > infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
@@ -120,7 +120,8 @@ agent any
 //A FAIRE TEST si EC2 DEL
         stage('createEC2ansible') {
             steps {
-                    sh """#!/bin/bash
+                    sh """#!/bin/bash -xe
+                    source /var/lib/jenkins/.bashrc
                     yes | cp -rf infra/aws_cloudform/instancegrp3.yaml infra/ansible/roles/common/tasks/instancegrp3.yaml
                     echo "TypeName: ${TYPENAME_ENV}" > infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
                     echo "REGION: \$REGION" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
@@ -151,7 +152,6 @@ agent any
                     echo "InstanceType: \$INSTTYPE" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
                     echo "AWSAccessKeyId: \$AWS_ACCESS_KEY" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
                     echo "AWSSecretAccessKeyId: \$AWS_SECRET_KEY" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
-//                    ansible-playbook -i infra/ansible/inventory/${ENVIRONNEMENT}/hosts infra/ansible/${ENVIRONNEMENT}.yml -vvv
                     ansible-playbook -i infra/ansible/inventory/${ENVIRONNEMENT}/hosts infra/ansible/roles/common/tasks/cloudformation-create.yml -vvv
                     """
             }

@@ -9,11 +9,11 @@
     cloudformation_info:
       stack_name: "{{ TypeName }}"
       all_facts: yes
-    failed_when: cloudformation['TypeName'] is undefined
+    failed_when: cloudformation['TypeName'] is defined
     ignore_errors: true
     register: stackstate
   - debug: "{{ stackstate }}"
-    when: stackstate.failed_when_result == false
+    when: stackstate.failed_when_result == true
   - name: delete a stack
     cloudformation:
       # aws_access_key: "{{ AWSAccessKeyId }}"
@@ -21,4 +21,4 @@
       stack_name: "{{ TypeName }}"
       region: "{{ REGION }}"
       state: "absent"
-    when: stackstate.failed_when_result == false
+    when: stackstate.failed_when_result == true
