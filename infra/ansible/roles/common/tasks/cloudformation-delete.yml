@@ -9,7 +9,7 @@
     cloudformation_info:
       stack_name: "{{ TypeName }}"
       all_facts: yes
-    failed_when: cloudformation['TypeName'] is defined
+    failed_when: cloudformation['TypeName'] is undefined
     ignore_errors: true
     register: stackstate
   - debug: "{{ stackstate }}"
