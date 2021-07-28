@@ -6,7 +6,7 @@
 
   tasks:
   - name: try to get facts about a stack but fail if it doesn't exist
-    amazon.aws.cloudformation_info:
+    cloudformation_info:
       stack_name: "{{ TypeName }}"
       all_facts: yes
     failed_when: cloudformation['TypeName'] is undefined
@@ -15,7 +15,7 @@
   - debug: "{{ stackstate }}"
     when: stackstate.failed_when_result == false
   - name: delete a stack
-    amazon.aws.cloudformation:
+    cloudformation:
       # aws_access_key: "{{ AWSAccessKeyId }}"
       # aws_secret_key: "{{ AWSSecretAccessKeyId }}"
       stack_name: "{{ TypeName }}"
