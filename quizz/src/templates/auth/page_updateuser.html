@@ -2,9 +2,9 @@
 
 {% block pills %}
 
-<h3>{% block subtitletext %} Ajouter un nouvel utilisateur {% endblock %}</h3>
+<h3>{% block subtitletext %} Modification des informations d'un utilisateur {% endblock %}</h3>
 
-<form method="put">
+<form method="post">
     <div class="row">
 
         <div class="col-12">
@@ -30,10 +30,18 @@
 
         <div class="col-12">
             <div class="form-group">
-                <label for="role">role</label>
-                <select class="form-control" name="role" id="role">
-                    {% for role in lst_role %}
-                    <option value="{{role.id}}">{{role.name}}}</option>
+                <label for="password">pseudo:</label>
+                <input type="text" placeholder="password" class="form-control" name="password" id="password">
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="form-group">
+                <label for="role_user">role</label>
+                <select class="form-control" name="role_user" id="role_user">
+                    <option value=""></option>
+                    {% for role in all_rols %}
+                    <option value="{{role.id}}" {% if role.id==user.role_id %} selected="selected" {% endif %}>{{role.name}}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -41,7 +49,7 @@
 
         <div class="col-12">
             <div class="float-right">
-                <a class="btn btn-second" href="{{ url_for('user') }}">Annuler</a>
+                <a class="btn btn-second" href="{{ url_for('listuser') }}">Annuler</a>
                 <button type="submit" class="btn btn-primary">Valider</button>
             </div>
         </div>

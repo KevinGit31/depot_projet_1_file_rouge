@@ -20,9 +20,10 @@ def add_user(request):
     _firstname = request.get('firstname')
     _lastname = request.get('lastname')
     _pseudo = request.get('pseudo')
+    _role_id = request.get('role_id')
 
     # Création d'un objet réponse
-    new_user = User(_firstname,_lastname, _pseudo)
+    new_user = User(_firstname,_lastname, _pseudo, _role_id)
 
     # Insertion dans la session de connexion courant
     db.session.add(new_user)
@@ -43,6 +44,7 @@ def update_user(id,request):
     updateuser.firstname = request.get('firstname')
     updateuser.lastname = request.get('lastname')
     updateuser.pseudo = request.get('pseudo')
+    updateuser.role_id = request.get('role_id')
 
     # Insertion dans la session de connexion courant
     db.session.add(updateuser)
@@ -77,6 +79,7 @@ def all_users():
 
     # Retour des réponses
     return jsonify(result)
+    #return "hello bonjour"
 
 # Récupérer une réponse
 def get_user(id):

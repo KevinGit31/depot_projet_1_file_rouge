@@ -7,7 +7,7 @@ parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 
 
-from app.app import db,ma
+from models.app import db,ma
 
 
 class User(db.Model):
@@ -16,24 +16,25 @@ class User(db.Model):
     firstname = db.Column(db.String(100))
     lastname = db.Column(db.String(100))
     pseudo = db.Column(db.String(100))
-
     role_id = db.Column(db.Integer, db.ForeignKey('role.id'))
-    password_id = db.Column(db.Integer, db.ForeignKey('password.id'))
-    password = db.relationship("Password", back_populates="user")
+    #role_id = db.Column(db.Integer, db.ForeignKey('role.id'))
+    #password_id = db.Column(db.Integer, db.ForeignKey('password.id'))
+    #password = db.relationship("Password", back_populates="user")
 
-    games = db.relationship("game")
+    #games = db.relationship("game")
 
     # Meta data
-    quizz_metadata_id = db.Column(db.Integer, db.ForeignKey('metadata.id'))
-    quizz_metadata = db.relationship("Metadata", back_populates="user")
+    #quizz_metadata_id = db.Column(db.Integer, db.ForeignKey('metadata.id'))
+    #quizz_metadata = db.relationship("Metadata", back_populates="user")
 
-    def __init__(self, firstname, lastname, pseudo):
+    def __init__(self, firstname, lastname, pseudo, role_id):
         self.firstname = firstname
         self.lastname = lastname
         self.pseudo = pseudo
+        self.role_id = role_id
 
 
 # User Schema
 class UserSchema(ma.Schema):
     class Meta:
-        fields = ('id', 'firstname', 'lastname', 'pseudo')
+        fields = ('id', 'firstname', 'lastname', 'pseudo', 'role_id')

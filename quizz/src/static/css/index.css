@@ -1,0 +1,25 @@
+html,
+body,
+.container-fluid-menu,
+.nav-pills-menu,
+.row-menu{ 
+    height:100%;
+}
+
+.nav-pills-menu{
+    background-color: #f5f6fa;
+}
+
+.nav-pills-content,.nav-pills-menu{
+    padding-top: 15px;
+}
+
+.btn-icon{
+    padding: 2px;
+    color: black;
+    cursor: pointer;
+}
+
+.btn-icon-danger:hover{
+    color: #e84118;
+}

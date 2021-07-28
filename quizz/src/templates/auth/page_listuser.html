@@ -8,9 +8,9 @@
     <table class="table table-striped table-bordered table-hover">
         {% for row in users_list %}
         <tr>
-            <td>{{ row.firstname + " " row.firstname}}</td>
-            <td><a class="btn btn-icon" href="{{ url_for('update_user',id=row.id) }}"><i class="fas fa-pen-square"></i></a></td>
-            <td><a class="btn btn-icon btn-icon-danger" href="{{ url_for('delete_user',id=row.id) }}"> <i class="fas fa-trash-alt"></i></a></td>
+            <td>{{ row.firstname }} {{ row.lastname }}</td>
+            <td><a class="btn btn-icon" href="{{ url_for('update_user',id=row.id) }}">Modifier user</a></td>
+            <td><a class="btn btn-icon btn-icon-danger" href="{{ url_for('delete_user',id=row.id) }}">Supprimer user</a></td>
         </tr>
         {% endfor %}
     </table>

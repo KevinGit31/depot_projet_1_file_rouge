@@ -7,7 +7,7 @@ currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentfram
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 
-from app.app  import db,ma
+from models.app  import db,ma
 
 from metadata import Metadata
 from auth.user import User
@@ -22,6 +22,7 @@ from quizz.answer import Answer
 if __name__ == "__main__":
 
     # Run this file directly to create the database tables.
-    print ("Creating database tables...") 
+    print ("Creating database tables...")
+    db.drop_all()
     db.create_all()
     print ("Done!")

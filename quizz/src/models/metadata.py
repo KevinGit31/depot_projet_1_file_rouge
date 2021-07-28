@@ -6,7 +6,7 @@ currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentfram
 parentdir = os.path.dirname(currentdir)
 sys.path.append(parentdir)
 
-from app.app import db,ma
+from models.app import db,ma
 
 class Metadata(db.Model):
 

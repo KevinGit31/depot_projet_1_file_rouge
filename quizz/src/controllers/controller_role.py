@@ -7,8 +7,8 @@ import inspect
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.append(parentdir)
-from quizz.src.models.auth.role import RoleSchema
-from quizz.src.services.srv_role import all_roles
+from models.auth.role import RoleSchema
+from services.srv_role import all_roles
 
 
 role_schema = RoleSchema(many=True)

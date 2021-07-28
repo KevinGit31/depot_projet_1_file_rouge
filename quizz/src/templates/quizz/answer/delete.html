@@ -1,21 +1,18 @@
 {% extends "quizz/answer/index.html" %}
 
 {% block pills %}
-
-<h3>{% block subtitletext %} Supprimer un utilisateur {% endblock %}</h3>
-
 <form method="post">
     <div class="row justify-content-center">
         <div class="col-8">
             <div class="card">
                 <div class="card-body">
-                    <h3 class="card-title">Suppression d'un utilisateur</h3>
+                    <h3 class="card-title">Suppression d'une réponse</h3>
 
-                    <p class="card-text">Souhaitez vous réellement supprimer l'utilisateur suivant: {{lstuser.firstname}} {{lstuser.lastname}} ?
+                    <p class="card-text">Souhaitez vous réellement supprimer la réponse ayant l'id: {{answer.id}} ?
                     </p>
 
                     <div class="float-right">
-                        <a class="btn btn-second" href="{{ url_for('listuser') }}">Annuler</a>
+                        <a class="btn btn-second" href="{{ url_for('answer') }}">Annuler</a>
                         <button type="submit" class="btn btn-danger" value="Submit">supprimer</button>
                     </div>
                 </div>
@@ -24,5 +21,4 @@
         </div>
     </div>
 </form>
-
 {% endblock %}
