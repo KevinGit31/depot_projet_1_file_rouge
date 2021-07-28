@@ -5,13 +5,13 @@
   gather_facts: false
 
   tasks:
-  - name: try to get facts about a stack but fail if it doesn't exist
-    cloudformation_info:
-      stack_name: "{{ TypeName }}"
-      all_facts: yes
-    failed_when: cloudformation['TypeName'] is undefined
-    ignore_errors: true
-    register: stackstate
+  # - name: try to get facts about a stack but fail if it doesn't exist
+  #   cloudformation_info:
+  #     stack_name: "{{ TypeName }}"
+  #     all_facts: yes
+  #   failed_when: cloudformation['TypeName'] is undefined
+  #   ignore_errors: true
+  #   register: stackstate
   - name: delete a stack
     cloudformation:
       # aws_access_key: "{{ AWSAccessKeyId }}"
@@ -19,4 +19,4 @@
       stack_name: "{{ TypeName }}"
       region: "{{ REGION }}"
       state: "absent"
-    when: stackstate.failed_when_result == true
+    # when: stackstate.failed_when_result == true

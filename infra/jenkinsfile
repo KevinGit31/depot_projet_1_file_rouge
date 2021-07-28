@@ -62,7 +62,7 @@ agent any
 //test du build versionné
         stage('testnexuscible'){
             steps {
-                sh 'sleep 15s'
+                sh 'sleep 5s'
                 sh "curl http://${NEXUS_URL}/repository/${NEXUS_REPOSITORY}/${NEXUS_ARTIFACT_ID}/1.0-${BUILD_NUMBER}/${NEXUS_ARTIFACT_ID}-1.0-${BUILD_NUMBER}.tar.gz"
             }
         }
