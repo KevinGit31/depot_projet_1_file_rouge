@@ -98,6 +98,7 @@ echo "echo \$RET" >> /etc/ansible/ansvlt.sh
 pip install boto3==1.15.16
 pip uninstall -y botocore
 pip install botocore==1.18.6
+ansible-galaxy collection install amazon.aws
 #configuration ansible vault paswword
 sed -i 's/\#vault_password_file = \/path\/to\/vault_password_file/vault_password_file=\/etc\/ansible\/ansvlt.sh/' /etc/ansible/ansible.cfg
 #--vault-password-file /etc/ansible/ansvlt.sh

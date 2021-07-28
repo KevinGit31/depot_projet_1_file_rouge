@@ -5,14 +5,19 @@
   gather_facts: false
 
   tasks:
+  - name: try to get facts about a stack but fail if it doesn't exist
+    amazon.aws.cloudformation_info:
+      stack_name: "{{ TypeName }}"
+      all_facts: yes
+    failed_when: cloudformation['TypeName'] is undefined
+    register: stackstate
+  - debug: "{{ stackstate }}"
+    when: stackstate.failed_when_result == true
   - name: delete a stack
-    cloudformation:
+    amazon.aws.cloudformation:
       # aws_access_key: "{{ AWSAccessKeyId }}"
       # aws_secret_key: "{{ AWSSecretAccessKeyId }}"
       stack_name: "{{ TypeName }}"
       region: "{{ REGION }}"
       state: "absent"
-    backoff_max_delay: 40
-    # tags:
-    #   - clouddelete: "ansible-cloudformation-delete"
-    # when: GOTODEL == "yes"
+    when: stackstate.failed_when_result == true
