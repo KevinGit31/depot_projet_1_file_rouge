@@ -12,7 +12,7 @@
     failed_when: cloudformation['TypeName'] is undefined
     register: stackstate
   - debug: "{{ stackstate }}"
-    when: stackstate.failed_when_result == true
+    when: stackstate.failed_when_result == false
   - name: delete a stack
     amazon.aws.cloudformation:
       # aws_access_key: "{{ AWSAccessKeyId }}"
@@ -20,4 +20,4 @@
       stack_name: "{{ TypeName }}"
       region: "{{ REGION }}"
       state: "absent"
-    when: stackstate.failed_when_result == true
+    when: stackstate.failed_when_result == false
