@@ -11,28 +11,34 @@ pipeline {
         ROOTKEY_ENV = "NONE" //"${env.$ROOTKEY}"
         JENKINS_KEY = "NONE"
         ANSIBLE_KEY = "NONE"
-        PRIVIP_ENV = "10.80.110.10" //"${env.$PRIVIP}"
+        ENVIRONNEMENT = "${env.JOB_BASE_NAME}"
+        TYPENAME_ENV = "qcm${env.JOB_BASE_NAME}" //"${env.$TYPENAME}"
         //VARIABLE A MODIFIER SUIVANT L4ENVIRONNEMENT
-        ENVIRONNEMENT = "dev"
-        TYPENAME_ENV = "qcmdev" //"${env.$TYPENAME}"
+        PRIVIP_ENV = "10.80.110.10" //"${env.$PRIVIP}"
+        BRANCHS_ENV = "${env.JOB_BASE_NAME}"
+        MAJBRANCHS_ENV = "${BRANCHS_ENV.toUpperCase()}"
+        CREDENTIALS_NEXUS = credentials('nexus')
+        DBNAME_ENV = "dbquizz"
+        CREDENTIALS_DB = credentials('dbqcm')
+        DNSDB_ENV = ""
+
     }
 //
-
 agent any
     stages {
+
         stage('clone source') {
             steps {
                 sh 'rm -rf depot_projet_1_file_rouge'
-                git branch: 'dev', url: 'https://github.com/KevinGit31/depot_projet_1_file_rouge.git'
+                script {
+                    if ( "${BRANCHS_ENV}" == 'prod') {
+                        git branch: 'main', url: 'https://github.com/KevinGit31/depot_projet_1_file_rouge.git'
+                    } else {
+                        git branch: "${BRANCHS_ENV}", url: 'https://github.com/KevinGit31/depot_projet_1_file_rouge.git'
+                    }
+                }
             }
         }
-//        stage('test'){
-//            steps {
-//                sh 'sleep 5s'
-//                sh 'curl http://192.168.40.11:3002'
-//
-//            }
-//        }
         stage("Build") {
             steps {
                 script {
@@ -62,20 +68,24 @@ agent any
 //test du build versionné
         stage('testnexuscible'){
             steps {
-                sh 'sleep 15s'
+                sh 'sleep 5s'
                 sh "curl http://${NEXUS_URL}/repository/${NEXUS_REPOSITORY}/${NEXUS_ARTIFACT_ID}/1.0-${BUILD_NUMBER}/${NEXUS_ARTIFACT_ID}-1.0-${BUILD_NUMBER}.tar.gz"
             }
         }
-//        stage('ansible'){
-//            steps {
-//                ansiblePlaybook(
-//                playbook: "infra/ansible/${ENVIRONNEMENT}.yml",
-//                inventory: "infra/ansible/inventory/${ENVIRONNEMENT}/hosts",
-//                vaultCredentialsId: "${ANS_ENV}",
-//                extras: "ansible_environnement=dev VpcId=${VPCID_ENV} PrivateIP=${PRIVIP_ENV} secret_devops=${env.SECRETDEVOPS_ENV} ROOTKEY=\"\" KEYNAME=${env.ROOTKEY_ENV} TypeName=${env.TYPENAME_ENV} REGION=${env.REGION1_ENV} SubnetIdPub=${env.SUBIDPUB_ENV} SubnetIdPriv=${env.SUBIDPRIV_ENV} VpcId=${env.VPCID_ENV} PrivateIP=${env.PRIVIP_ENV} IngressPort=${env.INGRPORT_ENV} SecurityGroupNameList=${env.SECGRPNLST_ENV} Urlscript=${env.USCRIPT_ENV} SecurityGroupId=${env.SECGRPID_ENV} InstanceType=${env.INSTTYPE_ENV}"
-//                )
-//            }
-//        }
+        stage('ger'){
+            steps {
+                sh """#!/bin/bash -xe
+                declare -A DICO
+                DICO=\$(aws rds describe-db-instances --region eu-west-2 --query "DBInstances[*].[ [[TagList[?Key==\\`aws:cloudformation:stack-name\\`].Value]],[Endpoint.Address] ]" | grep "\"" | sed 's/[ |\"]//g')
+                for i in "\${!DICO[@]}" ; do
+                    if [[ \${i} | grep -i ${ENVIRONNEMENT.} ]]; then
+                        echo -e "\${i}\t=\t\${DICO[\$i]}"
+                    fi
+                done
+                """
+            }
+        }
+
 
         stage('deleteEC2ansible') {
             steps {
@@ -92,10 +102,10 @@ agent any
                     echo "AnsibleKey: ${ANSIBLE_KEY}" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
                     echo "secret_devops: \$SECRETDEVOPS" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
 
-                    #MODIF ENV ICI =====>>>>>>
-                    echo "SubnetIdPubADM: \$SUBIDPUBDEV" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
-                    echo "SubnetIdPrivADM: \$SUBIDPRIVDEV" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
-                    #MODIF ENV ICI <<<<<<=====
+
+                    echo "SubnetIdPubADM: \$SUBIDPUB${MAJBRANCHS_ENV}" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+                    echo "SubnetIdPrivADM: \$SUBIDPRIV${MAJBRANCHS_ENV}" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+
 
                     echo "SubnetIdPubDEV: \$SUBIDPUBDEV" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
                     echo "SubnetIdPrivDEV: \$SUBIDPRIVDEV" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
@@ -116,7 +126,7 @@ agent any
                     """
             }
         }
-//A FAIRE TEST si EC2 DEL
+
         stage('createEC2ansible') {
             steps {
                     sh """#!/bin/bash -xe
@@ -132,8 +142,8 @@ agent any
                     echo "secret_devops: \$SECRETDEVOPS" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
 
                     #MODIF ENV ICI =====>>>>>>
-                    echo "SubnetIdPubADM: \$SUBIDPUBDEV" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
-                    echo "SubnetIdPrivADM: \$SUBIDPRIVDEV" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+                    echo "SubnetIdPubADM: \$SUBIDPUB${MAJBRANCHS_ENV}" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+                    echo "SubnetIdPrivADM: \$SUBIDPRIV${MAJBRANCHS_ENV}" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
                     #MODIF ENV ICI <<<<<<=====
 
                     echo "SubnetIdPubDEV: \$SUBIDPUBDEV" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
@@ -154,10 +164,144 @@ agent any
                     ansible-playbook -i infra/ansible/inventory/${ENVIRONNEMENT}/hosts infra/ansible/roles/common/tasks/cloudformation-create.yml -vvv
                     """
             }
+        stage('installqcmEC2ansible') {
+            steps {
+                    sh """#!/bin/bash -xe
+                    source /var/lib/jenkins/.bashrc
+                    yes | cp -rf infra/aws_cloudform/instancegrp3.yaml infra/ansible/roles/common/tasks/instancegrp3.yaml
+                    echo "TypeName: ${TYPENAME_ENV}" > infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+                    echo "REGION: \$REGION" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+                    echo "KEYNAME: \$KEYNAME" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+                    echo "ansible_environnement: ${ENVIRONNEMENT}" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+                    echo "RootKey: ${ROOTKEY_ENV}" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+                    echo "JenkinsKey: ${JENKINS_KEY}" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+                    echo "AnsibleKey: ${ANSIBLE_KEY}" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+                    echo "secret_devops: \$SECRETDEVOPS" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
 
+                    #MODIF ENV ICI =====>>>>>>
+                    echo "SubnetIdPubADM: \$SUBIDPUB${MAJBRANCHS_ENV}" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+                    echo "SubnetIdPrivADM: \$SUBIDPRIV${MAJBRANCHS_ENV}" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+                    #MODIF ENV ICI <<<<<<=====
+
+                    echo "SubnetIdPubDEV: \$SUBIDPUBDEV" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+                    echo "SubnetIdPrivDEV: \$SUBIDPRIVDEV" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+                    echo "SubnetIdPubQUA: \$SUBIDPUBQUA" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+                    echo "SubnetIdPrivQUA: \$SUBIDPRIVQUA" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+                    echo "SubnetIdPubPROD: \$SUBIDPUBPROD" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+                    echo "SubnetIdPrivPROD: \$SUBIDPRIVPROD" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+                    echo "VpcId: \$VPCID" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+                    echo "PrivateIP: ${PRIVIP_ENV}" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+                    echo "IngressPort: \$INGRPORT" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+                    echo "SecurityGroupNameList: \$SECGRPNLST" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+                    echo "Urlscript: \$USCRIPT" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+                    echo "SecurityGroupId: \$SECGRPID" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+                    echo "InstanceType: \$INSTTYPE" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+                    echo "AWSAccessKeyId: \$AWS_ACCESS_KEY" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+                    echo "AWSSecretAccessKeyId: \$AWS_SECRET_KEY" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+                    ansible-playbook -i infra/ansible/inventory/${ENVIRONNEMENT}/hosts infra/ansible/${ENVIRONNEMENT} --extra-vars "adminnexus=${CREDENTIALS_NEXUS_USR} pwdnexus=${$CREDENTIALS_NEXUS_PSW} userdb=${CREDENTIALS_DB_USR} pwddb=${CREDENTIALS_DB_PSW} namedb=${DBNAME_ENV} dnsdb=${DNSDB_ENV}" -vvv
+                    """
+            }
         }
 
 //A FAIRE TEST si EC2 OK
+
+//sed -i 's/\#vault_password_file = \/path\/to\/vault_password_file/vault_password_file=\/etc\/ansible\/ansvlt.sh/' /etc/ansible/ansible.cfg
     }
 }
 
+// def ansible_var() {
+//                         sh """#!/bin/bash -xe
+//                     source /var/lib/jenkins/.bashrc
+//                     yes | cp -rf infra/aws_cloudform/instancegrp3.yaml infra/ansible/roles/common/tasks/instancegrp3.yaml
+//                     echo "TypeName: ${TYPENAME_ENV}" > infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//                     echo "REGION: \$REGION" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//                     echo "KEYNAME: \$KEYNAME" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//                     echo "ansible_environnement: ${ENVIRONNEMENT}" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//                     echo "RootKey: ${ROOTKEY_ENV}" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//                     echo "JenkinsKey: ${JENKINS_KEY}" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//                     echo "AnsibleKey: ${ANSIBLE_KEY}" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//                     echo "secret_devops: \$SECRETDEVOPS" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+
+//                     #MODIF ENV ICI =====>>>>>>
+//                     echo "SubnetIdPubADM: \$SUBIDPUB${MAJBRANCHS_ENV}" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//                     echo "SubnetIdPrivADM: \$SUBIDPRIV${MAJBRANCHS_ENV}" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//                     #MODIF ENV ICI <<<<<<=====
+
+//                     echo "SubnetIdPubDEV: \$SUBIDPUBDEV" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//                     echo "SubnetIdPrivDEV: \$SUBIDPRIVDEV" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//                     echo "SubnetIdPubQUA: \$SUBIDPUBQUA" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//                     echo "SubnetIdPrivQUA: \$SUBIDPRIVQUA" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//                     echo "SubnetIdPubPROD: \$SUBIDPUBPROD" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//                     echo "SubnetIdPrivPROD: \$SUBIDPRIVPROD" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//                     echo "VpcId: \$VPCID" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//                     echo "PrivateIP: ${PRIVIP_ENV}" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//                     echo "IngressPort: \$INGRPORT" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//                     echo "SecurityGroupNameList: \$SECGRPNLST" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//                     echo "Urlscript: \$USCRIPT" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//                     echo "SecurityGroupId: \$SECGRPID" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//                     echo "InstanceType: \$INSTTYPE" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//                     echo "AWSAccessKeyId: \$AWS_ACCESS_KEY" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//                     echo "AWSSecretAccessKeyId: \$AWS_SECRET_KEY" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//                     """
+// }
+
+
+
+
+//         stage('deleteEC2ansible') {
+//             steps {
+//                     ansible_var("ansible-playbook -i infra/ansible/inventory/${ENVIRONNEMENT}/hosts infra/ansible/roles/common/tasks/cloudformation-delete.yml -vvv")
+
+//             }
+//         }
+// //A FAIRE TEST si EC2 DEL
+//         stage('createEC2ansible') {
+//             steps {
+
+//                     ansible_var("ansible-playbook -i infra/ansible/inventory/${ENVIRONNEMENT}/hosts infra/ansible/roles/common/tasks/cloudformation-create.yml -vvv")
+//             }
+
+//         }
+
+// //A FAIRE TEST si EC2 OK
+
+// //sed -i 's/\#vault_password_file = \/path\/to\/vault_password_file/vault_password_file=\/etc\/ansible\/ansvlt.sh/' /etc/ansible/ansible.cfg
+//     }
+// }
+
+// def ansible_var(CMD) {
+//     sh """#!/bin/bash -xe
+//     source /var/lib/jenkins/.bashrc
+//     yes | cp -rf infra/aws_cloudform/instancegrp3.yaml infra/ansible/roles/common/tasks/instancegrp3.yaml
+//     echo "TypeName: ${TYPENAME_ENV}" > infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//     echo "REGION: \$REGION" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//     echo "KEYNAME: \$KEYNAME" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//     echo "ansible_environnement: ${ENVIRONNEMENT}" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//     echo "RootKey: ${ROOTKEY_ENV}" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//     echo "JenkinsKey: ${JENKINS_KEY}" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//     echo "AnsibleKey: ${ANSIBLE_KEY}" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//     echo "secret_devops: \$SECRETDEVOPS" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+
+//     #MODIF ENV ICI =====>>>>>>
+//     echo "SubnetIdPubADM: \$SUBIDPUB${MAJBRANCHS_ENV}" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//     echo "SubnetIdPrivADM: \$SUBIDPRIV${MAJBRANCHS_ENV}" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//     #MODIF ENV ICI <<<<<<=====
+
+//     echo "SubnetIdPubDEV: \$SUBIDPUBDEV" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//     echo "SubnetIdPrivDEV: \$SUBIDPRIVDEV" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//     echo "SubnetIdPubQUA: \$SUBIDPUBQUA" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//     echo "SubnetIdPrivQUA: \$SUBIDPRIVQUA" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//     echo "SubnetIdPubPROD: \$SUBIDPUBPROD" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//     echo "SubnetIdPrivPROD: \$SUBIDPRIVPROD" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//     echo "VpcId: \$VPCID" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//     echo "PrivateIP: ${PRIVIP_ENV}" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//     echo "IngressPort: \$INGRPORT" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//     echo "SecurityGroupNameList: \$SECGRPNLST" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//     echo "Urlscript: \$USCRIPT" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//     echo "SecurityGroupId: \$SECGRPID" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//     echo "InstanceType: \$INSTTYPE" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//     echo "AWSAccessKeyId: \$AWS_ACCESS_KEY" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//     echo "AWSSecretAccessKeyId: \$AWS_SECRET_KEY" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
+//     \$(${CMD})
+//     """
+// }
