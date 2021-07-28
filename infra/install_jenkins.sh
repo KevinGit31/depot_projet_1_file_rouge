@@ -53,7 +53,6 @@ yum install -y python2-pip
 yum install -y python3
 yum install -y python3-pip
 
-
 # installation jenkins
 yum install -y  jenkins
 sleep 5
@@ -67,12 +66,10 @@ echo "userjenkins:$JENKINSPWD" | sudo chpasswd
 echo 'userjenkins   ALL=(ALL)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
 usermod -a -G jenkins userjenkins
 usermod -a -G userjenkins jenkins
-#sudo -H -u userjenkins -c 'mkdir -p ~/ansible'
-#su - userjenkins -c 'git clone https://github.com/KevinGit31/depot_projet_1_file_rouge.git ; exit'
+
 
 
 #preparation du user devops sur les host remote + distrib key
-
 useradd -m -s /bin/bash devops
 echo "devops:$DEVOPSPWD" | chpasswd
 echo 'devops   ALL=(ALL)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
@@ -81,27 +78,28 @@ echo "root:$ROOTPASS" | chpasswd
 #su - devops -c 'ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa <<<y >/dev/null 2>&1 ; exit'
 #echo \"export PATH=$PATH:/usr/local/bin\" >> ~/.bashrc
 
+
 #install ansible
 amazon-linux-extras install ansible2 -y
 
+
+#configuration ansible vault paswword
 echo "#!/bin/bash" >> /etc/ansible/ansvlt.sh
 echo "$ANSIBPASS" >> /etc/ansible/.ansvlt
 echo "RET=$(sudo cat /etc/ansible/.ansvlt)" >> /etc/ansible/ansvlt.sh
 echo "echo \$RET" >> /etc/ansible/ansvlt.sh
+sed -i 's/\#vault_password_file = \/path\/to\/vault_password_file/vault_password_file=\/etc\/ansible\/ansvlt.sh/' /etc/ansible/ansible.cfg
 
-#pip2 install --user pip --upgrade
-#pip install --user ansible
-#pip2 install --user boto3
-#pip2 install --user botocore
-#pip uninstall -y s3transfer
-#pip install s3transfer==0.3.4
+#preparation pour le client aws pour ansible dans jenkins
 pip install boto3==1.15.16
 pip uninstall -y botocore
 pip install botocore==1.18.6
 ansible-galaxy collection install amazon.aws
-#configuration ansible vault paswword
-sed -i 's/\#vault_password_file = \/path\/to\/vault_password_file/vault_password_file=\/etc\/ansible\/ansvlt.sh/' /etc/ansible/ansible.cfg
-#--vault-password-file /etc/ansible/ansvlt.sh
+
+#install du client pour verifier la connexion rds
+yum install mysql
+
+#Preparation et transfert du contenu des  variables pour les vm dev qua et prod
 su - jenkins -c "echo \"export PATH=$PATH:/var/lib/jenkins/.local/bin\" >> ~/.bashrc"
 sed -i 's/\/jenkins:\/bin\/false/\/jenkins:\/bin\/bash/' /etc/passwd
 #su - userjenkins -c "cd /home/userjenkins && wget -O $ENV1.zip https://github.com/KevinGit31/depot_projet_1_file_rouge/archive/refs/heads/$ENV1.zip && unzip $ENV1.zip && mv depot_projet_1_file_rouge* depot_projet_1_file_rouge && chmod +x /home/userjenkins/depot_projet_1_file_rouge/infra/ansvlt.sh && exit"
@@ -110,9 +108,6 @@ su - jenkins -c "mkdir ~/.aws && cd ~/.aws && echo \"[default]\" >> credentials 
 su - jenkins -c "cd ~/.aws && echo \"[default]\" >> config && echo \"region=$REGION1\" >> config && echo \"output=json\" >> config && exit"
 su - jenkins -c "echo \"export SECRETDEVOPS=$DEVOPSPWD\" >> ~/.bashrc"
 su - jenkins -c "echo \"export ANS=$ANSIBPASS\" >> ~/.bashrc"
-#su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $DEVOPSPWD --name \"secret_devops\" >> all && exit"
-#su - userjenkins -c "echo \"export ROOTKEY=$ROOTPASS\" >> ~/.bashrc"
-#su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $ROOTPASS --name \"ROOTKEY\" >> all && exit"
 su - jenkins -c "echo \"export KEYNAME=$KEYNAME1\" >> ~/.bashrc"
 su - jenkins -c "echo \"export TYPENAME=$TYPENAME1\" >> ~/.bashrc"
 su - jenkins -c "echo \"export REGION=$REGION1\" >> ~/.bashrc"
@@ -128,7 +123,6 @@ su - jenkins -c "echo \"export SUBIDPUBQUA=$SUBIDPUBQUA1\" >> ~/.bashrc"
 su - jenkins -c "echo \"export SUBIDPRIVQUA=$SUBIDPRIVQUA1\" >> ~/.bashrc"
 su - jenkins -c "echo \"export SUBIDPUBPROD=$SUBIDPUBPROD1\" >> ~/.bashrc"
 su - jenkins -c "echo \"export SUBIDPRIVPROD=$SUBIDPRIVPROD1\" >> ~/.bashrc"
-
 su - jenkins -c "echo \"export VPCID=$VPCID1\" >> ~/.bashrc"
 su - jenkins -c "echo \"export PRIVIP=$PRIVIP1\" >> ~/.bashrc"
 su - jenkins -c "echo \"export INGRPORT=$INGRPORT1\" >> ~/.bashrc"
@@ -136,22 +130,17 @@ su - jenkins -c "echo \"export SECGRPNLST=$SECGRPNLST1\" >> ~/.bashrc"
 su - jenkins -c "echo \"export USCRIPT=$USCRIPT1\" >> ~/.bashrc"
 su - jenkins -c "echo \"export SECGRPID=$SECGRPID1\" >> ~/.bashrc"
 su - jenkins -c "echo \"export INSTTYPE=$INSTTYPE1\" >> ~/.bashrc"
-
-#su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $INSTTYPE --name \"InstanceType\" >> all && exit"
-#su - userjenkins -c "cd /home/userjenkins && cat /home/userjenkins/all >> /home/userjenkins/depot_projet_1_file_rouge/infra/ansible/inventory/dev/group_vars/all/all"
-#su - userjenkins -c "cd /home/userjenkins && cat /home/userjenkins/all >> /home/userjenkins/depot_projet_1_file_rouge/infra/ansible/inventory/qua/group_vars/all/all"
-#su - userjenkins -c "cd /home/userjenkins && cat /home/userjenkins/all >> /home/userjenkins/depot_projet_1_file_rouge/infra/ansible/inventory/prod/group_vars/all/all"
 sed -i 's/\/jenkins:\/bin\/bash/\/jenkins:\/bin\/false/' /etc/passwd
 #sudo su -s /bin/bash jenkins
 
 #Install docker
-#yum install -y yum-utils
-#yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-#yum install -y docker-ce docker-ce-cli containerd.io
-#systemctl start docker
+su - ec2-user -c "sudo amazon-linux-extras enable docker"
+su - ec2-user -c "sudo yum -y install docker"
+su - ec2-user -c "sudo systemctl daemon-reload"
+su - ec2-user -c "sudo systemctl enable --now docker"
 #Install docker compose
-#curl -L "https://github.com/docker/compose/releases/download/1.29.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-#chmod +x /usr/local/bin/docker-compose
+curl -L "https://github.com/docker/compose/releases/download/1.29.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
 
 sleep 30
 # Mdp jenkins

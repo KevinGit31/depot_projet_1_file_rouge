@@ -28,7 +28,7 @@ agent any
         }
 //        stage('test'){
 //            steps {
-//                sh 'sleep 15s'
+//                sh 'sleep 5s'
 //                sh 'curl http://192.168.40.11:3002'
 //
 //            }
@@ -62,7 +62,7 @@ agent any
 //test du build versionné
         stage('testnexuscible'){
             steps {
-                sh 'sleep 5s'
+                sh 'sleep 15s'
                 sh "curl http://${NEXUS_URL}/repository/${NEXUS_REPOSITORY}/${NEXUS_ARTIFACT_ID}/1.0-${BUILD_NUMBER}/${NEXUS_ARTIFACT_ID}-1.0-${BUILD_NUMBER}.tar.gz"
             }
         }
@@ -113,7 +113,6 @@ agent any
                     echo "AWSAccessKeyId: \$AWS_ACCESS_KEY" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
                     echo "AWSSecretAccessKeyId: \$AWS_SECRET_KEY" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
                     ansible-playbook -i infra/ansible/inventory/${ENVIRONNEMENT}/hosts infra/ansible/roles/common/tasks/cloudformation-delete.yml -vvv
-                    sleep 20s
                     """
             }
         }

@@ -1,0 +1,5 @@
+#1 modif
+#quizz/src/config/appconfig.py modif valeur     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://user.quizz:dru98eDFC90@localhost/db.quizz'
+#2 modif quizz/src/models/app.py décommenté ligne 24 et commenté ligne 25
+#3 run quizz/script/create-quizz-db.sh
+#4 run quizz/script/start-quizz.sh

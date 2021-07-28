@@ -1,8 +1,8 @@
 
-- name: Create EC2 instance
-  include_tasks: cloudformation-create.yml
-  tags:
-    - cloudcreate: "ansible-cloudformation-create"
+# - name: Create EC2 instance
+#   include_tasks: cloudformation-create.yml
+#   tags:
+#     - cloudcreate: "ansible-cloudformation-create"
 
 - name: Create devops user + distribution de la clé ssh
   include_tasks: add-user-ssh.yml
@@ -10,11 +10,11 @@
 - name: Installation des package
   include_tasks: install-pkg.yml
 
-- name: Delete EC2 instance
-  include_tasks: cloudformation-delete.yml
-  tags:
-    - clouddelete: "ansible-cloudformation-delete"
-  when: GOTODEL == "yes"
+# - name: Delete EC2 instance
+#   include_tasks: cloudformation-delete.yml
+#   tags:
+#     - clouddelete: "ansible-cloudformation-delete"
+#   when: GOTODEL == "yes"
 
 - name: install qcm
   include_tasks: install-qcm.yml

@@ -11,8 +11,8 @@ KEYNAME="projet1grp3key"
 PEMKEYNAME=$KEYNAME".pem"
 REGION="eu-west-2"
 REGIONAZ=$REGION"a"
-DBNAME="DB"
-DBUSER="groupe3"
+DBNAME="dbquizz"
+DBUSER="userquizz"
 DBPWD=$(cat sec/dbkey.txt)
 ANSIBKEY=$(cat sec/ansibkey.txt)
 DEVOPSKEY=$(cat sec/devopsuserkey.txt)
@@ -193,7 +193,7 @@ eval $(FXAWS_DESCRIBE "$SVCTYPE" "$DESCRIBECMD" "$REGION" "$QUERY" "$FXDESC_FILT
 if ! [ -n "$T1FXAWS_DESCRETURN"  ]; then
     echo "Creation de la RDS de DEV"
     #Creation du RDS BDD DEV
-    DBNAMEENV=$DBNAME$ENV
+    DBNAMEENV=$DBNAME
     RETRDSINFOS=$($AWSBIN cloudformation --region $REGION describe-stacks --stack-name $STACKNAMEENV )
     RETCODE=$?
     PARAM="ParameterKey=subnet1CIDR,ParameterValue=10.80.210.0/24 ParameterKey=subnet2CIDR,ParameterValue=10.80.211.0/24 ParameterKey=AllocatedStorage,ParameterValue=$DBSIZE ParameterKey=DBName,ParameterValue=$DBNAMEENV ParameterKey=MUser,ParameterValue=$DBUSER ParameterKey=MPass,ParameterValue=$DBPWD ParameterKey=VpcId,ParameterValue=$RESULTVPCID ParameterKey=Env,ParameterValue=$ENV ParameterKey=SecurityGroupId,ParameterValue=$RESULTGRPSECID ParameterKey=PrimaryAZ,ParameterValue=$REGIONAZ"
@@ -219,7 +219,7 @@ DESCRIBECMD="describe-db-instances"
 eval $(FXAWS_DESCRIBE "$SVCTYPE" "$DESCRIBECMD" "$REGION" "$QUERY" "$FXDESC_FILTER1")
 if ! [ -n "$T1FXAWS_DESCRETURN"  ]; then
     #Creation du RDS BDD QUA
-    DBNAMEENV=$DBNAME$ENV
+    DBNAMEENV=$DBNAME
     RETRDSINFOS=$($AWSBIN cloudformation --region $REGION describe-stacks --stack-name $STACKNAMEENV )
     RETCODE=$?
     PARAM="ParameterKey=subnet1CIDR,ParameterValue=10.80.220.0/24 ParameterKey=subnet2CIDR,ParameterValue=10.80.221.0/24 ParameterKey=AllocatedStorage,ParameterValue=$DBSIZE ParameterKey=DBName,ParameterValue=$DBNAMEENV ParameterKey=MUser,ParameterValue=$DBUSER ParameterKey=MPass,ParameterValue=$DBPWD ParameterKey=VpcId,ParameterValue=$RESULTVPCID ParameterKey=Env,ParameterValue=$ENV ParameterKey=SecurityGroupId,ParameterValue=$RESULTGRPSECID ParameterKey=PrimaryAZ,ParameterValue=$REGIONAZ"
@@ -245,7 +245,7 @@ if ! [ -n "$T1FXAWS_DESCRETURN"  ]; then
     #Creation du RDS BDD PROD
     RETRDSINFOS=$($AWSBIN cloudformation --region $REGION describe-stacks --stack-name $STACKNAMEENV )
     RETCODE=$?
-    DBNAMEENV=$DBNAME$ENV
+    DBNAMEENV=$DBNAME
     PARAM="ParameterKey=subnet1CIDR,ParameterValue=10.80.230.0/24 ParameterKey=subnet2CIDR,ParameterValue=10.80.231.0/24 ParameterKey=AllocatedStorage,ParameterValue=$DBSIZE ParameterKey=DBName,ParameterValue=$DBNAMEENV ParameterKey=MUser,ParameterValue=$DBUSER ParameterKey=MPass,ParameterValue=$DBPWD ParameterKey=VpcId,ParameterValue=$RESULTVPCID ParameterKey=Env,ParameterValue=$ENV ParameterKey=SecurityGroupId,ParameterValue=$RESULTGRPSECID ParameterKey=PrimaryAZ,ParameterValue=$REGIONAZ"
     #PARAM="ParameterKey=AllocatedStorage,ParameterValue=$DBSIZE ParameterKey=DBName,ParameterValue=$DBNAMEENV ParameterKey=MUser,ParameterValue=$DBUSER ParameterKey=MPass,ParameterValue=$DBPWD ParameterKey=VpcId,ParameterValue=$RESULTVPCID ParameterKey=Env,ParameterValue=$ENV ParameterKey=SecurityGroupId,ParameterValue=$RESULTGRPSECID ParameterKey=PrimaryAZ,ParameterValue=$REGIONAZ"
     QUERY="DBInstances[*].[ [DBInstanceIdentifier],[Endpoint[0].[Address] ] ]"

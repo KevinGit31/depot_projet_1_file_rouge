@@ -7,8 +7,6 @@
   tasks:
   - name: create a cloudformation stack task
     cloudformation:
-      # aws_access_key: "{{ AWSAccessKeyId }}"
-      # aws_secret_key: "{{ AWSSecretAccessKeyId }}"
       stack_name: "{{ TypeName }}"
       state: "present"
       region: "{{ REGION }}"
@@ -40,9 +38,6 @@
         AWSSecretAccessKeyId: "NONE"
       on_create_failure: DELETE
       backoff_max_delay: 300
-
-#      tags:
-#        - cloudcreate: "ansible-cloudformation-create"
     register: stack
   - name: stack outputs
     debug: msg="Stack outputs are {{stack.stack_outputs}}"
