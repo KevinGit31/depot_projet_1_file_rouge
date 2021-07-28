@@ -19,4 +19,4 @@
       stack_name: "{{ TypeName }}"
       region: "{{ REGION }}"
       state: "absent"
-    when: stackstate.failed_when_result == true
+    when: stackstate.failed_when_result == false
