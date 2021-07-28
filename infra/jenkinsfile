@@ -8,19 +8,20 @@ pipeline {
         NEXUS_REPOSITORY = "APP"
         NEXUS_CREDENTIAL_ID = "nexus"
         NEXUS_ARTIFACT_ID = "qcm"
-        ROOTKEY_ENV = "NONE" //"${env.$ROOTKEY}"
+        ROOTKEY_ENV = "NONE"
         JENKINS_KEY = "NONE"
         ANSIBLE_KEY = "NONE"
         ENVIRONNEMENT = "${env.JOB_BASE_NAME}"
-        TYPENAME_ENV = "qcm${env.JOB_BASE_NAME}" //"${env.$TYPENAME}"
-        //VARIABLE A MODIFIER SUIVANT L4ENVIRONNEMENT
-        PRIVIP_ENV = "10.80.110.10" //"${env.$PRIVIP}"
+        TYPENAME_ENV = "qcm${env.JOB_BASE_NAME}"
+        REGION_ENV = "${sh(script:'$(cat /var/lib/jenkins/.bashrc | grep REGION ) && echo \$REGION', returnStdout: true).trim()}"
         BRANCHS_ENV = "${env.JOB_BASE_NAME}"
         MAJBRANCHS_ENV = "${BRANCHS_ENV.toUpperCase()}"
+        //VARIABLE A MODIFIER SUIVANT L4ENVIRONNEMENT
+        PRIVIP_ENV = "10.80.110.10"
         CREDENTIALS_NEXUS = credentials('nexus')
         DBNAME_ENV = "dbquizz"
         CREDENTIALS_DB = credentials('dbqcm')
-        DNSDB_ENV = ""
+
 
     }
 //
@@ -72,21 +73,14 @@ agent any
                 sh "curl http://${NEXUS_URL}/repository/${NEXUS_REPOSITORY}/${NEXUS_ARTIFACT_ID}/1.0-${BUILD_NUMBER}/${NEXUS_ARTIFACT_ID}-1.0-${BUILD_NUMBER}.tar.gz"
             }
         }
-        stage('ger'){
+//recupere le dns du rds suivant l'env
+        stage('getdnsrdsdb'){
             steps {
-                sh """#!/bin/bash -xe
-                declare -A DICO
-                DICO=\$(aws rds describe-db-instances --region eu-west-2 --query "DBInstances[*].[ [[TagList[?Key==\\`aws:cloudformation:stack-name\\`].Value]],[Endpoint.Address] ]" | grep "\"" | sed 's/[ |\"]//g')
-                for i in "\${!DICO[@]}" ; do
-                    if [[ \${i} | grep -i ${ENVIRONNEMENT.} ]]; then
-                        echo -e "\${i}\t=\t\${DICO[\$i]}"
-                    fi
-                done
-                """
+                script {
+                    env.DNSDB_ENV = "${sh(script:'chmod +x infra/checkrds.sh && ./infra/checkrds.sh ${REGION_ENV} ${ENVIRONNEMENT}', returnStdout: true).trim()}"
+                }
             }
         }
-
-
         stage('deleteEC2ansible') {
             steps {
 
