@@ -481,7 +481,7 @@ select var in "${CHOIX[@]}"; do
 
             sleep 10s
             #Transfert la clé ssh
-            echo "exit" | ssh -o "StrictHostKeyChecking no" -i "projet1grp3key.pem" ec2-user@$RESULTPUBDNSNAME
+            echo "exit" | ssh -tt -o "StrictHostKeyChecking no" -i "projet1grp3key.pem" ec2-user@$RESULTPUBDNSNAME
             scp -i projet1grp3key.pem projet1grp3key.pem ec2-user@$RESULTPUBDNSNAME:/tmp/projet1grp3key.txt
 
             ;;
