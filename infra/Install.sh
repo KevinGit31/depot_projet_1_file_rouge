@@ -462,7 +462,7 @@ select var in "${CHOIX[@]}"; do
             #RETINSTANCEINFOS=$($AWSBIN ec2 --region $REGION --output text )
             RETCODE="254"
 #            PARAM="ParameterKey=KeyName,ParameterValue=$KEYNAME ParameterKey=SubnetIdPub,ParameterValue=\"$SUBNETLISTIDPUBID\" ParameterKey=SSHLocation,ParameterValue=0.0.0.0/0 ParameterKey=SubnetIdPriv,ParameterValue=$SUBNETLISTIDPRIVID ParameterKey=PrivateIP,ParameterValue=$EC2PRIVIP ParameterKey=TypeName,ParameterValue=$TYPEINSTALL ParameterKey=IngressPort,ParameterValue=$PORTAPP ParameterKey=Urlscript,ParameterValue=$CMDSCRIPT ParameterKey=SecurityGroupNameList,ParameterValue=$SECGRPLISTID ParameterKey=SecurityGroupId,ParameterValue=$SECGRPID ParameterKey=InstanceType,ParameterValue=$TYPEINSTANCE"
-            PARAM="ParameterKey=Ec2User,ParameterValue=$EC2USER ParameterKey=KeyName,ParameterValue=$KEYNAME ParameterKey=Environnement,ParameterValue=dev ParameterKey=RootKey,ParameterValue=$ROOTKEY ParameterKey=JenkinsKey,ParameterValue=$JENKINSKEY ParameterKey=DevOpsKey,ParameterValue=$DEVOPSKEY ParameterKey=AnsibleKey,ParameterValue=$ANSIBKEY ParameterKey=SubnetIdPubADM,ParameterValue=$SUBNETLISTIDPUBID ParameterKey=SubnetIdPrivADM,ParameterValue=$SUBNETLISTIDPRIVID ParameterKey=SubnetIdPubDEV,ParameterValue=$SUBNETLISTIDPUBDEVID ParameterKey=SubnetIdPrivDEV,ParameterValue=$SUBNETLISTIDPRIVDEVID ParameterKey=SubnetIdPubQUA,ParameterValue=$SUBNETLISTIDPUBQUAID ParameterKey=SubnetIdPrivQUA,ParameterValue=$SUBNETLISTIDPRIVQUAID ParameterKey=SubnetIdPubPROD,ParameterValue=$SUBNETLISTIDPUBPRODID ParameterKey=SubnetIdPrivPROD,ParameterValue=$SUBNETLISTIDPRIVPRODID ParameterKey=VpcId,ParameterValue=$VPCID ParameterKey=PrivateIP,ParameterValue=$EC2PRIVIP ParameterKey=TypeName,ParameterValue=$TYPEINSTALL ParameterKey=IngressPort,ParameterValue=$PORTAPP ParameterKey=SecurityGroupNameList,ParameterValue=$SECGRPID ParameterKey=Urlscript,ParameterValue=$CMDSCRIPT ParameterKey=SecurityGroupId,ParameterValue=$SECGRPID ParameterKey=InstanceType,ParameterValue=$TYPEINSTANCE ParameterKey=AWSAccessKeyId,ParameterValue=$AAKI ParameterKey=AWSSecretAccessKeyId,ParameterValue=$ASAKI "
+            PARAM="ParameterKey=KeyName,ParameterValue=$KEYNAME ParameterKey=Environnement,ParameterValue=dev ParameterKey=RootKey,ParameterValue=$ROOTKEY ParameterKey=JenkinsKey,ParameterValue=$JENKINSKEY ParameterKey=DevOpsKey,ParameterValue=$DEVOPSKEY ParameterKey=AnsibleKey,ParameterValue=$ANSIBKEY ParameterKey=SubnetIdPubADM,ParameterValue=$SUBNETLISTIDPUBID ParameterKey=SubnetIdPrivADM,ParameterValue=$SUBNETLISTIDPRIVID ParameterKey=SubnetIdPubDEV,ParameterValue=$SUBNETLISTIDPUBDEVID ParameterKey=SubnetIdPrivDEV,ParameterValue=$SUBNETLISTIDPRIVDEVID ParameterKey=SubnetIdPubQUA,ParameterValue=$SUBNETLISTIDPUBQUAID ParameterKey=SubnetIdPrivQUA,ParameterValue=$SUBNETLISTIDPRIVQUAID ParameterKey=SubnetIdPubPROD,ParameterValue=$SUBNETLISTIDPUBPRODID ParameterKey=SubnetIdPrivPROD,ParameterValue=$SUBNETLISTIDPRIVPRODID ParameterKey=VpcId,ParameterValue=$VPCID ParameterKey=PrivateIP,ParameterValue=$EC2PRIVIP ParameterKey=TypeName,ParameterValue=$TYPEINSTALL ParameterKey=IngressPort,ParameterValue=$PORTAPP ParameterKey=SecurityGroupNameList,ParameterValue=$SECGRPID ParameterKey=Urlscript,ParameterValue=$CMDSCRIPT ParameterKey=SecurityGroupId,ParameterValue=$SECGRPID ParameterKey=InstanceType,ParameterValue=$TYPEINSTANCE ParameterKey=AWSAccessKeyId,ParameterValue=$AAKI ParameterKey=AWSSecretAccessKeyId,ParameterValue=$ASAKI "
 
             #echo $PARAM
             QUERY="Stacks[0].Outputs[?OutputKey=='GroupeSec1'].OutputValue"
@@ -473,6 +473,16 @@ select var in "${CHOIX[@]}"; do
             sleep 10s
             STACKLISTNAME=$($AWSBIN cloudformation describe-stack-resources --stack-name $STACKNAMEEC2 --output text --query 'StackResources[*].[ [ResourceStatus] ]')
             echo $STACKLISTNAME
+
+            #Recupération de l'instance ID
+            RESULTINSTANCEID=$(aws ec2 describe-instances --filters "Name=instance-type,Values=t2.small" --query "Reservations[].Instances[].InstanceId" --output text)
+            RESULTPUBDNSNAME=$(aws ec2 describe-instances --query "Reservations[].Instances[].PublicDnsName" --instance-ids $RESULTINSTANCEID --output text)
+            echo "La stack $STACKNAMEEC2 à pour instance ID : $RESULTINSTANCEID et son PublicDNSName est: $RESULTPUBDNSNAME"
+
+            sleep 10s
+            #Transfert la clé ssh
+            echo "echo $EC2USER > /tmp/projet1grp3key.txt" | ssh -i "projet1grp3key.pem" $RESULTPUBDNSNAME
+
             ;;
         "UPDATE")
             echo "------START UPDATE STACK-------" 1>>trace.log 2>&1

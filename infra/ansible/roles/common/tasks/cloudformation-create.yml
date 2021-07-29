@@ -13,7 +13,6 @@
       template: "instancegrp3.yaml"
       template_parameters:
         KeyName: "{{ KEYNAME }}"
-        Ec2User: " {{ Ec2User }}"
         Environnement: "{{ ansible_environnement }}"
         RootKey: "{{ RootKey }}"
         JenkinsKey: "{{ JenkinsKey }}"
