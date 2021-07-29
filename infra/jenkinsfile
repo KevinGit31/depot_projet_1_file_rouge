@@ -116,7 +116,7 @@ agent any
                     echo "InstanceType: \$INSTTYPE" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
                     echo "AWSAccessKeyId: \$AWS_ACCESS_KEY" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
                     echo "AWSSecretAccessKeyId: \$AWS_SECRET_KEY" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
-                    ansible-playbook -i infra/ansible/inventory/${ENVIRONNEMENT}/hosts infra/ansible/roles/common/tasks/cloudformation-delete.yml -vvv
+                    sudo -u devops -s ansible-playbook -i infra/ansible/inventory/${ENVIRONNEMENT}/hosts infra/ansible/roles/common/tasks/cloudformation-delete.yml -vvv
                     """
             }
         }
@@ -155,7 +155,7 @@ agent any
                     echo "InstanceType: \$INSTTYPE" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
                     echo "AWSAccessKeyId: \$AWS_ACCESS_KEY" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
                     echo "AWSSecretAccessKeyId: \$AWS_SECRET_KEY" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
-                    ansible-playbook -i infra/ansible/inventory/${ENVIRONNEMENT}/hosts infra/ansible/roles/common/tasks/cloudformation-create.yml -vvv
+                    sudo -u devops -s ansible-playbook -i infra/ansible/inventory/${ENVIRONNEMENT}/hosts infra/ansible/roles/common/tasks/cloudformation-create.yml -vvv
                     """
             }
         }
@@ -193,7 +193,7 @@ agent any
                     echo "InstanceType: \$INSTTYPE" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
                     echo "AWSAccessKeyId: \$AWS_ACCESS_KEY" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
                     echo "AWSSecretAccessKeyId: \$AWS_SECRET_KEY" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
-                    ansible-playbook -i infra/ansible/inventory/${ENVIRONNEMENT}/hosts infra/ansible/${ENVIRONNEMENT} --extra-vars "adminnexus=${CREDENTIALS_NEXUS_USR} pwdnexus=${CREDENTIALS_NEXUS_PSW} userdb=${CREDENTIALS_DB_USR} pwddb=${CREDENTIALS_DB_PSW} namedb=${DBNAME_ENV} dnsdb=${DNSDB_ENV}" -vvv
+                    sudo -u devops -s ansible-playbook -i infra/ansible/inventory/${ENVIRONNEMENT}/hosts infra/ansible/${ENVIRONNEMENT}.yml --extra-vars "adminnexus=${CREDENTIALS_NEXUS_USR} pwdnexus=${CREDENTIALS_NEXUS_PSW} userdb=${CREDENTIALS_DB_USR} pwddb=${CREDENTIALS_DB_PSW} namedb=${DBNAME_ENV} dnsdb=${DNSDB_ENV}" -vvv
                     """
             }
         }

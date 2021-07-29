@@ -26,11 +26,11 @@
     line: "PermitRootLogin no"
     state: present
     backup: yes
-  notify:
-    - restart ssh
+#   notify:
+#     - restart ssh
 
-handlers:
-  - name: restart ssh
-    service:
-      name: sshd
-      state: restarted
+# handlers:
+- name: restart ssh
+  service:
+    name: sshd
+    state: restarted
