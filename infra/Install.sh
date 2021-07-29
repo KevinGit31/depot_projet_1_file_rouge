@@ -77,21 +77,27 @@ FXCREATE_STACK () {
     fi
 }
 
+
 #Fonction qui permet de récupérer la describe list suivant le service Type et la commande de description
 #FXDESC_FILTER1=FXDESC_FILTER ""
 #SVCTYPE="rds"
 #DESCRIBECMD="describe-db-instances"
 #QUERY="DBInstances[*].[ [[TagList[?Key==\`aws:cloudformation:stack-name\`].Value]],[Endpoint.Address] ]"
-#FXAWS_DESCRIBE "$SVCTYPE" "$DESCRIBECMD" "$REGION" "$QUERY" "$FXDESC_FILTER1"
-#FXAWS_DESCRIBE $1          $2            $3        $4       $5                 <<===correspondance
+#FXAWS_DESCRIBE "$SVCTYPE" "$DESCRIBECMD" "$REGION" "$QUERY" "$FXDESC_FILTER1 CLE" "AWS FILTER OPTIONNEL AJOUTER laisser vide ou ne pas le mettre" " CMD TO PIPE OPTION OU NE PAS METTRE LE 7EME ARGUMENT"
+#FXAWS_DESCRIBE $1          $2            $3        $4       $5                    $6                                                               $7     <<===correspondance
 #INIT VAR RECUPERATION des 2 entrées du tableau dans la fonction FXAWS_DESCRIBE
 T1FXAWS_DESCRETURN=""
 T2FXAWS_DESCRETURN=""
 FXAWS_DESCRIBE () {
     declare -a TAB1=()
-
+    #Permet l'ajout d'une commande la 7eme variable peut etre non ajouter
+    if [[ $7 == "" ]]; then
+        VAL1="cat"
+    else
+        VAL1=$7
+    fi
     #Recupere la describe list
-    RDSLIST1=$($AWSBIN $1 $2 --region $3 --output text --query "$4")
+    RDSLIST1=$($AWSBIN $1 $2 --region $3 --output text --query "$4" --filter $6 | $VAL1)
     echo ""
     SAVEIFS=$IFS   # Save current IFS
     IFS=$'\n'      # Change IFS to new line
@@ -474,16 +480,34 @@ select var in "${CHOIX[@]}"; do
             STACKLISTNAME=$($AWSBIN cloudformation describe-stack-resources --stack-name $STACKNAMEEC2 --output text --query 'StackResources[*].[ [ResourceStatus] ]')
             echo $STACKLISTNAME
 
-            #Recupération de l'instance ID
-            RESULTINSTANCEID=$(aws ec2 describe-instances --filters "Name=instance-type,Values=t2.small" --query "Reservations[].Instances[].InstanceId" --output text)
-            RESULTPUBDNSNAME=$(aws ec2 describe-instances --query "Reservations[].Instances[].PublicDnsName" --instance-ids $RESULTINSTANCEID --output text)
-            echo "La stack $STACKNAMEEC2 à pour instance ID : $RESULTINSTANCEID et son PublicDNSName est: $RESULTPUBDNSNAME"
+            if [[ $STACKNAMEEC2 == "jenkins" ]]; then
+                echo "En attente 120s de transfert de la clé ssh temps de disponibilité de l'instance ID et de la connexion ssh"
+                sleep 120s
+                #Recupération de l'instance ID
+                FXDESC_FILTER1=$STACKNAMEEC2
+                #Filtre sur DBINSTANCE et cherche 2 éléments
+                FILTER1="Name=instance-state-name,Values=running"
+                FILTER2="Name=tag:Name,Values=$STACKNAMEEC2"
+                NEXTPIPECMD="sort -r -n"
+                FILTEROPTION="$FILTER1 $FILTER2"
+                QUERY="Reservations[].Instances[].[Tags[?Key=='Name'].Value[],InstanceId ]"
+                SVCTYPE="ec2"
+                DESCRIBECMD="describe-instances"
+                eval $(FXAWS_DESCRIBE "$SVCTYPE" "$DESCRIBECMD" "$REGION" "$QUERY" "$FXDESC_FILTER1" "$FILTEROPTION" "$NEXTPIPECMD")
+                echo "InstanceID= $T2FXAWS_DESCRETURN"
+                echo "InstanceName= $T1FXAWS_DESCRETURN"
+                RESULTINSTANCEID=$T2FXAWS_DESCRETURN
+                RESULTPUBDNSNAME=$(aws ec2 describe-instances --query "Reservations[].Instances[].PublicDnsName" --instance-ids $RESULTINSTANCEID --output text)
+                echo "L'id EC2 de l'instance $T1FXAWS_DESCRETURN pour : $RESULTINSTANCEID et son PublicDNSName est: $RESULTPUBDNSNAME"
+                echo ""
 
-            sleep 10s
-            #Transfert la clé ssh
-            echo "exit" | ssh -tt -o "StrictHostKeyChecking no" -i "projet1grp3key.pem" ec2-user@$RESULTPUBDNSNAME
-            scp -i projet1grp3key.pem projet1grp3key.pem ec2-user@$RESULTPUBDNSNAME:/tmp/projet1grp3key.txt
+                echo "Transfert de la clé ssh vers l'instance $STACKNAMEEC2"
 
+                #Transfert la clé ssh
+                echo "exit" | ssh -o "StrictHostKeyChecking no" -i "projet1grp3key.pem" ec2-user@$RESULTPUBDNSNAME
+                sleep 4s
+                scp -i projet1grp3key.pem projet1grp3key.pem ec2-user@$RESULTPUBDNSNAME:/tmp/projet1grp3key.txt
+            fi
             ;;
         "UPDATE")
             echo "------START UPDATE STACK-------" 1>>trace.log 2>&1
