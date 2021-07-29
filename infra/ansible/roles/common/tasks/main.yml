@@ -8,7 +8,9 @@
   include_tasks: add-user-ssh.yml
 
 - name: Installation des package
-  include_tasks: install-pkg.yml
+  include_tasks: install-pkg.yml ansible_python_interpreter=/usr/bin/python3
+  vars:
+    ansible_python_interpreter: /usr/bin/python2
 
 # - name: Delete EC2 instance
 #   include_tasks: cloudformation-delete.yml
@@ -18,3 +20,4 @@
 
 - name: install qcm
   include_tasks: install-qcm.yml
+

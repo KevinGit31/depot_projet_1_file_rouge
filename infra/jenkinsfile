@@ -158,6 +158,7 @@ agent any
                     ansible-playbook -i infra/ansible/inventory/${ENVIRONNEMENT}/hosts infra/ansible/roles/common/tasks/cloudformation-create.yml -vvv
                     """
             }
+        }
         stage('installqcmEC2ansible') {
             steps {
                     sh """#!/bin/bash -xe
@@ -192,7 +193,7 @@ agent any
                     echo "InstanceType: \$INSTTYPE" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
                     echo "AWSAccessKeyId: \$AWS_ACCESS_KEY" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
                     echo "AWSSecretAccessKeyId: \$AWS_SECRET_KEY" >> infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all
-                    ansible-playbook -i infra/ansible/inventory/${ENVIRONNEMENT}/hosts infra/ansible/${ENVIRONNEMENT} --extra-vars "adminnexus=${CREDENTIALS_NEXUS_USR} pwdnexus=${$CREDENTIALS_NEXUS_PSW} userdb=${CREDENTIALS_DB_USR} pwddb=${CREDENTIALS_DB_PSW} namedb=${DBNAME_ENV} dnsdb=${DNSDB_ENV}" -vvv
+                    ansible-playbook -i infra/ansible/inventory/${ENVIRONNEMENT}/hosts infra/ansible/${ENVIRONNEMENT} --extra-vars "adminnexus=${CREDENTIALS_NEXUS_USR} pwdnexus=${CREDENTIALS_NEXUS_PSW} userdb=${CREDENTIALS_DB_USR} pwddb=${CREDENTIALS_DB_PSW} namedb=${DBNAME_ENV} dnsdb=${DNSDB_ENV}" -vvv
                     """
             }
         }
@@ -299,3 +300,4 @@ agent any
 //     \$(${CMD})
 //     """
 // }
+

@@ -6,6 +6,9 @@ Parameters:
     Default: projet1grp3key
     Description: Name of an existing EC2 KeyPair to enable SSH access to the instance
 #    Type: 'AWS::EC2::KeyPair::KeyName'
+  Ec2User:
+    Type: String
+    Description: ssh EC2 KeyPair to enable SSH access to the instance
   SSHLocation:
     Description: ' The IP address range that can be used to SSH to the EC2 instances'
     Type: String
@@ -509,6 +512,7 @@ Resources:
           echo ${DevOpsKey} > /tmp/devopsuserkey.txt
           echo ${JenkinsKey} > /tmp/jenkinskey.txt
           echo ${KeyName} > /tmp/KeyName.txt
+          echo ${Ec2User} > /tmp/Ec2User.txt
           echo ${AWS::Region} > /tmp/region.txt
           echo ${SubnetIdPubADM} > /tmp/SubnetIdPub.txt
           echo ${SubnetIdPrivADM} > /tmp/SubnetIdPriv.txt

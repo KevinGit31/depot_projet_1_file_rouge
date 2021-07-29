@@ -4,13 +4,14 @@
 #2 modif quizz/src/models/app.py décommenté ligne 24 et commenté ligne 25
 #3 run quizz/script/create-quizz-db.sh
 #4 run quizz/script/start-quizz.sh
-- hosts: all
-  gather_facts: no
+- name: install qcm
+  gather_facts: false
   remote_user: devops
   become: true
 
   tasks:
-  - name: Creates directory ~/quizz
+
+  - name: Creates directory ~/app
     file:
       path: ~/app
       state: directory
@@ -18,14 +19,14 @@
       group: devops
       mode: '0655'
 
-  - name: Creates directory ~/quizz
-    maven_artifact:
-      group_id: ""
-      artifact_id: qcm
-      repository_url: 'http://10.80.140.11:8081/repository/APP/'
-      username: "{{ adminnexus }}"
-      password: "{{ pwdnexus }}"
-      dest: ~/qcm-latest.tar.gz
+- name: DL nexus ~/app
+  maven_artifact:
+    group_id: ""
+    artifact_id: qcm
+    repository_url: 'http://10.80.140.11:8081/repository/APP/'
+    username: "{{ adminnexus }}"
+    password: "{{ pwdnexus }}"
+    dest: ~/qcm-latest.tar.gz
 
   - name: Extract ~/app/qcmxxx.tar.gz
     unarchive:
@@ -38,13 +39,13 @@
       regexp: ^     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://user.quizz:dru98eDFC90@localhost/db.quizz'
       line: "     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://{{ userdb }}:{{ pwddb }}@{{ dnsdb }}/{{ namedb }}'"
 
-  - name: mise a jour du fichier ~/app/quizz/src/config/appconfig.py
+  - name: mise a jour du fichier ~/app/quizz/src/models/app.py
     lineinfile:
       dest: ~/app/quizz/src/models/app.py
       regexp: ^# app_config(app)
       line: "app_config(app)"
 
-  - name: mise a jour du fichier ~/app/quizz/src/config/appconfig.py
+  - name: mise a jour du fichier ~/app/quizz/src/models/app.py
     lineinfile:
       dest: ~/app/quizz/src/models/app.py
       regexp: ^tsconfig(app)

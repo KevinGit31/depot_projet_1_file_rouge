@@ -6,6 +6,7 @@ DEVOPSPWD=$(cat /tmp/devopsuserkey.txt)
 ANSIBPASS=$(cat /tmp/ansiblekey.txt)
 ENV1=$(cat /tmp/env.txt)
 KEYNAME1=$(cat /tmp/KeyName.txt)
+EC2USER=$(cat /tmp/Ec2User.txt)
 REGION1=$(cat /tmp/region.txt)
 SUBIDPUB1=$(cat /tmp/SubnetIdPub.txt)
 SUBIDPRIV1=$(cat /tmp/SubnetIdPriv.txt)
@@ -67,9 +68,11 @@ echo 'userjenkins   ALL=(ALL)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
 usermod -a -G jenkins userjenkins
 usermod -a -G userjenkins jenkins
 
+#Pour que jenkins puisse faire executé le playbook par devops avec sudo -u devops -s ansible-playbook
+echo 'jenkins   ALL=(devops)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
 
 
-#preparation du user devops sur les host remote + distrib key
+#creation de l'utilisateur devops
 useradd -m -s /bin/bash devops
 echo "devops:$DEVOPSPWD" | chpasswd
 echo 'devops   ALL=(ALL)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
@@ -78,10 +81,8 @@ echo "root:$ROOTPASS" | chpasswd
 #su - devops -c 'ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa <<<y >/dev/null 2>&1 ; exit'
 #echo \"export PATH=$PATH:/usr/local/bin\" >> ~/.bashrc
 
-
 #install ansible
 amazon-linux-extras install ansible2 -y
-
 
 #configuration ansible vault paswword
 echo "#!/bin/bash" >> /etc/ansible/ansvlt.sh
@@ -89,7 +90,7 @@ echo "$ANSIBPASS" >> /etc/ansible/.ansvlt
 echo "RET=$(sudo cat /etc/ansible/.ansvlt)" >> /etc/ansible/ansvlt.sh
 echo "echo \$RET" >> /etc/ansible/ansvlt.sh
 sed -i 's/\#vault_password_file = \/path\/to\/vault_password_file/vault_password_file=\/etc\/ansible\/ansvlt.sh/' /etc/ansible/ansible.cfg
-
+sed -i 's/\#host_key_checking = False/host_key_checking = False/' /etc/ansible/ansible.cfg
 #preparation pour le client aws pour ansible dans jenkins
 pip install boto3==1.15.16
 pip uninstall -y botocore
@@ -104,6 +105,10 @@ su - jenkins -c "echo \"export PATH=$PATH:/var/lib/jenkins/.local/bin\" >> ~/.ba
 sed -i 's/\/jenkins:\/bin\/false/\/jenkins:\/bin\/bash/' /etc/passwd
 #su - userjenkins -c "cd /home/userjenkins && wget -O $ENV1.zip https://github.com/KevinGit31/depot_projet_1_file_rouge/archive/refs/heads/$ENV1.zip && unzip $ENV1.zip && mv depot_projet_1_file_rouge* depot_projet_1_file_rouge && chmod +x /home/userjenkins/depot_projet_1_file_rouge/infra/ansvlt.sh && exit"
 su - devops -c "cd /tmp && /bin/bash ssh.sh && exit"
+#preparation du user devops sur les host remote + distrib key
+su - devops -c "$(echo $EC2USER) > ~/.ssh/projet1grp3key.pem"
+su - devops -c "chmod 600 ~/.ssh/projet1grp3key.pem"
+#cp /home/devops/.ssh/id_rsa.pub /var/lib/jenkins/.ssh/devops_id_rsa.pub && chown jenkins: /var/lib/jenkins/.ssh/devops_id_rsa.pub
 su - jenkins -c "mkdir ~/.aws && cd ~/.aws && echo \"[default]\" >> credentials && echo \"aws_access_key_id=$AAKI1\" >> credentials && echo \"aws_secret_access_key=$ASAKI1\" >> credentials && exit"
 su - jenkins -c "cd ~/.aws && echo \"[default]\" >> config && echo \"region=$REGION1\" >> config && echo \"output=json\" >> config && exit"
 su - jenkins -c "echo \"export SECRETDEVOPS=$DEVOPSPWD\" >> ~/.bashrc"
