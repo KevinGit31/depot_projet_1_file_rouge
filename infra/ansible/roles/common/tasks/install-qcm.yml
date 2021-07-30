@@ -12,12 +12,14 @@
   become_user: devops
   become: true
   maven_artifact:
+    version: latest
     group_id: "{{ groupId }}"
     artifact_id: "{{ artifactId }}"
     repository_url: 'http://10.80.140.11:8081/repository/APP/'
     username: "{{ adminnexus }}"
     password: "{{ pwdnexus }}"
-    dest: ~/qcm-latest.tar.gz
+    dest: ~/
+    keep_name: yes
 
 - name: Extract ~/app/qcmxxx.tar.gz
   unarchive:
