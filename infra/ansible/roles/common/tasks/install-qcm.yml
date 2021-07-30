@@ -12,8 +12,8 @@
   become_user: devops
   become: true
   maven_artifact:
-    group_id: ""
-    artifact_id: qcm
+    group_id: "{{ groupId }}"
+    artifact_id: "{{ artifactId }}"
     repository_url: 'http://10.80.140.11:8081/repository/APP/'
     username: "{{ adminnexus }}"
     password: "{{ pwdnexus }}"
