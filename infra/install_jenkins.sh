@@ -76,8 +76,6 @@ echo 'jenkins   ALL=(devops)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
 useradd -m -s /bin/bash devops
 echo "devops:$DEVOPSPWD" | chpasswd
 echo 'devops   ALL=(ALL)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
-usermod -a -G devops jenkins
-usermod -a -G jenkins devops
 echo "root:$ROOTPASS" | chpasswd
 #genere la cle pub et priv pour le user devops
 #su - devops -c 'ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa <<<y >/dev/null 2>&1 ; exit'
@@ -104,7 +102,8 @@ yum install mysql
 
 #Preparation et transfert du contenu des  variables pour les vm dev qua et prod
 #positionnement du fichier contenant les variables d'environnement sous jenkins
-su - jenkins -c "mkdir /var/lib/jenkins/.envvars && touch /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+mkdir /var/lib/jenkins/.envvars && touch /var/lib/jenkins/.envvars/stacktest-staging.groovy
+chown jenkins: /var/lib/jenkins/.envvars /var/lib/jenkins/.envvars/stacktest-staging.groovy
 su - jenkins -c "echo \"export PATH=$PATH:/var/lib/jenkins/.local/bin\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
 sed -i 's/\/jenkins:\/bin\/false/\/jenkins:\/bin\/bash/' /etc/passwd
 #su - userjenkins -c "cd /home/userjenkins && wget -O $ENV1.zip https://github.com/KevinGit31/depot_projet_1_file_rouge/archive/refs/heads/$ENV1.zip && unzip $ENV1.zip && mv depot_projet_1_file_rouge* depot_projet_1_file_rouge && chmod +x /home/userjenkins/depot_projet_1_file_rouge/infra/ansvlt.sh && exit"
