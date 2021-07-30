@@ -1,10 +1,3 @@
 - name: creation de rep app
-  gather_facts: false
   remote_user: devops
-  become: true
-  file:
-    path: ~/app
-    state: directory
-    owner: devops
-    group: devops
-    mode: '0655'
+  shell: mkdir ~/app
