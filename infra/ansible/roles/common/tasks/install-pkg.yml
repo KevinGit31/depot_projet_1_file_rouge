@@ -21,3 +21,4 @@
 - name: Install lxml pour ansible nexus module
   pip:
     name: lxml
+    executable: pip3
