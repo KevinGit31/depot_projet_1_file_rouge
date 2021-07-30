@@ -10,39 +10,39 @@
 
 - name: Download nexus build
   get_url:
-    url: http://10.80.140.11:8081/repository/APP/1/qcm/1.0-"{{ numbuild }}"/qcm-1.0-"{{ numbuild }}".tar.gz
+    url: http://10.80.140.11:8081/repository/APP/1/qcm/1.0-{{ numbuild }}/qcm-1.0-{{ numbuild }}.tar.gz
     dest: ~/
 
 
 - name: Extract ~/app/qcmxxx.tar.gz
   unarchive:
-    src: ~/app/qcm-1.0-"{{ numbuild }}".tar.gz
+    src: ~/app/qcm-1.0-{{ numbuild }}.tar.gz
     dst: ~/app
 
-- name: mise a jour du fichier ~/app/qcm-1.0-"{{ numbuild }}"/quizz/src/config/appconfig.py
+- name: mise a jour du fichier ~/app/qcm-1.0-{{ numbuild }}/quizz/src/config/appconfig.py
   lineinfile:
-    dest: ~/app/qcm-1.0-"{{ numbuild }}"/quizz/src/config/appconfig.py
+    dest: ~/app/qcm-1.0-{{ numbuild }}/quizz/src/config/appconfig.py
     regexp: ^     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://user.quizz:dru98eDFC90@localhost/db.quizz'
     line: "     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://{{ userdb }}:{{ pwddb }}@{{ dnsdb }}/{{ namedb }}'"
 
 - name: mise a jour du fichier ~/app/qcm-1.0-"{{ numbuild }}"/quizz/src/models/app.py
   lineinfile:
-    dest: ~/app/qcm-1.0-"{{ numbuild }}"/quizz/src/models/app.py
+    dest: ~/app/qcm-1.0-{{ numbuild }}/quizz/src/models/app.py
     regexp: ^# app_config(app)
     line: "app_config(app)"
 
-- name: mise a jour du fichier ~/app/qcm-1.0-"{{ numbuild }}"/quizz/src/models/app.py
+- name: mise a jour du fichier ~/app/qcm-1.0-{{ numbuild }}/quizz/src/models/app.py
   lineinfile:
-    dest: ~/app/qcm-1.0-"{{ numbuild }}"/quizz/src/models/app.py
+    dest: ~/app/qcm-1.0-{{ numbuild }}/quizz/src/models/app.py
     regexp: ^tsconfig(app)
     line: "#tsconfig(app)"
 
 - name: Creation de la BDD ~/app/qcm-1.0-"{{ numbuild }}"/quizz/script/create-quizz-db.sh
   shell: create-quizz-db.sh
   args:
-    chdir: ~/app/qcm-1.0-"{{ numbuild }}"/quizz/script/
+    chdir: ~/app/qcm-1.0-{{ numbuild }}/quizz/script/
 
-- name: run qcm ~/app/qcm-1.0-"{{ numbuild }}"/quizz/script/start-quizz.sh
+- name: run qcm ~/app/qcm-1.0-{{ numbuild }}/quizz/script/start-quizz.sh
   shell: start-quizz.sh
   args:
-    chdir: ~/app/qcm-1.0-"{{ numbuild }}"/quizz/script
+    chdir: ~/app/qcm-1.0-{{ numbuild }}/quizz/script
