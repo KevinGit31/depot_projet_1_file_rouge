@@ -1,5 +1,6 @@
 #!/bin/bash
 
+#Recupération des variables déposé par le script de cloudformation
 JENKINSPWD=$(cat /tmp/jenkinskey.txt)
 DEVOPSPWD=$(cat /tmp/devopsuserkey.txt)
 #ROOTPASS=$(cat /tmp/root.txt)
@@ -61,7 +62,7 @@ sleep 5
 systemctl start jenkins
 /sbin/chkconfig jenkins on
 
-# On modifit l' utilisateur jenkins définition du password
+# On modifit l' utilisateur jenkins définition du password ajout d'un compte de secours userjenkins
 useradd -m userjenkins
 echo "userjenkins:$JENKINSPWD" | sudo chpasswd
 echo 'userjenkins   ALL=(ALL)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
@@ -72,14 +73,12 @@ usermod -a -G userjenkins jenkins
 echo 'jenkins   ALL=(devops)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
 
 
-#creation de l'utilisateur devops
+#creation de l'utilisateur devops compte d'install ansible sur les environnments EC2
 useradd -m -s /bin/bash devops
 echo "devops:$DEVOPSPWD" | chpasswd
 echo 'devops   ALL=(ALL)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
 echo "root:$ROOTPASS" | chpasswd
-#genere la cle pub et priv pour le user devops
-#su - devops -c 'ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa <<<y >/dev/null 2>&1 ; exit'
-#echo \"export PATH=$PATH:/usr/local/bin\" >> ~/.bashrc
+
 
 #install ansible
 amazon-linux-extras install ansible2 -y
@@ -108,18 +107,17 @@ su - jenkins -c "echo \"env.PATH=\"$PATH:/var/lib/jenkins/.local/bin\"\" >> /var
 sed -i 's/\/jenkins:\/bin\/false/\/jenkins:\/bin\/bash/' /etc/passwd
 #su - userjenkins -c "cd /home/userjenkins && wget -O $ENV1.zip https://github.com/KevinGit31/depot_projet_1_file_rouge/archive/refs/heads/$ENV1.zip && unzip $ENV1.zip && mv depot_projet_1_file_rouge* depot_projet_1_file_rouge && chmod +x /home/userjenkins/depot_projet_1_file_rouge/infra/ansvlt.sh && exit"
 su - devops -c "cd /tmp && /bin/bash ssh.sh && exit"
-#preparation du user devops sur les host remote + distrib key
+
+#Copie de la cle de l'user ec2-user pour se connecter sur les autres instance ec2 AWS par ansible
 su - devops -c "$(echo $EC2USER) > ~/.ssh/projet1grp3key.pem"
 su - devops -c "chmod 600 ~/.ssh/projet1grp3key.pem"
-su - devops -c "eval \"$(ssh-agent -s)\""
-su - devops -c "ssh-add ~/.ssh/projet1grp3key.pem"
-#cp /home/devops/.ssh/id_rsa.pub /var/lib/jenkins/.ssh/devops_id_rsa.pub && chown jenkins: /var/lib/jenkins/.ssh/devops_id_rsa.pub
+
+#Compte aws + récupération des variables nécessaires à la création du fichier de variable ansible pour les playbook
 su - jenkins -c "mkdir ~/.aws && cd ~/.aws && echo \"[default]\" >> credentials && echo \"aws_access_key_id=$AAKI1\" >> credentials && echo \"aws_secret_access_key=$ASAKI1\" >> credentials && exit"
 su - jenkins -c "cd ~/.aws && echo \"[default]\" >> config && echo \"region=$REGION1\" >> config && echo \"output=json\" >> config && exit"
 su - devops -c "mkdir ~/.aws && cd ~/.aws && echo \"[default]\" >> credentials && echo \"aws_access_key_id=$AAKI1\" >> credentials && echo \"aws_secret_access_key=$ASAKI1\" >> credentials && exit"
 su - devops -c "cd ~/.aws && echo \"[default]\" >> config && echo \"region=$REGION1\" >> config && echo \"output=json\" >> config && exit"
 su - devops -c "echo \"export PATH=$PATH:/var/lib/jenkins/.local/bin\" >> ~/.bashrc"
-
 su - jenkins -c "echo \"env.SECRETDEVOPS=\"$DEVOPSPWD\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
 su - jenkins -c "echo \"env.ANS=\"$ANSIBPASS\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
 su - jenkins -c "echo \"env.KEYNAME=\"$KEYNAME1\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
@@ -149,7 +147,7 @@ su - jenkins -c "sed -i -- 's/$/\"/g' /var/lib/jenkins/.envvars/stacktest-stagin
 sed -i 's/\/jenkins:\/bin\/bash/\/jenkins:\/bin\/false/' /etc/passwd
 #sudo su -s /bin/bash jenkins
 
-#Install docker
+#Install docker pour les test partie jenkins
 su - ec2-user -c "sudo amazon-linux-extras enable docker"
 su - ec2-user -c "sudo yum -y install docker"
 su - ec2-user -c "sudo systemctl daemon-reload"

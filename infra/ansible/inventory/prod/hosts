@@ -14,7 +14,7 @@ ansible_python_interpreter=/usr/bin/python3
 10.80.130.10 ansible_host=10.80.130.10 ansible_environnement=main
 
 [appgrp:vars]
-ansible_ssh_private_key_file=~/.ssh/projet1grp3key.pem
+
 
 [appgrp:children]
 DEV
