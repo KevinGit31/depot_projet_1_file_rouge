@@ -98,7 +98,7 @@ pip install botocore==1.18.6
 ansible-galaxy collection install amazon.aws
 
 #install du client pour verifier la connexion rds
-yum install mysql
+yum install -y mysql
 
 #Preparation et transfert du contenu des  variables pour les vm dev qua et prod
 #positionnement du fichier contenant les variables d'environnement sous jenkins
