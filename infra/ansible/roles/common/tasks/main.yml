@@ -4,8 +4,7 @@
 #   tags:
 #     - cloudcreate: "ansible-cloudformation-create"
 
-- name: Create devops user + distribution de la clé ssh
-  include_tasks: add-user-ssh.yml
+
 
 - name: Installation des package
   include_tasks: install-pkg.yml

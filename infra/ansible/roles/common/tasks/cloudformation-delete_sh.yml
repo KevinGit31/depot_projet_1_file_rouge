@@ -1,8 +1,0 @@
-#cf si vider la rds lié
-
-#
-- name: delete a stack
-  shell: aws cloudformation delete-stack --stack-name "{{ TYPENAME }}"
-  tags:
-    - clouddelete: "ansible-cloudformation-delete"
-  when: GOTODEL == "yes"

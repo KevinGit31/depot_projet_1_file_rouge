@@ -111,6 +111,8 @@ su - devops -c "cd /tmp && /bin/bash ssh.sh && exit"
 #preparation du user devops sur les host remote + distrib key
 su - devops -c "$(echo $EC2USER) > ~/.ssh/projet1grp3key.pem"
 su - devops -c "chmod 600 ~/.ssh/projet1grp3key.pem"
+su - devops -c "eval \"$(ssh-agent -s)\""
+su - devops -c "ssh-add ~/.ssh/projet1grp3key.pem"
 #cp /home/devops/.ssh/id_rsa.pub /var/lib/jenkins/.ssh/devops_id_rsa.pub && chown jenkins: /var/lib/jenkins/.ssh/devops_id_rsa.pub
 su - jenkins -c "mkdir ~/.aws && cd ~/.aws && echo \"[default]\" >> credentials && echo \"aws_access_key_id=$AAKI1\" >> credentials && echo \"aws_secret_access_key=$ASAKI1\" >> credentials && exit"
 su - jenkins -c "cd ~/.aws && echo \"[default]\" >> config && echo \"region=$REGION1\" >> config && echo \"output=json\" >> config && exit"
@@ -142,6 +144,8 @@ su - jenkins -c "echo \"env.SECGRPNLST=\"$SECGRPNLST1\"\" >> /var/lib/jenkins/.e
 su - jenkins -c "echo \"env.USCRIPT=\"$USCRIPT1\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
 su - jenkins -c "echo \"env.SECGRPID=\"$SECGRPID1\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
 su - jenkins -c "echo \"env.INSTTYPE=\"$INSTTYPE1\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "sed -i -- 's/=/=\"/g' /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "sed -i -- 's/$/\"/g' /var/lib/jenkins/.envvars/stacktest-staging.groovy"
 sed -i 's/\/jenkins:\/bin\/bash/\/jenkins:\/bin\/false/' /etc/passwd
 #sudo su -s /bin/bash jenkins
 
