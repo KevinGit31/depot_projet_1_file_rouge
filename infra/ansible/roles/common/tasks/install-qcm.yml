@@ -10,7 +10,7 @@
 
 - name: Download nexus build
   get_url:
-    url: http://10.80.140.11:8081/repository/APP/1/qcm/1.0-{{ numbuild }}/qcm-1.0-{{ numbuild }}.tar.gz
+    url: http://{{ dnsnexus }}:8081/repository/APP/1/qcm/1.0-{{ numbuild }}/qcm-1.0-{{ numbuild }}.tar.gz
     dest: ~/
 
 
