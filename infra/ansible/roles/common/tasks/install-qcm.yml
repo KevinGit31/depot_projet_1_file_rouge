@@ -1,57 +1,55 @@
-- name: install qcm
+- name: Creates directory ~/app
   become_user: devops
   become: true
+  file:
+    path: ~/app
+    state: directory
+    owner: devops
+    group: devops
+    mode: '0655'
 
-  tasks:
+- name: DL nexus ~/app
+  become_user: devops
+  become: true
+  maven_artifact:
+    group_id: ""
+    artifact_id: qcm
+    repository_url: 'http://10.80.140.11:8081/repository/APP/'
+    username: "{{ adminnexus }}"
+    password: "{{ pwdnexus }}"
+    dest: ~/qcm-latest.tar.gz
 
-  - name: Creates directory ~/app
-    file:
-      path: ~/app
-      state: directory
-      owner: devops
-      group: devops
-      mode: '0655'
+- name: Extract ~/app/qcmxxx.tar.gz
+  unarchive:
+    src: ~/app/qcm-latest.tar.gz
+    dst: ~/app
 
-  - name: DL nexus ~/app
-    maven_artifact:
-      group_id: ""
-      artifact_id: qcm
-      repository_url: 'http://10.80.140.11:8081/repository/APP/'
-      username: "{{ adminnexus }}"
-      password: "{{ pwdnexus }}"
-      dest: ~/qcm-latest.tar.gz
+- name: mise a jour du fichier ~/app/quizz/src/config/appconfig.py
+  lineinfile:
+    dest: ~/app/quizz/src/config/appconfig.py
+    regexp: ^     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://user.quizz:dru98eDFC90@localhost/db.quizz'
+    line: "     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://{{ userdb }}:{{ pwddb }}@{{ dnsdb }}/{{ namedb }}'"
 
-  - name: Extract ~/app/qcmxxx.tar.gz
-    unarchive:
-      src: ~/app/qcm-latest.tar.gz
-      dst: ~/app
+- name: mise a jour du fichier ~/app/quizz/src/models/app.py
+  lineinfile:
+    dest: ~/app/quizz/src/models/app.py
+    regexp: ^# app_config(app)
+    line: "app_config(app)"
 
-  - name: mise a jour du fichier ~/app/quizz/src/config/appconfig.py
-    lineinfile:
-      dest: ~/app/quizz/src/config/appconfig.py
-      regexp: ^     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://user.quizz:dru98eDFC90@localhost/db.quizz'
-      line: "     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://{{ userdb }}:{{ pwddb }}@{{ dnsdb }}/{{ namedb }}'"
+- name: mise a jour du fichier ~/app/quizz/src/models/app.py
+  lineinfile:
+    dest: ~/app/quizz/src/models/app.py
+    regexp: ^tsconfig(app)
+    line: "#tsconfig(app)"
 
-  - name: mise a jour du fichier ~/app/quizz/src/models/app.py
-    lineinfile:
-      dest: ~/app/quizz/src/models/app.py
-      regexp: ^# app_config(app)
-      line: "app_config(app)"
+- name: Creation de la BDD ~/app/quizz/script/create-quizz-db.sh
+  shell: create-quizz-db.sh
+  chdir: ~/app/quizz/script/
+  args:
+    executable: /bin/bash
 
-  - name: mise a jour du fichier ~/app/quizz/src/models/app.py
-    lineinfile:
-      dest: ~/app/quizz/src/models/app.py
-      regexp: ^tsconfig(app)
-      line: "#tsconfig(app)"
-
-  - name: Creation de la BDD ~/app/quizz/script/create-quizz-db.sh
-    shell: create-quizz-db.sh
-    chdir: ~/app/quizz/script/
-    args:
-      executable: /bin/bash
-
-  - name: run qcm ~/app/quizz/script/start-quizz.sh
-    shell: start-quizz.sh
-    chdir: ~/app/quizz/script/
-    args:
-      executable: /bin/bash
+- name: run qcm ~/app/quizz/script/start-quizz.sh
+  shell: start-quizz.sh
+  chdir: ~/app/quizz/script/
+  args:
+    executable: /bin/bash
