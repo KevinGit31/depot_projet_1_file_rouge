@@ -1,3 +1,6 @@
+node {
+   load "$JENKINS_HOME/.envvars/stacktest-staging.groovy"
+}
 pipeline {
     environment {
 //        KEYNAME_ENV = "${sh(script:'echo $KEYNAME', returnStdout: true).trim()}"

@@ -76,6 +76,8 @@ echo 'jenkins   ALL=(devops)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
 useradd -m -s /bin/bash devops
 echo "devops:$DEVOPSPWD" | chpasswd
 echo 'devops   ALL=(ALL)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
+usermod -a -G devops jenkins
+usermod -a -G jenkins devops
 echo "root:$ROOTPASS" | chpasswd
 #genere la cle pub et priv pour le user devops
 #su - devops -c 'ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa <<<y >/dev/null 2>&1 ; exit'
@@ -101,7 +103,9 @@ ansible-galaxy collection install amazon.aws
 yum install mysql
 
 #Preparation et transfert du contenu des  variables pour les vm dev qua et prod
-su - jenkins -c "echo \"export PATH=$PATH:/var/lib/jenkins/.local/bin\" >> ~/.bashrc"
+#positionnement du fichier contenant les variables d'environnement sous jenkins
+su - jenkins -c "mkdir .envvars && touch ~/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"export PATH=$PATH:/var/lib/jenkins/.local/bin\" >> ~/.envvars/stacktest-staging.groovy"
 sed -i 's/\/jenkins:\/bin\/false/\/jenkins:\/bin\/bash/' /etc/passwd
 #su - userjenkins -c "cd /home/userjenkins && wget -O $ENV1.zip https://github.com/KevinGit31/depot_projet_1_file_rouge/archive/refs/heads/$ENV1.zip && unzip $ENV1.zip && mv depot_projet_1_file_rouge* depot_projet_1_file_rouge && chmod +x /home/userjenkins/depot_projet_1_file_rouge/infra/ansvlt.sh && exit"
 su - devops -c "cd /tmp && /bin/bash ssh.sh && exit"
@@ -114,30 +118,31 @@ su - jenkins -c "cd ~/.aws && echo \"[default]\" >> config && echo \"region=$REG
 su - devops -c "mkdir ~/.aws && cd ~/.aws && echo \"[default]\" >> credentials && echo \"aws_access_key_id=$AAKI1\" >> credentials && echo \"aws_secret_access_key=$ASAKI1\" >> credentials && exit"
 su - devops -c "cd ~/.aws && echo \"[default]\" >> config && echo \"region=$REGION1\" >> config && echo \"output=json\" >> config && exit"
 su - devops -c "echo \"export PATH=$PATH:/var/lib/jenkins/.local/bin\" >> ~/.bashrc"
-su - devops -c "echo \"export SECRETDEVOPS=$DEVOPSPWD\" >> ~/.bashrc"
-su - devops -c "echo \"export ANS=$ANSIBPASS\" >> ~/.bashrc"
-su - devops -c "echo \"export KEYNAME=$KEYNAME1\" >> ~/.bashrc"
-su - devops -c "echo \"export TYPENAME=$TYPENAME1\" >> ~/.bashrc"
-su - devops -c "echo \"export REGION=$REGION1\" >> ~/.bashrc"
-su - devops -c "echo \"export AWS_ACCESS_KEY=$AAKI1\" >> ~/.bashrc"
-su - devops -c "echo \"export AWS_SECRET_KEY=$ASAKI1\" >> ~/.bashrc"
-su - devops -c "echo \"export SUBIDPUB=$SUBIDPUB1\" >> ~/.bashrc"
-su - devops -c "echo \"export SUBIDPRIV=$SUBIDPRIV1\" >> ~/.bashrc"
-su - devops -c "echo \"export SUBIDPUBADM=$SUBIDPUBADM1\" >> ~/.bashrc"
-su - devops -c "echo \"export SUBIDPRIVADM=$SUBIDPRIVADM1\" >> ~/.bashrc"
-su - devops -c "echo \"export SUBIDPUBDEV=$SUBIDPUBDEV1\" >> ~/.bashrc"
-su - devops -c "echo \"export SUBIDPRIVDEV=$SUBIDPRIVDEV1\" >> ~/.bashrc"
-su - devops -c "echo \"export SUBIDPUBQUA=$SUBIDPUBQUA1\" >> ~/.bashrc"
-su - devops -c "echo \"export SUBIDPRIVQUA=$SUBIDPRIVQUA1\" >> ~/.bashrc"
-su - devops -c "echo \"export SUBIDPUBPROD=$SUBIDPUBPROD1\" >> ~/.bashrc"
-su - devops -c "echo \"export SUBIDPRIVPROD=$SUBIDPRIVPROD1\" >> ~/.bashrc"
-su - devops -c "echo \"export VPCID=$VPCID1\" >> ~/.bashrc"
-su - devops -c "echo \"export PRIVIP=$PRIVIP1\" >> ~/.bashrc"
-su - devops -c "echo \"export INGRPORT=$INGRPORT1\" >> ~/.bashrc"
-su - devops -c "echo \"export SECGRPNLST=$SECGRPNLST1\" >> ~/.bashrc"
-su - devops -c "echo \"export USCRIPT=$USCRIPT1\" >> ~/.bashrc"
-su - devops -c "echo \"export SECGRPID=$SECGRPID1\" >> ~/.bashrc"
-su - devops -c "echo \"export INSTTYPE=$INSTTYPE1\" >> ~/.bashrc"
+
+su - jenkins -c "echo \"export SECRETDEVOPS=$DEVOPSPWD\" >> ~/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"export ANS=$ANSIBPASS\" >> ~/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"export KEYNAME=$KEYNAME1\" >> ~/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"export TYPENAME=$TYPENAME1\" >> ~/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"export REGION=$REGION1\" >> ~/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"export AWS_ACCESS_KEY=$AAKI1\" >> ~/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"export AWS_SECRET_KEY=$ASAKI1\" >> ~/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"export SUBIDPUB=$SUBIDPUB1\" >> ~/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"export SUBIDPRIV=$SUBIDPRIV1\" >> ~/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"export SUBIDPUBADM=$SUBIDPUBADM1\" >> ~/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"export SUBIDPRIVADM=$SUBIDPRIVADM1\" >> ~/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"export SUBIDPUBDEV=$SUBIDPUBDEV1\" >> ~/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"export SUBIDPRIVDEV=$SUBIDPRIVDEV1\" >> ~/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"export SUBIDPUBQUA=$SUBIDPUBQUA1\" >> ~/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"export SUBIDPRIVQUA=$SUBIDPRIVQUA1\" >> ~/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"export SUBIDPUBPROD=$SUBIDPUBPROD1\" >> ~/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"export SUBIDPRIVPROD=$SUBIDPRIVPROD1\" >> ~/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"export VPCID=$VPCID1\" >> ~/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"export PRIVIP=$PRIVIP1\" >> ~/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"export INGRPORT=$INGRPORT1\" >> ~/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"export SECGRPNLST=$SECGRPNLST1\" >> ~/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"export USCRIPT=$USCRIPT1\" >> ~/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"export SECGRPID=$SECGRPID1\" >> ~/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"export INSTTYPE=$INSTTYPE1\" >> ~/.envvars/stacktest-staging.groovy"
 sed -i 's/\/jenkins:\/bin\/bash/\/jenkins:\/bin\/false/' /etc/passwd
 #sudo su -s /bin/bash jenkins
 
