@@ -44,12 +44,10 @@
 
 - name: Creation de la BDD ~/app/quizz/script/create-quizz-db.sh
   shell: create-quizz-db.sh
-  chdir: ~/app/quizz/script/
   args:
-    executable: /bin/bash
+    chdir: ~/app/quizz/script/
 
 - name: run qcm ~/app/quizz/script/start-quizz.sh
   shell: start-quizz.sh
-  chdir: ~/app/quizz/script/
   args:
-    executable: /bin/bash
+    chdir: ~/app/quizz/script
