@@ -18,3 +18,6 @@
     name: mysql
     state: present
     update_cache: true
+- name: Install lxml pour ansible nexus module
+  pip:
+    name: lxml
