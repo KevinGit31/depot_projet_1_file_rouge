@@ -34,6 +34,8 @@
     line: "     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://{{ userdb }}:{{ pwddb }}@{{ dnsdb }}/{{ namedb }}'"
 
 - name: mise a jour du fichier ~/app/quizz/src/models/app.py
+  become_user: devops
+  become: true
   replace:
     path: ~/app/quizz/src/models/app.py
     after: "# Database"
@@ -42,6 +44,8 @@
     replace: "app_config(app)"
 
 - name: mise a jour du fichier ~/app/quizz/src/models/app.py
+  become_user: devops
+  become: true
   replace:
     path: ~/app/quizz/src/models/app.py
     after: "app_config(app)"
@@ -66,6 +70,8 @@
     executable: /bin/bash
 
 - name: Change file ownership, group and permissions
+  become_user: devops
+  become: true
   file:
     path: ~/app
     mode: '0644'
