@@ -13,7 +13,7 @@
   become: true
   get_url:
     url: http://{{ dnsnexus }}:8081/repository/APP/1/qcm/1.0-{{ numbuild }}/qcm-1.0-{{ numbuild }}.tar.gz
-    dest: ~/
+    dest: ~/app
     username: "{{ adminnexus }}"
     password: "{{ pwdnexus }}"
 
@@ -24,40 +24,40 @@
     src: ~/app/qcm-1.0-{{ numbuild }}.tar.gz
     dst: ~/app
 
-- name: mise a jour du fichier ~/app/qcm-1.0-{{ numbuild }}/quizz/src/config/appconfig.py
+- name: mise a jour du fichier ~/app/quizz/src/config/appconfig.py
   become_user: devops
   become: true
   lineinfile:
-    dest: ~/app/qcm-1.0-{{ numbuild }}/quizz/src/config/appconfig.py
+    dest: ~/app/quizz/src/config/appconfig.py
     regexp: ^     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://user.quizz:dru98eDFC90@localhost/db.quizz'
     line: "     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://{{ userdb }}:{{ pwddb }}@{{ dnsdb }}/{{ namedb }}'"
 
-- name: mise a jour du fichier ~/app/qcm-1.0-"{{ numbuild }}"/quizz/src/models/app.py
+- name: mise a jour du fichier ~/app/quizz/src/models/app.py
   become_user: devops
   become: true
   lineinfile:
-    dest: ~/app/qcm-1.0-{{ numbuild }}/quizz/src/models/app.py
+    dest: ~/app/quizz/src/models/app.py
     regexp: ^# app_config(app)
     line: "app_config(app)"
 
-- name: mise a jour du fichier ~/app/qcm-1.0-{{ numbuild }}/quizz/src/models/app.py
+- name: mise a jour du fichier ~/app/quizz/src/models/app.py
   become_user: devops
   become: true
   lineinfile:
-    dest: ~/app/qcm-1.0-{{ numbuild }}/quizz/src/models/app.py
+    dest: ~/app/quizz/src/models/app.py
     regexp: ^tsconfig(app)
     line: "#tsconfig(app)"
 
-- name: Creation de la BDD ~/app/qcm-1.0-"{{ numbuild }}"/quizz/script/create-quizz-db.sh
+- name: Creation de la BDD ~/app/quizz/script/create-quizz-db.sh
   become_user: devops
   become: true
   shell: create-quizz-db.sh
   args:
-    chdir: ~/app/qcm-1.0-{{ numbuild }}/quizz/script/
+    chdir: ~/app/quizz/script/
 
-- name: run qcm ~/app/qcm-1.0-{{ numbuild }}/quizz/script/start-quizz.sh
+- name: run qcm ~/app/quizz/script/start-quizz.sh
   become_user: devops
   become: true
   shell: start-quizz.sh
   args:
-    chdir: ~/app/qcm-1.0-{{ numbuild }}/quizz/script
+    chdir: ~/app/quizz/script
