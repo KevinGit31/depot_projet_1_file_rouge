@@ -64,5 +64,9 @@ FXAWS_DESCRIBE () {
 ################### END FONCTION##############
 
 eval $(FXAWS_DESCRIBE "$SVCTYPE" "$DESCRIBECMD" "$REGION" "$QUERY" "$FXDESC_FILTER1" "$FILTEROPTION" "$NEXTPIPECMD")
-echo "KEY= $T2FXAWS_DESCRETURN"
-echo "VALUE= $T1FXAWS_DESCRETURN"
+# echo "KEY= $T2FXAWS_DESCRETURN"
+# echo "VALUE= $T1FXAWS_DESCRETURN"
+
+RESULTINSTANCEID=$T2FXAWS_DESCRETURN
+RESULTPUBDNSNAME=$(aws ec2 describe-instances --query "Reservations[].Instances[].PublicDnsName" --instance-ids $RESULTINSTANCEID --output text)
+echo "$RESULTPUBDNSNAME"
