@@ -6,7 +6,7 @@
     state: directory
     owner: devops
     group: devops
-    mode: '0655'
+    mode: '0766'
 
 - name: Download nexus build
   become_user: devops
@@ -61,3 +61,8 @@
   shell: start-quizz.sh
   args:
     chdir: ~/app/quizz/script
+
+- name: Change file ownership, group and permissions
+  file:
+    path: ~/app
+    mode: '0644'
