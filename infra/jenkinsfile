@@ -82,14 +82,7 @@ agent any
             steps {
                 script {
                     env.DNSDB_ENV = "${sh(script:'chmod +x infra/checkrds.sh && ./infra/checkrds.sh ${REGION_ENV} ${ENVIRONNEMENT}', returnStdout: true).trim()}"
-                    env.FILTER1_ENV = "Name=instance-state-name,Values=running"
-                    env.FILTER2_ENV = "Name=tag:Name,Values=${NEXUS_STACK_NAME}"
-                    env.FILTEROPTION = env.FILTER1_ENV + " " + env.FILTER2_ENV
-                    env.QUERY = "Reservations[].Instances[].[Tags[?Key=='Name'].Value[],InstanceId ]"
-                    env.NEXTPIPECMD = "sort -r -n"
-                    env.SVCTYPE = "ec2"
-                    env.DESCRIBECMD = "describe-instances"
-                    env.DNSPUBEC2NEXUS_ENV = "${sh(script:'chmod +x infra/getdnspubEC2id.sh && ./infra/getdnspubEC2id.sh ${SVCTYPE} ${DESCRIBECMD} ${REGION_ENV} ${QUERY} ${NEXUS_STACK_NAME} ${FILTEROPTION} ${NEXTPIPECMD}', returnStdout: true).trim()}"
+                    env.DNSPUBEC2NEXUS_ENV = "${sh(script:'chmod +x infra/getdnspubEC2id.sh && ./infra/getdnspubEC2id.sh, returnStdout: true).trim()}"
                 }
             }
         }
