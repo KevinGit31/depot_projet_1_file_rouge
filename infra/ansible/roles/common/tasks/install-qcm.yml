@@ -22,7 +22,7 @@
   become: true
   unarchive:
     src: ~/app/qcm-1.0-{{ numbuild }}.tar.gz
-    dst: ~/app
+    dest: ~/app
 
 - name: mise a jour du fichier ~/app/quizz/src/config/appconfig.py
   become_user: devops
