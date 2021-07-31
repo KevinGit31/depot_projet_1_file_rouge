@@ -52,14 +52,14 @@
 - name: Creation de la BDD ~/app/quizz/script/create-quizz-db.sh
   become_user: devops
   become: true
-  shell: create-quizz-db.sh
+  shell: /bin/bash create-quizz-db.sh
   args:
     chdir: ~/app/quizz/script/
 
 - name: run qcm ~/app/quizz/script/start-quizz.sh
   become_user: devops
   become: true
-  shell: start-quizz.sh
+  shell: /bin/bash start-quizz.sh
   args:
     chdir: ~/app/quizz/script
 
