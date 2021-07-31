@@ -38,7 +38,7 @@
   become: true
   lineinfile:
     dest: ~/app/quizz/src/models/app.py
-    regexp: ^# app_config(app)
+    regexp: '^# app_config(app)(.*)$'
     line: "app_config(app)"
 
 - name: mise a jour du fichier ~/app/quizz/src/models/app.py
@@ -46,7 +46,7 @@
   become: true
   lineinfile:
     dest: ~/app/quizz/src/models/app.py
-    regexp: ^tsconfig(app)
+    regexp: '^tsconfig(app)(.*)$'
     line: "#tsconfig(app)"
 
 - name: Creation de la BDD ~/app/quizz/script/create-quizz-db.sh
