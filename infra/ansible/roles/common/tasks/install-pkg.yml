@@ -22,3 +22,7 @@
   pip:
     name: lxml
     executable: pip3
+- name: Install pipenv
+  pip:
+    name: pipenv
+    executable: pip3

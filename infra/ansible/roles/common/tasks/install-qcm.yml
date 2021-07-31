@@ -34,34 +34,36 @@
     line: "     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://{{ userdb }}:{{ pwddb }}@{{ dnsdb }}/{{ namedb }}'"
 
 - name: mise a jour du fichier ~/app/quizz/src/models/app.py
-  become_user: devops
-  become: true
-  lineinfile:
-    dest: ~/app/quizz/src/models/app.py
-    regexp: \# app_config(app)
-    line: "app_config(app)"
+  replace:
+    path: ~/app/quizz/src/models/app.py
+    after: "# Database"
+    before: "tsconfig(app)"
+    regexp: "# app_config(app)"
+    replace: "app_config(app)"
 
 - name: mise a jour du fichier ~/app/quizz/src/models/app.py
-  become_user: devops
-  become: true
-  lineinfile:
-    dest: ~/app/quizz/src/models/app.py
-    regexp: tsconfig(app)
-    line: "#tsconfig(app)"
+  replace:
+    path: ~/app/quizz/src/models/app.py
+    after: "app_config(app)"
+    before: "# Init helper"
+    regexp: "tsconfig(app)"
+    replace: "#tsconfig(app)"
 
 - name: Creation de la BDD ~/app/quizz/script/create-quizz-db.sh
   become_user: devops
   become: true
-  shell: /bin/bash create-quizz-db.sh
+  shell: create-quizz-db.sh
   args:
-    chdir: ~/app/quizz/script/
+    chdir: ~/app/quizz/script
+    executable: /bin/bash
 
 - name: run qcm ~/app/quizz/script/start-quizz.sh
   become_user: devops
   become: true
-  shell: /bin/bash start-quizz.sh
+  shell: start-quizz.sh
   args:
     chdir: ~/app/quizz/script
+    executable: /bin/bash
 
 - name: Change file ownership, group and permissions
   file:
