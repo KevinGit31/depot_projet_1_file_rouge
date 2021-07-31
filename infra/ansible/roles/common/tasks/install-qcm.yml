@@ -23,6 +23,7 @@
   unarchive:
     src: ~/app/qcm-1.0-{{ numbuild }}.tar.gz
     dest: ~/app
+    remote_src: yes
 
 - name: mise a jour du fichier ~/app/quizz/src/config/appconfig.py
   become_user: devops
