@@ -28,26 +28,29 @@
 - name: mise a jour du fichier ~/app/quizz/src/config/appconfig.py
   become_user: devops
   become: true
-  lineinfile:
-    dest: ~/app/quizz/src/config/appconfig.py
-    regexp: ^     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://user.quizz:dru98eDFC90@localhost/db.quizz'
-    line: "     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://{{ userdb }}:{{ pwddb }}@{{ dnsdb }}/{{ namedb }}'"
+  replace:
+    path: ~/app/quizz/src/config/appconfig.py
+    regexp: ^     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://user.quizz:dru98eDFC90@localhost/db.quizz$'
+    replace: "     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://{{ userdb }}:{{ pwddb }}@{{ dnsdb }}/{{ namedb }}'"
 
 - name: mise a jour du fichier ~/app/quizz/src/models/app.py
   become_user: devops
   become: true
-  lineinfile:
-    dest: ~/app/quizz/src/models/app.py
-    regexp: "# app_config(app)"
-    line: "app_config(app)"
+  replace:
+    path: ~/app/quizz/src/models/app.py
+    after: "# Database"
+    before: "tsconfig(app)"
+    regexp: "# app_config(app)$"
+    replace: "app_config(app)"
 
 - name: mise a jour du fichier ~/app/quizz/src/models/app.py
   become_user: devops
   become: true
-  lineinfile:
-    dest: ~/app/quizz/src/models/app.py
-    regexp: "tsconfig(app)"
-    line: "#tsconfig(app)"
+  replace:
+    path: ~/app/quizz/src/models/app.py
+    after: "app_config(app)"
+    regexp: "tsconfig(app)$"
+    replace: "#tsconfig(app)"
 
 - name: Creation de la BDD ~/app/quizz/script/create-quizz-db.sh
   become_user: devops
