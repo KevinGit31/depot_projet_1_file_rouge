@@ -32,48 +32,47 @@
     path: ~/app/quizz/src/config/appconfig.py
     # regexp: ^(.*)app.config[\'SQLALCHEMY_DATABASE_URI\'] = \'mysql+pymysql://user.quizz:dru98eDFC90@localhost/db.quizz(.*)$
     # line: "     app.config[\'SQLALCHEMY_DATABASE_URI\'] = \'mysql+pymysql://{{ userdb }}:{{ pwddb }}@{{ dnsdb }}/{{ namedb }}\'"
-    regexp: ^     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://user.quizz:dru98eDFC90@localhost/db.quizz'
+    regexp: '^(.*)app.config[(.*)$'
     line: "     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://{{ userdb }}:{{ pwddb }}@{{ dnsdb }}/{{ namedb }}'"
-
     backrefs: yes
 
-- name: mise a jour du fichier ~/app/quizz/src/models/app.py
-  become_user: devops
-  become: true
-  lineinfile:
-    path: ~/app/quizz/src/models/app.py
-    regexp: ^# app_config(app)(.*)$
-    line: app_config(app)
-    backrefs: yes
+# - name: mise a jour du fichier ~/app/quizz/src/models/app.py
+#   become_user: devops
+#   become: true
+#   lineinfile:
+#     path: ~/app/quizz/src/models/app.py
+#     regexp: ^# app_config(app)(.*)$
+#     line: app_config(app)
+#     backrefs: yes
 
-- name: mise a jour du fichier ~/app/quizz/src/models/app.py
-  become_user: devops
-  become: true
-  lineinfile:
-    path: ~/app/quizz/src/models/app.py
-    regexp: ^tsconfig(app)(.*)$
-    line: \#tsconfig(app)
-    backrefs: yes
+# - name: mise a jour du fichier ~/app/quizz/src/models/app.py
+#   become_user: devops
+#   become: true
+#   lineinfile:
+#     path: ~/app/quizz/src/models/app.py
+#     regexp: ^tsconfig(app)(.*)$
+#     line: \#tsconfig(app)
+#     backrefs: yes
 
-- name: Creation de la BDD ~/app/quizz/script/create-quizz-db.sh
-  become_user: devops
-  become: true
-  shell: create-quizz-db.sh
-  args:
-    chdir: ~/app/quizz/script
-    executable: /bin/bash
+# - name: Creation de la BDD ~/app/quizz/script/create-quizz-db.sh
+#   become_user: devops
+#   become: true
+#   shell: create-quizz-db.sh
+#   args:
+#     chdir: ~/app/quizz/script
+#     executable: /bin/bash
 
-- name: run qcm ~/app/quizz/script/start-quizz.sh
-  become_user: devops
-  become: true
-  shell: start-quizz.sh
-  args:
-    chdir: ~/app/quizz/script
-    executable: /bin/bash
+# - name: run qcm ~/app/quizz/script/start-quizz.sh
+#   become_user: devops
+#   become: true
+#   shell: start-quizz.sh
+#   args:
+#     chdir: ~/app/quizz/script
+#     executable: /bin/bash
 
-- name: Change file ownership, group and permissions
-  become_user: devops
-  become: true
-  file:
-    path: ~/app
-    mode: '0644'
+# - name: Change file ownership, group and permissions
+#   become_user: devops
+#   become: true
+#   file:
+#     path: ~/app
+#     mode: '0644'
