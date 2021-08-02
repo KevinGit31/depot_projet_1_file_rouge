@@ -58,7 +58,7 @@
   file:
     dest: "{{ item }}"
     mode: a+x
-  with_item:
+  with_items:
     - ~/app/quizz/scripts/create-quizz-db.sh
     - ~/app/quizz/scripts/create-test-db.sh
     - ~/app/quizz/scripts/start-quizz.sh
