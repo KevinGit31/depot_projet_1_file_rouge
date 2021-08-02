@@ -65,6 +65,7 @@
     - ~/app/quizz/src/models/models.py
     - ~/app/quizz/src/tests/init_test_db.py
     - ~/app/quizz/src/api/app.py
+    - ~/app/quizz/src/tests/test_answer.py
 
 
 - name: Creation de la BDD ~/app/quizz/script/create-quizz-db.sh
