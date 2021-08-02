@@ -67,6 +67,12 @@
     - ~/app/quizz/src/api/app.py
     - ~/app/quizz/src/tests/test_answer.py
 
+- name: Add another bin dir to system-wide $PATH
+  become_user: devops
+  become: true
+  lineinfile:
+    dest: /home/devops/.bashrc
+    line: 'PATH=$PATH:/home/devops/.local/bin'
 
 - name: Creation de la BDD ~/app/quizz/script/create-quizz-db.sh
   become_user: devops

@@ -29,9 +29,4 @@
     name: pipenv
     executable: pip3
     extra_args: --user
-- name: Add another bin dir to system-wide $PATH
-  become_user: devops
-  become: true
-  copy:
-    dest: /etc/profile.d/custom-path.sh
-    content: 'PATH=$PATH:/home/devops/.local/bin'
+
