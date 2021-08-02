@@ -30,8 +30,8 @@
   become: true
   lineinfile:
     path: ~/app/quizz/src/config/appconfig.py
-    regexp: '^(.*)app.config[\'SQLALCHEMY_DATABASE_URI\'] = \'mysql+pymysql://user.quizz:dru98eDFC90@localhost/db.quizz(.*)$\''
-    line: '     app.config[\'SQLALCHEMY_DATABASE_URI\'] = \'mysql+pymysql://{{ userdb }}:{{ pwddb }}@{{ dnsdb }}/{{ namedb }}\''
+    regexp: ^(.*)app.config[\'SQLALCHEMY_DATABASE_URI\'] = \'mysql+pymysql://user.quizz:dru98eDFC90@localhost/db.quizz(.*)$
+    line: "     app.config[\'SQLALCHEMY_DATABASE_URI\'] = \'mysql+pymysql://{{ userdb }}:{{ pwddb }}@{{ dnsdb }}/{{ namedb }}\'"
     backrefs: yes
 
 - name: mise a jour du fichier ~/app/quizz/src/models/app.py
@@ -39,8 +39,8 @@
   become: true
   lineinfile:
     path: ~/app/quizz/src/models/app.py
-    regexp: '^(.*)# app_config(app)(.*)$'
-    line: 'app_config(app)'
+    regexp: ^# app_config(app)(.*)$
+    line: app_config(app)
     backrefs: yes
 
 - name: mise a jour du fichier ~/app/quizz/src/models/app.py
@@ -48,8 +48,8 @@
   become: true
   lineinfile:
     path: ~/app/quizz/src/models/app.py
-    regexp: '^(.*)tsconfig(app)(.*)$'
-    line: '#tsconfig(app)'
+    regexp: ^tsconfig(app)(.*)$
+    line: \#tsconfig(app)
     backrefs: yes
 
 - name: Creation de la BDD ~/app/quizz/script/create-quizz-db.sh
