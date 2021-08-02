@@ -59,9 +59,9 @@
     dest: "{{ item }}"
     mode: a+x
   with_items:
-    - ~/app/quizz/scripts/create-quizz-db.sh
-    - ~/app/quizz/scripts/create-test-db.sh
-    - ~/app/quizz/scripts/start-quizz.sh
+    - ~/app/quizz/script/create-quizz-db.sh
+    - ~/app/quizz/script/create-test-db.sh
+    - ~/app/quizz/script/start-quizz.sh
     - ~/app/quizz/src/models/models.py
     - ~/app/quizz/src/tests/init_test_db.py
     - ~/app/quizz/src/api/app.py
