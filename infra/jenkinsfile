@@ -137,6 +137,7 @@ agent any
 
                     sh """#!/bin/bash -xe
                     sudo -u devops -s ansible-playbook -i /var/lib/jenkins/workspace/${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts /var/lib/jenkins/workspace/${env.JOB_BASE_NAME}/infra/ansible/roles/common/tasks/cloudformation-delete.yml -vvv
+                    sleep 30s
                     """
             }
         }
