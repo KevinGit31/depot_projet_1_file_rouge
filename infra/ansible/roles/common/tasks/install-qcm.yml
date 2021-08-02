@@ -36,22 +36,18 @@
 - name: mise a jour du fichier ~/app/quizz/src/models/app.py
   become_user: devops
   become: true
-  replace:
-    path: ~/app/quizz/src/models/app.py
-    after: "# Database"
-    before: "tsconfig(app)"
+  lineinfile:
+    dest: ~/app/quizz/src/models/app.py
     regexp: "# app_config(app)"
-    replace: "app_config(app)"
+    line: "app_config(app)"
 
 - name: mise a jour du fichier ~/app/quizz/src/models/app.py
   become_user: devops
   become: true
-  replace:
-    path: ~/app/quizz/src/models/app.py
-    after: "app_config(app)"
-    before: "# Init helper"
+  lineinfile:
+    dest: ~/app/quizz/src/models/app.py
     regexp: "tsconfig(app)"
-    replace: "#tsconfig(app)"
+    line: "#tsconfig(app)"
 
 - name: Creation de la BDD ~/app/quizz/script/create-quizz-db.sh
   become_user: devops
