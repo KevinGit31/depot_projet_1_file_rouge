@@ -49,8 +49,23 @@
   lineinfile:
     path: ~/app/quizz/src/models/app.py
     regexp: '^tsconfig\(app\)(.*)$'
-    line: \#tsconfig(app)
+    line: '#tsconfig(app)'
     backrefs: yes
+
+- name: chmod +x des scripts sh
+  become_user: devops
+  become: true
+  file:
+    dest: "{{ item }}"
+    mode: a+x
+  with_item:
+    - ~/app/quizz/scripts/create-quizz-db.sh
+    - ~/app/quizz/scripts/create-test-db.sh
+    - ~/app/quizz/scripts/start-quizz.sh
+    - ~/app/quizz/src/models/models.py
+    - ~/app/quizz/src/tests/init_test_db.py
+    - ~/app/quizz/src/api/app.py
+
 
 - name: Creation de la BDD ~/app/quizz/script/create-quizz-db.sh
   become_user: devops
@@ -72,5 +87,5 @@
   become_user: devops
   become: true
   file:
-    path: ~/app
+    dest: ~/app
     mode: '0644'
