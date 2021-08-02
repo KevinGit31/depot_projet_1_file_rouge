@@ -1,2 +1,2 @@
 #!/bin/bash
-cd ../src && pipenv run python api/app.py
+cd ../src && pipenv run python3 api/app.py
