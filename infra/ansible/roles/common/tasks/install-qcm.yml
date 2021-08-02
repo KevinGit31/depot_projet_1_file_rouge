@@ -32,7 +32,7 @@
     path: ~/app/quizz/src/config/appconfig.py
     # regexp: ^(.*)app.config[\'SQLALCHEMY_DATABASE_URI\'] = \'mysql+pymysql://user.quizz:dru98eDFC90@localhost/db.quizz(.*)$
     # line: "     app.config[\'SQLALCHEMY_DATABASE_URI\'] = \'mysql+pymysql://{{ userdb }}:{{ pwddb }}@{{ dnsdb }}/{{ namedb }}\'"
-    regexp: '^(.*)app.config[(.*)$'
+    regexp: '*app.config[*$'
     line: "     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://{{ userdb }}:{{ pwddb }}@{{ dnsdb }}/{{ namedb }}'"
     backrefs: yes
 
