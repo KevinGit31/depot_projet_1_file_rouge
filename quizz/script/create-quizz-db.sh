@@ -1,3 +1,3 @@
 #!/bin/bash
 cd ../src
-pipenv --python /usr/local/bin/python3.9 run python3.9 models/models.py
+pipenv run python3 models/models.py

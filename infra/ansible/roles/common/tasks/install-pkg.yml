@@ -24,7 +24,7 @@
     executable: pip3
 - name: Install pipenv
   become_user: devops
-  become: true
+  # become: true
   pip:
     name: pipenv
     executable: pip3
