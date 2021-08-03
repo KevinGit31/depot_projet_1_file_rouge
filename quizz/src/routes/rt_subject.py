@@ -97,6 +97,8 @@ def configure_routes_subject(app):
             #_questions = _questions.replace("True", "\"True\"")
             _questions = json.loads(_questions)
 
+            print(_questions)
+
 
             #_questions = []
 
@@ -132,7 +134,7 @@ def configure_routes_subject(app):
                                    questions=all_questions,
                                    modes=modes)
 
-            if len(_questions) >= mode['nbrQ'] :
+            if len(_questions) >= mode['nbrQ'] and request.form.get('btn-question') == "ADD":
                 subject = {
                     'name': _name,
                     'description': _description,
@@ -145,15 +147,13 @@ def configure_routes_subject(app):
                                   questions=all_questions,
                                    modes=modes)
 
-
-            # Action pour ajouter une mauvaise réponse
+            # Action pour ajouter une question
             if request.form.get('btn-question') == "ADD":
 
                 #str_answer = request.form.get('answer').strip()
                 _question = request.form.get('question')
                 _question  = checkQuestion(_question)
                 #str_answer =_answer
-
                 #if str_answer['answer'] != "":
 
                     #answer = {
