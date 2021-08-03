@@ -176,6 +176,7 @@ agent any
         stage('testurlquizz'){
             steps {
                 sh 'sleep 5s'
+                sh "echo http://${DNSPUBEC2_ENV}:${INGRPORT}"
                 sh "curl http://${DNSPUBEC2_ENV}:${INGRPORT}"
             }
         }
