@@ -27,6 +27,7 @@ pipeline {
         CREDENTIALS_DB = credentials('dbqcm')
         NEXUS_STACK_NAME = "nexus"
 
+
     }
 //
 agent any
@@ -82,7 +83,7 @@ agent any
             steps {
                 script {
                     env.DNSDB_ENV = "${sh(script:'chmod +x infra/checkrds.sh && ./infra/checkrds.sh ${REGION_ENV} ${ENVIRONNEMENT}', returnStdout: true).trim()}"
-                    env.DNSPUBEC2NEXUS_ENV = "${sh(script:'chmod +x infra/getdnspubEC2id.sh && ./infra/getdnspubEC2id.sh, returnStdout: true).trim()}"
+                    env.DNSPUBEC2NEXUS_ENV = "${sh(script:'chmod +x infra/getdnspubEC2id.sh && ./infra/getdnspubEC2id.sh nexus, returnStdout: true).trim()}"
                 }
             }
         }
@@ -100,7 +101,7 @@ agent any
                         env.SUBNETIDPUBADM_ENV = "${SUBIDPUBPROD}"
                         env.SUBNETIDPRIVADM_ENV = "${SUBIDPRIVPROD}"
                     }
-
+                    env.INGRPORT = "5000"
                     sh 'yes | cp -rf infra/aws_cloudform/instancegrp3.yaml infra/ansible/roles/common/tasks/instancegrp3.yaml'
                     writeFile file: "/var/lib/jenkins/workspace/dev/infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all", text: "TypeName: ${TYPENAME_ENV}"
                     f = new File("/var/lib/jenkins/workspace/dev/infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all")
@@ -163,7 +164,21 @@ agent any
                     """
             }
         }
-
+//recupere le dns public de l'environnement pour le test de l'url
+        stage('getdnspublicenv'){
+            steps {
+                script {
+                    env.DNSPUBEC2_ENV = "${sh(script:'chmod +x infra/getdnspubEC2id.sh && ./infra/getdnspubEC2id.sh ${TYPENAME_ENV}, returnStdout: true).trim()}"
+                }
+            }
+        }
+//test du build versionné
+        stage('testurlquizz'){
+            steps {
+                sh 'sleep 5s'
+                sh "curl http://${DNSPUBEC2_ENV}:${INGRPORT}"
+            }
+        }
 //A FAIRE TEST si EC2 OK
 
     }
