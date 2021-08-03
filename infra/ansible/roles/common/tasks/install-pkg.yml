@@ -41,6 +41,12 @@
     - openssl-devel
     - bzip2-devel
     - libffi-devel
+- name: Install python3-devel.x86_64
+  yum:
+    name: sqlite-devel.x86_64
+    state: present
+    update_cache: true
+
 
 
 
