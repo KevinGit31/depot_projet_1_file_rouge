@@ -1,6 +1,9 @@
 [all:vars]
 ansible_python_interpreter=/usr/bin/python3
 
+[ADM]
+10.80.140.11 ansible_host=10.80.140.11
+
 [DEV]
 #10.80.110.10 ansible_host=10.80.110.10 ansible_environnement=dev
 
@@ -9,3 +12,11 @@ ansible_python_interpreter=/usr/bin/python3
 
 [PROD]
 #10.80.130.10 ansible_host=10.80.130.10 ansible_environnement=main
+
+[appgrp:vars]
+
+
+[appgrp:children]
+DEV
+QUA
+PROD

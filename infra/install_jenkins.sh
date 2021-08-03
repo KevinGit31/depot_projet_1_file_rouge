@@ -1,14 +1,24 @@
 #!/bin/bash
 
+#Recupération des variables déposé par le script de cloudformation
 JENKINSPWD=$(cat /tmp/jenkinskey.txt)
 DEVOPSPWD=$(cat /tmp/devopsuserkey.txt)
 #ROOTPASS=$(cat /tmp/root.txt)
 ANSIBPASS=$(cat /tmp/ansiblekey.txt)
 ENV1=$(cat /tmp/env.txt)
 KEYNAME1=$(cat /tmp/KeyName.txt)
+EC2USER=$(cat /tmp/projet1grp3key.txt)
 REGION1=$(cat /tmp/region.txt)
 SUBIDPUB1=$(cat /tmp/SubnetIdPub.txt)
 SUBIDPRIV1=$(cat /tmp/SubnetIdPriv.txt)
+SUBIDPUBADM1=$(cat /tmp/SubnetIdPubADM.txt)
+SUBIDPRIVADM1=$(cat /tmp/SubnetIdPrivADM.txt)
+SUBIDPUBDEV1=$(cat /tmp/SubnetIdPubDEV.txt)
+SUBIDPRIVDEV1=$(cat /tmp/SubnetIdPrivDEV.txt)
+SUBIDPUBQUA1=$(cat /tmp/SubnetIdPubQUA.txt)
+SUBIDPRIVQUA1=$(cat /tmp/SubnetIdPrivQUA.txt)
+SUBIDPUBPROD1=$(cat /tmp/SubnetIdPubPROD.txt)
+SUBIDPRIVPROD1=$(cat /tmp/SubnetIdPrivPROD.txt)
 VPCID1=$(cat /tmp/VpcId.txt)
 PRIVIP1=$(cat /tmp/PrivateIP.txt)
 INGRPORT1=$(cat /tmp/IngressPort.txt)
@@ -19,7 +29,6 @@ INSTTYPE1=$(cat /tmp/InstanceType.txt)
 AAKI1=$(cat /tmp/AWSAccessKeyId.txt)
 ASAKI1=$(cat /tmp/AWSSecretAccessKeyId.txt)
 TYPENAME1=$(cat /tmp/TypeName.txt)
-
 
 
 #install java
@@ -41,21 +50,10 @@ amazon-linux-extras install -y java-openjdk11
 yum install -y gnupg
 yum install -y git
 yum install -y unzip
-#yum install -y python3
-
-pip3 install pip --upgrade
-pip3 install ansible
-pip3 install boto3
-pip3 install botocore
-yum -y groupinstall "Development Tools"
-yum -y install openssl-devel bzip2-devel libffi-devel
-wget https://www.python.org/ftp/python/3.8.3/Python-3.8.3.tgz
+yum install -y python2
+yum install -y python2-pip
+yum install -y python3
 yum install -y python3-pip
-ln -s /usr/bin/python3 /usr/bin/python3.8
-cd /tmp && tar xvf Python-3.8.3.tgz
-cd /tmp/Python-3.8*
-./configure --enable-optimizations
-make altinstall
 
 # installation jenkins
 yum install -y  jenkins
@@ -64,80 +62,99 @@ sleep 5
 systemctl start jenkins
 /sbin/chkconfig jenkins on
 
-# On modifit l' utilisateur jenkins définition du password
+# On modifit l' utilisateur jenkins définition du password ajout d'un compte de secours userjenkins
 useradd -m userjenkins
 echo "userjenkins:$JENKINSPWD" | sudo chpasswd
 echo 'userjenkins   ALL=(ALL)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
 usermod -a -G jenkins userjenkins
 usermod -a -G userjenkins jenkins
-#sudo -H -u userjenkins -c 'mkdir -p ~/ansible'
-#su - userjenkins -c 'git clone https://github.com/KevinGit31/depot_projet_1_file_rouge.git ; exit'
 
-#install ansible
-echo "#!/bin/bash" >> /etc/ansible/ansvlt.sh
-echo "$ANSIBPASS" >> /etc/ansible/.ansvlt
-echo "RET=$(sudo cat /etc/ansible/.ansvlt)" >> /etc/ansible/ansvlt.sh
-echo "echo \$RET" >> /etc/ansible/ansvlt.sh
-chmod +x /etc/ansible/ansvlt.sh
-#configuration ansible vault paswword
-sed -i 's/\#vault_password_file = \/path\/to\/vault_password_file/vault_password_file=\/etc\/ansible\/ansvlt.sh/' /etc/ansible/ansible.cfg
+#Pour que jenkins puisse faire executé le playbook par devops avec sudo -u devops -s ansible-playbook
+echo 'jenkins   ALL=(devops)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
 
-#preparation du user devops sur les host remote + distrib key
 
+#creation de l'utilisateur devops compte d'install ansible sur les environnments EC2
 useradd -m -s /bin/bash devops
 echo "devops:$DEVOPSPWD" | chpasswd
 echo 'devops   ALL=(ALL)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
 echo "root:$ROOTPASS" | chpasswd
-#genere la cle pub et priv pour le user devops
-#su - devops -c 'ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa <<<y >/dev/null 2>&1 ; exit'
 
+
+#install ansible
+amazon-linux-extras install ansible2 -y
+
+#configuration ansible vault paswword
+echo "#!/bin/bash" >> /etc/ansible/ansvlt.sh
+echo "$ANSIBPASS" >> /etc/ansible/.ansvlt
+echo "RET=$(sudo cat /etc/ansible/.ansvlt)" >> /etc/ansible/ansvlt.sh
+echo "echo \$RET" >> /etc/ansible/ansvlt.sh
+sed -i 's/\#vault_password_file = \/path\/to\/vault_password_file/vault_password_file=\/etc\/ansible\/ansvlt.sh/' /etc/ansible/ansible.cfg
+sed -i 's/\#host_key_checking = False/host_key_checking = False/' /etc/ansible/ansible.cfg
+#preparation pour le client aws pour ansible dans jenkins
+pip install boto3==1.15.16
+pip uninstall -y botocore
+pip install botocore==1.18.6
+ansible-galaxy collection install amazon.aws
+
+#install du client pour verifier la connexion rds
+yum install -y mysql
+
+#Preparation et transfert du contenu des  variables pour les vm dev qua et prod
+#positionnement du fichier contenant les variables d'environnement sous jenkins
+mkdir /var/lib/jenkins/.envvars && touch /var/lib/jenkins/.envvars/stacktest-staging.groovy
+chown jenkins: /var/lib/jenkins/.envvars /var/lib/jenkins/.envvars/stacktest-staging.groovy
+su - jenkins -c "echo \"env.PATH=\"$PATH:/var/lib/jenkins/.local/bin\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
 sed -i 's/\/jenkins:\/bin\/false/\/jenkins:\/bin\/bash/' /etc/passwd
 #su - userjenkins -c "cd /home/userjenkins && wget -O $ENV1.zip https://github.com/KevinGit31/depot_projet_1_file_rouge/archive/refs/heads/$ENV1.zip && unzip $ENV1.zip && mv depot_projet_1_file_rouge* depot_projet_1_file_rouge && chmod +x /home/userjenkins/depot_projet_1_file_rouge/infra/ansvlt.sh && exit"
 su - devops -c "cd /tmp && /bin/bash ssh.sh && exit"
+
+#Copie de la cle de l'user ec2-user pour se connecter sur les autres instance ec2 AWS par ansible
+su - devops -c "$(echo $EC2USER) > ~/.ssh/projet1grp3key.pem"
+su - devops -c "chmod 600 ~/.ssh/projet1grp3key.pem"
+
+#Compte aws + récupération des variables nécessaires à la création du fichier de variable ansible pour les playbook
 su - jenkins -c "mkdir ~/.aws && cd ~/.aws && echo \"[default]\" >> credentials && echo \"aws_access_key_id=$AAKI1\" >> credentials && echo \"aws_secret_access_key=$ASAKI1\" >> credentials && exit"
 su - jenkins -c "cd ~/.aws && echo \"[default]\" >> config && echo \"region=$REGION1\" >> config && echo \"output=json\" >> config && exit"
-su - jenkins -c "echo \"export SECRETDEVOPS=$DEVOPSPWD\" >> ~/.bashrc"
-#su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $DEVOPSPWD --name \"secret_devops\" >> all && exit"
-#su - userjenkins -c "echo \"export ROOTKEY=$ROOTPASS\" >> ~/.bashrc"
-#su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $ROOTPASS --name \"ROOTKEY\" >> all && exit"
-su - jenkins -c "echo \"export KEYNAME=$KEYNAME1\" >> ~/.bashrc"
-#su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $KEYNAME1 --name \"KEYNAME\" >> all && exit"
-su - jenkins -c "echo \"export TYPENAME=$TYPENAME1\" >> ~/.bashrc"
-#su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $TYPENAME1 --name \"TypeName\" >> all && exit"
-su - jenkins -c "echo \"export REGION=$REGION1\" >> ~/.bashrc"
-#su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $REGION1 --name \"REGION\" >> all && exit"
-su - jenkins -c "echo \"export SUBIDPUB=$SUBIDPUB1\" >> ~/.bashrc"
-#su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $SUBIDPUB1 --name \"SubnetIdPub\" >> all && exit"
-su - jenkins -c "echo \"export SUBIDPRIV=$SUBIDPRIV1\" >> ~/.bashrc"
-#su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $SUBIDPRIV1 --name \"SubnetIdPriv\" >> all && exit"
-su - jenkins -c "echo \"export VPCID=$VPCID1\" >> ~/.bashrc"
-#su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $VPCID1 --name \"VpcId\" >> all && exit"
-su - jenkins -c "echo \"export PRIVIP=$PRIVIP1\" >> ~/.bashrc"
-#su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $PRIVIP1 --name \"PrivateIP\" >> all && exit"
-su - jenkins -c "echo \"export INGRPORT=$INGRPORT1\" >> ~/.bashrc"
-#su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $INGRPORT --name \"IngressPort\" >> all && exit"
-su - jenkins -c "echo \"export SECGRPNLST=$SECGRPNLST\" >> ~/.bashrc"
-#su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $SECGRPNLST --name \"SecurityGroupNameList\" >> all && exit"
-su - jenkins -c "echo \"export USCRIPT=$USCRIPT1\" >> ~/.bashrc"
-#su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $USCRIPT --name \"Urlscript\" >> all && exit"
-su - jenkins -c "echo \"export SECGRPID=$SECGRPID1\" >> ~/.bashrc"
-#su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $SECGRPID --name \"SecurityGroupId\" >> all && exit"
-su - jenkins -c "echo \"export INSTTYPE=$INSTTYPE1\" >> ~/.bashrc"
-#su - userjenkins -c "cd /home/userjenkins && ansible-vault encrypt_string $INSTTYPE --name \"InstanceType\" >> all && exit"
-#su - userjenkins -c "cd /home/userjenkins && cat /home/userjenkins/all >> /home/userjenkins/depot_projet_1_file_rouge/infra/ansible/inventory/dev/group_vars/all/all"
-#su - userjenkins -c "cd /home/userjenkins && cat /home/userjenkins/all >> /home/userjenkins/depot_projet_1_file_rouge/infra/ansible/inventory/qua/group_vars/all/all"
-#su - userjenkins -c "cd /home/userjenkins && cat /home/userjenkins/all >> /home/userjenkins/depot_projet_1_file_rouge/infra/ansible/inventory/prod/group_vars/all/all"
+su - devops -c "mkdir ~/.aws && cd ~/.aws && echo \"[default]\" >> credentials && echo \"aws_access_key_id=$AAKI1\" >> credentials && echo \"aws_secret_access_key=$ASAKI1\" >> credentials && exit"
+su - devops -c "cd ~/.aws && echo \"[default]\" >> config && echo \"region=$REGION1\" >> config && echo \"output=json\" >> config && exit"
+su - devops -c "echo \"export PATH=$PATH:/var/lib/jenkins/.local/bin\" >> ~/.bashrc"
+su - jenkins -c "echo \"env.SECRETDEVOPS=\"$DEVOPSPWD\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"env.ANS=\"$ANSIBPASS\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"env.KEYNAME=\"$KEYNAME1\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"env.TYPENAME=\"$TYPENAME1\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"env.REGION="$REGION1"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"env.AWS_ACCESS_KEY=\"$AAKI1\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"env.AWS_SECRET_KEY=\"$ASAKI1\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"env.SUBIDPUB=\"$SUBIDPUB1\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"env.SUBIDPRIV=\"$SUBIDPRIV1\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"env.SUBIDPUBADM=\"$SUBIDPUBADM1\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"env.SUBIDPRIVADM=\"$SUBIDPRIVADM1\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"env.SUBIDPUBDEV=\"$SUBIDPUBDEV1\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"env.SUBIDPRIVDEV=\"$SUBIDPRIVDEV1\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"env.SUBIDPUBQUA=\"$SUBIDPUBQUA1\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"env.SUBIDPRIVQUA=\"$SUBIDPRIVQUA1\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"env.SUBIDPUBPROD=\"$SUBIDPUBPROD1\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"env.SUBIDPRIVPROD=\"$SUBIDPRIVPROD1\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"env.VPCID=\"$VPCID1\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"env.PRIVIP=\"$PRIVIP1\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"env.INGRPORT=\"$INGRPORT1\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"env.SECGRPNLST=\"$SECGRPNLST1\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"env.USCRIPT=\"$USCRIPT1\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"env.SECGRPID=\"$SECGRPID1\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"env.INSTTYPE=\"$INSTTYPE1\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "sed -i -- 's/=/=\"/g' /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "sed -i -- 's/$/\"/g' /var/lib/jenkins/.envvars/stacktest-staging.groovy"
 sed -i 's/\/jenkins:\/bin\/bash/\/jenkins:\/bin\/false/' /etc/passwd
 #sudo su -s /bin/bash jenkins
 
-#Install docker
-#yum install -y yum-utils
-#yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-#yum install -y docker-ce docker-ce-cli containerd.io
-#systemctl start docker
+#Install docker pour les test partie jenkins
+su - ec2-user -c "sudo amazon-linux-extras enable docker"
+su - ec2-user -c "sudo yum -y install docker"
+su - ec2-user -c "sudo systemctl daemon-reload"
+su - ec2-user -c "sudo systemctl enable --now docker"
 #Install docker compose
-#curl -L "https://github.com/docker/compose/releases/download/1.29.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-#chmod +x /usr/local/bin/docker-compose
+curl -L "https://github.com/docker/compose/releases/download/1.29.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
 
 sleep 30
 # Mdp jenkins

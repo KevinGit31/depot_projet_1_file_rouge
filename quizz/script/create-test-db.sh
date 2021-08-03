@@ -1,3 +1,3 @@
 #!/bin/bash
-cd ../quizz/src
-pipenv run python tests/init_test_db.py
+cd ../src
+pipenv run python3 tests/init_test_db.py

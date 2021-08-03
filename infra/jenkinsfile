@@ -1,43 +1,49 @@
+node {
+   load "$JENKINS_HOME/.envvars/stacktest-staging.groovy"
+}
 pipeline {
     environment {
+//        KEYNAME_ENV = "${sh(script:'echo $KEYNAME', returnStdout: true).trim()}"
+//        KEYNAME_ENV = "${sh(script:'$(cat /var/lib/jenkins/.bashrc | grep KEYNAME ) && ${env.KEYNAME}', returnStdout: true).trim()}"
         NEXUS_VERSION = "nexus3"
         NEXUS_PROTOCOL = "http"
         NEXUS_URL = "10.80.140.11:8081"
         NEXUS_REPOSITORY = "APP"
         NEXUS_CREDENTIAL_ID = "nexus"
         NEXUS_ARTIFACT_ID = "qcm"
-        ENVIRONNEMENT = "dev"
-        SECRETDEVOPS_ENV = "${env.SECRETDEVOPS}"
-        ROOTKEY_ENV = "${env.$ROOTKEY}"
-        KEYNAME_ENV = "${env.$KEYNAME}"
-        TYPENAME_ENV = "${env.$TYPENAME}"
-        REGION1_ENV = "${env.$REGION1}"
-        SUBIDPUB_ENV = "${env.$SUBIDPUB}"
-        SUBIDPRIV_ENV = "${env.$SUBIDPRIV}"
-        VPCID_ENV = "${env.$VPCID}"
-        PRIVIP_ENV = "${env.$PRIVIP}"
-        INGRPORT_ENV = "${env.$INGRPORT}"
-        SECGRPNLST_ENV = "${env.$SECGRPNLST}"
-        USCRIPT_ENV = "${env.$USCRIPT}"
-        SECGRPID_ENV = "${env.$SECGRPID}"
-        INSTTYPE_ENV = "${env.$INSTTYPE}"
+        NEXUS_GROUP_ID = "1"
+        ROOTKEY_ENV = "NONE"
+        JENKINS_KEY = "NONE"
+        ANSIBLE_KEY = "NONE"
+        ENVIRONNEMENT = "${env.JOB_BASE_NAME}"
+        TYPENAME_ENV = "qcm${env.JOB_BASE_NAME}"
+        REGION_ENV = "${REGION}"
+        BRANCHS_ENV = "${env.JOB_BASE_NAME}"
+        MAJBRANCHS_ENV = "${BRANCHS_ENV.toUpperCase()}"
+        //VARIABLE A MODIFIER SUIVANT L4ENVIRONNEMENT
+        PRIVIP_ENV = "10.80.110.10"
+        CREDENTIALS_NEXUS = credentials('nexus')
+        DBNAME_ENV = "dbquizz"
+        CREDENTIALS_DB = credentials('dbqcm')
+        NEXUS_STACK_NAME = "nexus"
+
     }
 //
 agent any
     stages {
+
         stage('clone source') {
             steps {
                 sh 'rm -rf depot_projet_1_file_rouge'
-                git branch: 'dev', url: 'https://github.com/KevinGit31/depot_projet_1_file_rouge.git'
+                script {
+                    if ( "${BRANCHS_ENV}" == 'prod') {
+                        git branch: 'main', url: 'https://github.com/KevinGit31/depot_projet_1_file_rouge.git'
+                    } else {
+                        git branch: "${BRANCHS_ENV}", url: 'https://github.com/KevinGit31/depot_projet_1_file_rouge.git'
+                    }
+                }
             }
         }
-//        stage('test'){
-//            steps {
-//                sh 'sleep 15s'
-//                sh 'curl http://192.168.40.11:3002'
-//
-//            }
-//        }
         stage("Build") {
             steps {
                 script {
@@ -56,7 +62,7 @@ agent any
                         ]
                     ],
                     credentialsId: "${NEXUS_CREDENTIAL_ID}",
-                    groupId: '',
+                    groupId: "${NEXUS_GROUP_ID}",
                     nexusUrl: "${NEXUS_URL}",
                     nexusVersion: "${NEXUS_VERSION}",
                     protocol: "${NEXUS_PROTOCOL}",
@@ -67,28 +73,99 @@ agent any
 //test du build versionné
         stage('testnexuscible'){
             steps {
-                sh 'sleep 15s'
+                sh 'sleep 5s'
                 sh "curl http://${NEXUS_URL}/repository/${NEXUS_REPOSITORY}/${NEXUS_ARTIFACT_ID}/1.0-${BUILD_NUMBER}/${NEXUS_ARTIFACT_ID}-1.0-${BUILD_NUMBER}.tar.gz"
             }
         }
-
-        stage('deleteEC2ansible') {
+//recupere le dns du rds suivant l'env
+        stage('getdnsrdsdb'){
             steps {
-                    sh """#!/bin/bash
-                    ansible-playbook -i infra/ansible/inventory/${ENVIRONNEMENT}/hosts infra/ansible/${ENVIRONNEMENT}.yml --extra-vars \"GOTODEL=yes secret_devops=${env.SECRETDEVOPS_ENV} ROOTKEY=${env.ROOTKEY_ENV} KEYNAME=${env.ROOTKEY_ENV} TypeName=${env.TYPENAME_ENV} REGION=${env.REGION1_ENV} SubnetIdPub=${env.SUBIDPUB_ENV} SubnetIdPriv=${env.SUBIDPRIV_ENV} VpcId=${env.VPCID_ENV} PrivateIP=${env.PRIVIP_ENV} IngressPort=${env.INGRPORT_ENV} SecurityGroupNameList=${env.SECGRPNLST_ENV} Urlscript=${env.USCRIPT_ENV} SecurityGroupId=${env.SECGRPID_ENV} InstanceType=${env.INSTTYPE_ENV}\" --tags \"clouddelete\"
+                script {
+                    env.DNSDB_ENV = "${sh(script:'chmod +x infra/checkrds.sh && ./infra/checkrds.sh ${REGION_ENV} ${ENVIRONNEMENT}', returnStdout: true).trim()}"
+                    env.DNSPUBEC2NEXUS_ENV = "${sh(script:'chmod +x infra/getdnspubEC2id.sh && ./infra/getdnspubEC2id.sh, returnStdout: true).trim()}"
+                }
+            }
+        }
+        stage('ansibleprep'){
+            steps {
+                script {
+
+                    if ( "${BRANCHS_ENV}" == 'dev') {
+                        env.SUBNETIDPUBADM_ENV = "${SUBIDPUBDEV}"
+                        env.SUBNETIDPRIVADM_ENV = "${SUBIDPRIVDEV}"
+                    } else if ( "${BRANCHS_ENV}" == 'qua'){
+                        env.SUBNETIDPUBADM_ENV = "${SUBIDPUBQUA}"
+                        env.SUBNETIDPRIVADM_ENV = "${SUBIDPRIVQUA}"
+                    } else if ( "${BRANCHS_ENV}" == 'prod'){
+                        env.SUBNETIDPUBADM_ENV = "${SUBIDPUBPROD}"
+                        env.SUBNETIDPRIVADM_ENV = "${SUBIDPRIVPROD}"
+                    }
+
+                    sh 'yes | cp -rf infra/aws_cloudform/instancegrp3.yaml infra/ansible/roles/common/tasks/instancegrp3.yaml'
+                    writeFile file: "/var/lib/jenkins/workspace/dev/infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all", text: "TypeName: ${TYPENAME_ENV}"
+                    f = new File("/var/lib/jenkins/workspace/dev/infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all")
+                    f.append( "\nREGION: ${REGION_ENV}" )
+                    f.append( "\nKEYNAME: ${KEYNAME}" )
+                    f.append( "\nansible_environnement: ${ENVIRONNEMENT}" )
+                    f.append( "\nRootKey: ${ROOTKEY_ENV}" )
+                    f.append( "\nJenkinsKey: ${JENKINS_KEY}" )
+                    f.append( "\nAnsibleKey: ${ANSIBLE_KEY}" )
+                    f.append( "\nsecret_devops: ${SECRETDEVOPS}" )
+                    f.append( "\nSubnetIdPubADM: ${SUBNETIDPUBADM_ENV}" )
+                    f.append( "\nSubnetIdPrivADM: ${SUBNETIDPRIVADM_ENV}" )
+                    f.append( "\nSubnetIdPubDEV: ${SUBIDPUBDEV}" )
+                    f.append( "\nSubnetIdPrivDEV: ${SUBIDPRIVDEV}" )
+                    f.append( "\nSubnetIdPubQUA: ${SUBIDPUBQUA}" )
+                    f.append( "\nSubnetIdPrivQUA: ${SUBIDPRIVQUA}" )
+                    f.append( "\nSubnetIdPubPROD: ${SUBIDPUBPROD}" )
+                    f.append( "\nSubnetIdPrivPROD: ${SUBIDPRIVPROD}" )
+                    f.append( "\nVpcId: ${VPCID}" )
+                    f.append( "\nPrivateIP: ${PRIVIP_ENV}" )
+                    f.append( "\nIngressPort: ${INGRPORT}" )
+                    f.append( "\nSecurityGroupNameList: ${SECGRPNLST}" )
+                    f.append( "\nUrlscript: ${USCRIPT}" )
+                    f.append( "\nSecurityGroupId: ${SECGRPID}" )
+                    f.append( "\nInstanceType: ${INSTTYPE}" )
+                    f.append( "\nAWSAccessKeyId: ${AWS_ACCESS_KEY}" )
+                    f.append( "\nAWSSecretAccessKeyId: ${AWS_SECRET_KEY}" )
+
+                }
+             }
+        }
+        stage('deleteEC2byansible') {
+            steps {
+
+                    sh """#!/bin/bash -xe
+                    sudo -u devops -s ansible-playbook -i /var/lib/jenkins/workspace/${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts /var/lib/jenkins/workspace/${env.JOB_BASE_NAME}/infra/ansible/roles/common/tasks/cloudformation-delete.yml -vvv
+                    sleep 30s
                     """
             }
         }
-//A FAIRE TEST si EC2 DEL
-        stage('createEC2ansible') {
+
+        stage('createEC2byansible') {
             steps {
-                    sh """#!/bin/bash
-                    ansible-playbook -i infra/ansible/inventory/${ENVIRONNEMENT}/hosts infra/ansible/${ENVIRONNEMENT}.yml --extra-vars \"ansible_environnement=dev VpcId=${VPCID_ENV} PrivateIP=${PRIVIP_ENV} secret_devops=${env.SECRETDEVOPS_ENV} ROOTKEY="" KEYNAME=${env.ROOTKEY_ENV} TypeName=${env.TYPENAME_ENV} REGION=${env.REGION1_ENV} SubnetIdPub=${env.SUBIDPUB_ENV} SubnetIdPriv=${env.SUBIDPRIV_ENV} VpcId=${env.VPCID_ENV} PrivateIP=${env.PRIVIP_ENV} IngressPort=${env.INGRPORT_ENV} SecurityGroupNameList=${env.SECGRPNLST_ENV} Urlscript=${env.USCRIPT_ENV} SecurityGroupId=${env.SECGRPID_ENV} InstanceType=${env.INSTTYPE_ENV}\"
+                    sh """#!/bin/bash -xe
+                    sudo -u devops -s ansible-playbook -i /var/lib/jenkins/workspace/${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts /var/lib/jenkins/workspace/${env.JOB_BASE_NAME}/infra/ansible/roles/common/tasks/cloudformation-create.yml -vvv
                     """
             }
-
+        }
+        stage('DistribKeyByansible') {
+            steps {
+                    sh """#!/bin/bash -xe
+                    sudo -u devops -s ansible-playbook -i /var/lib/jenkins/workspace/${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts /var/lib/jenkins/workspace/${env.JOB_BASE_NAME}/infra/ansible/distribkey.yml --user ec2-user --key-file ~/.ssh/projet1grp3key.pem -vvv
+                    """
+            }
+        }
+        stage('installqcmEC2ansible') {
+            steps {
+                    sh """#!/bin/bash -xe
+                    sudo -u devops -s ansible-playbook -i /var/lib/jenkins/workspace/${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts /var/lib/jenkins/workspace/${env.JOB_BASE_NAME}/infra/ansible/${ENVIRONNEMENT}.yml --extra-vars "adminnexus=${CREDENTIALS_NEXUS_USR} pwdnexus=${CREDENTIALS_NEXUS_PSW} userdb=${CREDENTIALS_DB_USR} pwddb=${CREDENTIALS_DB_PSW} namedb=${DBNAME_ENV} dnsdb=${DNSDB_ENV} artifactId=${NEXUS_ARTIFACT_ID} groupId=${NEXUS_GROUP_ID} numbuild=${BUILD_NUMBER} dnsnexus=${DNSPUBEC2NEXUS_ENV}" -vvv
+                    """
+            }
         }
 
 //A FAIRE TEST si EC2 OK
+
     }
 }
+

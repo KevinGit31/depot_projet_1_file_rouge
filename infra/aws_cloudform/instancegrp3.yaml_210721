@@ -17,38 +17,14 @@ Parameters:
     Type: String
 #    Type: AWS::EC2::VPC::Id
     Description: 'The VPC ID'
-  SubnetIdPubADM:
+  SubnetIdPub:
     Type: String
 #    Type: AWS::EC2::Subnet::Id
-    Description: 'The Subnet ID public ADM'
-  SubnetIdPubDEV:
+    Description: 'The Subnet ID public'
+  SubnetIdPriv:
     Type: String
 #    Type: AWS::EC2::Subnet::Id
-    Description: 'The Subnet ID public DEV'
-  SubnetIdPubQUA:
-    Type: String
-#    Type: AWS::EC2::Subnet::Id
-    Description: 'The Subnet ID public QUA'
-  SubnetIdPubPROD:
-    Type: String
-#    Type: AWS::EC2::Subnet::Id
-    Description: 'The Subnet ID public PROD'
-  SubnetIdPrivADM:
-    Type: String
-#    Type: AWS::EC2::Subnet::Id
-    Description: 'The Subnet ID private ADM'
-  SubnetIdPrivDEV:
-    Type: String
-#    Type: AWS::EC2::Subnet::Id
-    Description: 'The Subnet ID private DEV'
-  SubnetIdPrivQUA:
-    Type: String
-#    Type: AWS::EC2::Subnet::Id
-    Description: 'The Subnet ID private QUA'
-  SubnetIdPrivPROD:
-    Type: String
-#    Type: AWS::EC2::Subnet::Id
-    Description: 'The Subnet ID private PROD'
+    Description: 'The Subnet ID private'
   PrivateIP:
     Type: String
     Description: 'Exemple ip 10.80.140.x'
@@ -84,32 +60,29 @@ Parameters:
       - 'qua'
       - 'main'
   SecurityGroupNameList:
+#    Type: String
     Type: 'List<AWS::EC2::SecurityGroup::Id>'
     Description: 'The Security Group'
-#   Type: String
-
   SecurityGroupId:
     Type: String
 #    Type: 'AWS::EC2::SecurityGroup::Id'
     Description: 'The Security Group ID'
   AnsibleKey:
     Type: String
+#    Type: 'AWS::EC2::SecurityGroup::Id'
     Description: 'clé Ansible vault password'
   JenkinsKey:
     Type: String
+#    Type: 'AWS::EC2::SecurityGroup::Id'
     Description: 'clé jenkins OS password'
   DevOpsKey:
     Type: String
+#    Type: 'AWS::EC2::SecurityGroup::Id'
     Description: 'clé devops OS password'
   RootKey:
     Type: String
+#    Type: 'AWS::EC2::SecurityGroup::Id'
     Description: 'clé root OS password'
-  AWSAccessKeyId:
-    Type: String
-    Description: 'aws_access_key_id'
-  AWSSecretAccessKeyId:
-    Type: String
-    Description: 'aws_secret_access_key'
   InstanceType:
     Description: WebServer EC2 instance type
     Type: String
@@ -473,7 +446,7 @@ Resources:
     Type: 'AWS::EC2::Instance'
     Properties:
       InstanceType: !Ref InstanceType
-      SubnetId: !Ref SubnetIdPubADM
+      SubnetId: !Ref SubnetIdPub
       SecurityGroupIds:
         - !Ref SecurityGroupId
       KeyName: !Ref KeyName
@@ -506,46 +479,25 @@ Resources:
         Fn::Base64: !Sub |
           #!/bin/bash -xe
           echo ${PrivateIP} > /tmp/ip.txt
-          echo ${DevOpsKey} > /tmp/devopsuserkey.txt
           echo ${JenkinsKey} > /tmp/jenkinskey.txt
-          echo ${KeyName} > /tmp/KeyName.txt
-          echo ${AWS::Region} > /tmp/region.txt
-          echo ${SubnetIdPubADM} > /tmp/SubnetIdPub.txt
-          echo ${SubnetIdPrivADM} > /tmp/SubnetIdPriv.txt
-          echo ${SubnetIdPubADM} > /tmp/SubnetIdPubADM.txt
-          echo ${SubnetIdPrivADM} > /tmp/SubnetIdPrivADM.txt
-          echo ${SubnetIdPubDEV} > /tmp/SubnetIdPubDEV.txt
-          echo ${SubnetIdPrivDEV} > /tmp/SubnetIdPrivDEV.txt
-          echo ${SubnetIdPubQUA} > /tmp/SubnetIdPubQUA.txt
-          echo ${SubnetIdPrivQUA} > /tmp/SubnetIdPrivQUA.txt
-          echo ${SubnetIdPubPROD} > /tmp/SubnetIdPubPROD.txt
-          echo ${SubnetIdPrivPROD} > /tmp/SubnetIdPrivPROD.txt
-          echo ${VpcId} > /tmp/VpcId.txt
-          echo ${PrivateIP} > /tmp/PrivateIP.txt
-          echo ${IngressPort} > /tmp/IngressPort.txt
-          echo ${SecurityGroupId} > /tmp/SecurityGroupNameList.txt
-          echo ${Urlscript} > /tmp/Urlscript.txt
-          echo ${SecurityGroupId} > /tmp/SecurityGroupId.txt
-          echo ${InstanceType} > /tmp/InstanceType.txt
-          echo ${AWSAccessKeyId} > /tmp/AWSAccessKeyId.txt
-          echo ${AWSSecretAccessKeyId} > /tmp/AWSSecretAccessKeyId.txt
-          echo ${TypeName} > /tmp/TypeName.txt
+          echo ${RootKey} > /tmp/root.txt
+          echo ${DevOpsKey} > /tmp/devopsuserkey.txt
           echo ${AnsibleKey} > /tmp/ansiblekey.txt
           echo ${Environnement} > /tmp/env.txt
           if [[ ${PrivateIP} =~ 10.80.140.10 ]]; then
-              wget -O /tmp/ssh.sh https://github.com/KevinGit31/depot_projet_1_file_rouge/raw/${Environnement}/infra/ssh.sh && chmod +x /tmp/ssh.sh
-              wget -O /tmp/install_jenkins.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/${Environnement}/infra/install_jenkins.sh && chmod +x /tmp/install_jenkins.sh && /bin/bash /tmp/install_jenkins.sh
+              CMDSCRIPT=$(wget -O /tmp/ssh.py https://github.com/KevinGit31/depot_projet_1_file_rouge/raw/${Environnement}/infra/ssh.py && chmod +x /tmp/ssh.py)
+              CMDSCRIPT4=$(wget -O /tmp/ssh.sh https://github.com/KevinGit31/depot_projet_1_file_rouge/raw/${Environnement}/infra/ssh.sh && chmod +x /tmp/ssh.sh)
+              CMDSCRIPT1=$(wget -O /tmp/install_jenkins.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/${Environnement}/infra/install_jenkins.sh && chmod +x /tmp/install_jenkins.sh && /bin/bash /tmp/install_jenkins.sh)
+              su - userjenkins -c 'cd /home/userjenkins && wget -O dev.zip https://github.com/KevinGit31/depot_projet_1_file_rouge/archive/refs/heads/${Environnement}.zip && unzip dev.zip && mv depot_projet_1_file_rouge* depot_projet_1_file_rouge && chmod +x /home/userjenkins/depot_projet_1_file_rouge/infra/ansvlt.sh && exit'
+              su - devops -c 'cd /tmp && /bin/bash ssh.sh && exit'
           elif [[ ${PrivateIP} =~ 10.80.140.11 ]]; then
-              wget -O /tmp/install_nexus.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/${Environnement}/infra/install_nexus.sh && chmod +x /tmp/install_nexus.sh && /bin/bash /tmp/install_nexus.sh
+              CMDSCRIPT2=$(wget -O /tmp/install_nexus.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/${Environnement}/infra/install_nexus.sh && chmod +x /tmp/install_nexus.sh && /bin/bash /tmp/install_nexus.sh)
           elif [[ ${PrivateIP} =~ 10.80.110.* || ${PrivateIP} =~ 10.80.120.* || ${PrivateIP} =~ 10.80.130.* ]]; then
-              wget -O /tmp/install_qcm.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/${Environnement}/infra/install_qcm.sh && chmod +x /tmp/install_qcm.sh && /bin/bash /tmp/install_qcm.sh
-              echo "5000" > /tmp/IngressPort.txt
+              CMDSCRIPT3=$(wget -O /tmp/install_qcm.sh https://raw.githubusercontent.com/KevinGit31/depot_projet_1_file_rouge/${Environnement}/infra/install_qcm.sh && chmod +x /tmp/install_qcm.sh && /bin/bash /tmp/install_qcm.sh)
           fi
-          sleep 4m
           echo "root:${RootKey}" | chpasswd
-          sudo rm -f /tmp/*.txt
-
-
+          #Nettoyage /tmp
+          sudo rm -f /tmp/jenkinskey.txt /tmp/ansiblekey.txt /tmp/root.txt /tmp/devopsuserkey.txt
 
         #METHODE2
         # Fn::Base64:  {
@@ -624,7 +576,7 @@ Resources:
       - PrivateIpAddress: !Ref 'PrivateIP'
         Primary: 'True'
       SourceDestCheck: 'true'
-      SubnetId: !Ref 'SubnetIdPrivADM'
+      SubnetId: !Ref 'SubnetIdPriv'
       Tags:
       - Key: Name
         Value: Interface 1
@@ -690,5 +642,3 @@ Resources:
 #        - !GetAtt
 #          - EC2Instance
 #          - PublicDnsName
-
-

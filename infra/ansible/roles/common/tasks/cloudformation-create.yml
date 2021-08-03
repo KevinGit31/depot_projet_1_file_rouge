@@ -10,17 +10,22 @@
       stack_name: "{{ TypeName }}"
       state: "present"
       region: "{{ REGION }}"
-      disable_rollback: true
-      template: "/var/lib/jenkins/workspace/{{ ansible_environnement }}/depot_projet_1_file_rouge/infra/aws_cloudformation/instancegrp3.yaml"
+      template: "instancegrp3.yaml"
       template_parameters:
         KeyName: "{{ KEYNAME }}"
         Environnement: "{{ ansible_environnement }}"
-        RootKey: ""
-        JenkinsKey: ""
+        RootKey: "{{ RootKey }}"
+        JenkinsKey: "{{ JenkinsKey }}"
         DevOpsKey: "{{ secret_devops }}"
-        AnsibleKey: ""
-        SubnetIdPub: "{{ SubnetIdPub }}"
-        SubnetIdPriv: "{{ SubnetIdPriv }}"
+        AnsibleKey: "{{ AnsibleKey }}"
+        SubnetIdPubADM: "{{ SubnetIdPubADM }}"
+        SubnetIdPrivADM: "{{ SubnetIdPrivADM }}"
+        SubnetIdPubDEV: "{{ SubnetIdPubDEV }}"
+        SubnetIdPrivDEV: "{{ SubnetIdPrivDEV }}"
+        SubnetIdPubQUA: "{{ SubnetIdPubQUA }}"
+        SubnetIdPrivQUA: "{{ SubnetIdPrivQUA }}"
+        SubnetIdPubPROD: "{{ SubnetIdPubPROD }}"
+        SubnetIdPrivPROD: "{{ SubnetIdPrivPROD }}"
         VpcId: "{{ VpcId }}"
         PrivateIP: "{{ PrivateIP }}"
         TypeName: "{{ TypeName }}"
@@ -29,8 +34,10 @@
         Urlscript: "{{ Urlscript }}"
         SecurityGroupId: "{{ SecurityGroupId }}"
         InstanceType: "{{ InstanceType }}"
-#      tags:
-#        - cloudcreate: "ansible-cloudformation-create"
+        AWSAccessKeyId: "NONE"
+        AWSSecretAccessKeyId: "NONE"
+      on_create_failure: DELETE
+      backoff_max_delay: 300
     register: stack
   - name: stack outputs
     debug: msg="Stack outputs are {{stack.stack_outputs}}"

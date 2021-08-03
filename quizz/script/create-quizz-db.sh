@@ -1,3 +1,3 @@
 #!/bin/bash
-cd ../quizz/src
-pipenv run python models/models.py
+cd ../src
+pipenv run python3 models/models.py

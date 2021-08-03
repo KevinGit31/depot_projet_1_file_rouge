@@ -1,10 +1,12 @@
-#cf si vider la rds lié
+---
+- name: create a cloudformation stack
+  hosts: localhost
+  connection: local
+  gather_facts: false
 
-#
-- name: delete a stack
-  amazon.aws.cloudformation:
-    stack_name: "{{ TYPENAME }}"
-    state: "absent"
-  tags:
-    - clouddelete: "ansible-cloudformation-delete"
-  when: GOTODEL == "yes"
+  tasks:
+  - name: delete a stack
+    cloudformation:
+      stack_name: "{{ TypeName }}"
+      region: "{{ REGION }}"
+      state: "absent"

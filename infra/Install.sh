@@ -11,8 +11,8 @@ KEYNAME="projet1grp3key"
 PEMKEYNAME=$KEYNAME".pem"
 REGION="eu-west-2"
 REGIONAZ=$REGION"a"
-DBNAME="DB"
-DBUSER="groupe3"
+DBNAME="dbquizz"
+DBUSER="userquizz"
 DBPWD=$(cat sec/dbkey.txt)
 ANSIBKEY=$(cat sec/ansibkey.txt)
 DEVOPSKEY=$(cat sec/devopsuserkey.txt)
@@ -20,6 +20,7 @@ JENKINSKEY=$(cat sec/jenkinskey.txt)
 AAKI=$(cat sec/aaki.txt)
 ASAKI=$(cat sec/asaki.txt)
 ROOTKEY=$(cat sec/root.txt)
+EC2USER=$(cat projet1grp3key.pem)
 ENV=""
 DBSIZE=5
 # EC2PRIVIP=""
@@ -76,21 +77,27 @@ FXCREATE_STACK () {
     fi
 }
 
+
 #Fonction qui permet de récupérer la describe list suivant le service Type et la commande de description
 #FXDESC_FILTER1=FXDESC_FILTER ""
 #SVCTYPE="rds"
 #DESCRIBECMD="describe-db-instances"
 #QUERY="DBInstances[*].[ [[TagList[?Key==\`aws:cloudformation:stack-name\`].Value]],[Endpoint.Address] ]"
-#FXAWS_DESCRIBE "$SVCTYPE" "$DESCRIBECMD" "$REGION" "$QUERY" "$FXDESC_FILTER1"
-#FXAWS_DESCRIBE $1          $2            $3        $4       $5                 <<===correspondance
+#FXAWS_DESCRIBE "$SVCTYPE" "$DESCRIBECMD" "$REGION" "$QUERY" "$FXDESC_FILTER1 CLE" "AWS FILTER OPTIONNEL AJOUTER laisser vide ou ne pas le mettre" " CMD TO PIPE OPTION OU NE PAS METTRE LE 7EME ARGUMENT"
+#FXAWS_DESCRIBE $1          $2            $3        $4       $5                    $6                                                               $7     <<===correspondance
 #INIT VAR RECUPERATION des 2 entrées du tableau dans la fonction FXAWS_DESCRIBE
 T1FXAWS_DESCRETURN=""
 T2FXAWS_DESCRETURN=""
 FXAWS_DESCRIBE () {
     declare -a TAB1=()
-
+    #Permet l'ajout d'une commande la 7eme variable peut etre non ajouter
+    if [[ $7 == "" ]]; then
+        VAL1="cat"
+    else
+        VAL1=$7
+    fi
     #Recupere la describe list
-    RDSLIST1=$($AWSBIN $1 $2 --region $3 --output text --query "$4")
+    RDSLIST1=$($AWSBIN $1 $2 --region $3 --output text --query "$4" --filter $6 | $VAL1)
     echo ""
     SAVEIFS=$IFS   # Save current IFS
     IFS=$'\n'      # Change IFS to new line
@@ -193,7 +200,7 @@ eval $(FXAWS_DESCRIBE "$SVCTYPE" "$DESCRIBECMD" "$REGION" "$QUERY" "$FXDESC_FILT
 if ! [ -n "$T1FXAWS_DESCRETURN"  ]; then
     echo "Creation de la RDS de DEV"
     #Creation du RDS BDD DEV
-    DBNAMEENV=$DBNAME$ENV
+    DBNAMEENV=$DBNAME
     RETRDSINFOS=$($AWSBIN cloudformation --region $REGION describe-stacks --stack-name $STACKNAMEENV )
     RETCODE=$?
     PARAM="ParameterKey=subnet1CIDR,ParameterValue=10.80.210.0/24 ParameterKey=subnet2CIDR,ParameterValue=10.80.211.0/24 ParameterKey=AllocatedStorage,ParameterValue=$DBSIZE ParameterKey=DBName,ParameterValue=$DBNAMEENV ParameterKey=MUser,ParameterValue=$DBUSER ParameterKey=MPass,ParameterValue=$DBPWD ParameterKey=VpcId,ParameterValue=$RESULTVPCID ParameterKey=Env,ParameterValue=$ENV ParameterKey=SecurityGroupId,ParameterValue=$RESULTGRPSECID ParameterKey=PrimaryAZ,ParameterValue=$REGIONAZ"
@@ -219,7 +226,7 @@ DESCRIBECMD="describe-db-instances"
 eval $(FXAWS_DESCRIBE "$SVCTYPE" "$DESCRIBECMD" "$REGION" "$QUERY" "$FXDESC_FILTER1")
 if ! [ -n "$T1FXAWS_DESCRETURN"  ]; then
     #Creation du RDS BDD QUA
-    DBNAMEENV=$DBNAME$ENV
+    DBNAMEENV=$DBNAME
     RETRDSINFOS=$($AWSBIN cloudformation --region $REGION describe-stacks --stack-name $STACKNAMEENV )
     RETCODE=$?
     PARAM="ParameterKey=subnet1CIDR,ParameterValue=10.80.220.0/24 ParameterKey=subnet2CIDR,ParameterValue=10.80.221.0/24 ParameterKey=AllocatedStorage,ParameterValue=$DBSIZE ParameterKey=DBName,ParameterValue=$DBNAMEENV ParameterKey=MUser,ParameterValue=$DBUSER ParameterKey=MPass,ParameterValue=$DBPWD ParameterKey=VpcId,ParameterValue=$RESULTVPCID ParameterKey=Env,ParameterValue=$ENV ParameterKey=SecurityGroupId,ParameterValue=$RESULTGRPSECID ParameterKey=PrimaryAZ,ParameterValue=$REGIONAZ"
@@ -245,7 +252,7 @@ if ! [ -n "$T1FXAWS_DESCRETURN"  ]; then
     #Creation du RDS BDD PROD
     RETRDSINFOS=$($AWSBIN cloudformation --region $REGION describe-stacks --stack-name $STACKNAMEENV )
     RETCODE=$?
-    DBNAMEENV=$DBNAME$ENV
+    DBNAMEENV=$DBNAME
     PARAM="ParameterKey=subnet1CIDR,ParameterValue=10.80.230.0/24 ParameterKey=subnet2CIDR,ParameterValue=10.80.231.0/24 ParameterKey=AllocatedStorage,ParameterValue=$DBSIZE ParameterKey=DBName,ParameterValue=$DBNAMEENV ParameterKey=MUser,ParameterValue=$DBUSER ParameterKey=MPass,ParameterValue=$DBPWD ParameterKey=VpcId,ParameterValue=$RESULTVPCID ParameterKey=Env,ParameterValue=$ENV ParameterKey=SecurityGroupId,ParameterValue=$RESULTGRPSECID ParameterKey=PrimaryAZ,ParameterValue=$REGIONAZ"
     #PARAM="ParameterKey=AllocatedStorage,ParameterValue=$DBSIZE ParameterKey=DBName,ParameterValue=$DBNAMEENV ParameterKey=MUser,ParameterValue=$DBUSER ParameterKey=MPass,ParameterValue=$DBPWD ParameterKey=VpcId,ParameterValue=$RESULTVPCID ParameterKey=Env,ParameterValue=$ENV ParameterKey=SecurityGroupId,ParameterValue=$RESULTGRPSECID ParameterKey=PrimaryAZ,ParameterValue=$REGIONAZ"
     QUERY="DBInstances[*].[ [DBInstanceIdentifier],[Endpoint[0].[Address] ] ]"
@@ -334,7 +341,6 @@ echo ""
 
 ######### START CREATION DE LA STACK INSTANCE  jenkins et nexus + UPDATE ET DELETE DE LA STACK #########
 ##
-
 select var in "${CHOIX[@]}"; do
     case $var in
         "CREATE")
@@ -348,12 +354,11 @@ select var in "${CHOIX[@]}"; do
             SVCTYPE="ec2"
             DESCRIBECMD="describe-security-groups"
             ##<==
-
             #Retour du tableau en index 0 SECGRPLISTID et index 1 SECGRPID
             eval $(FXAWS_DESCRIBE "$SVCTYPE" "$DESCRIBECMD" "$REGION" "$QUERY" "$FXDESC_FILTER1")
             SECGRPLISTID=$T1FXAWS_DESCRETURN
-
             SECGRPID=$T2FXAWS_DESCRETURN
+
 
             #Recuperation de la liste de subnet PRIVATE ADM
             FXDESC_FILTER1="PrivateSubnetADM"
@@ -362,11 +367,12 @@ select var in "${CHOIX[@]}"; do
             SVCTYPE="ec2"
             DESCRIBECMD="describe-subnets"
             ##<==
-
             #Retour du tableau SUBNETLISTIDPUB SUBNETLISTIDPUB et SUBNETLISTIDPRIV
             eval $(FXAWS_DESCRIBE "$SVCTYPE" "$DESCRIBECMD" "$REGION" "$QUERY" "$FXDESC_FILTER1")
             SUBNETLISTIDPRIVID=$T2FXAWS_DESCRETURN
             SUBNETLISTIDPRIV=$T1FXAWS_DESCRETURN
+
+
             #Recuperation de la liste de subnet public ADM
             FXDESC_FILTER1="PublicSubnetADM"
             #Filtre sur DBINSTANCE et cherche 2 éléments
@@ -374,17 +380,95 @@ select var in "${CHOIX[@]}"; do
             SVCTYPE="ec2"
             DESCRIBECMD="describe-subnets"
             ##<==
-
             #Retour du tableau SUBNETLISTIDPUB SUBNETLISTIDPUB et SUBNETLISTIDPRIV
             eval $(FXAWS_DESCRIBE "$SVCTYPE" "$DESCRIBECMD" "$REGION" "$QUERY" "$FXDESC_FILTER1")
             SUBNETLISTIDPUBID=$T2FXAWS_DESCRETURN
             SUBNETLISTIDPUB=$T1FXAWS_DESCRETURN
+
+
+            #Recuperation de la liste de subnet PRIVATE DEV
+            FXDESC_FILTER1="PrivateSubnetDEV"
+            #Filtre sur DBINSTANCE et cherche 2 éléments
+            QUERY="Subnets[*].[ [Tags[?Key==\`aws:cloudformation:logical-id\`].Value],[SubnetId] ]"
+            SVCTYPE="ec2"
+            DESCRIBECMD="describe-subnets"
+            ##<==
+            #Retour du tableau SUBNETLISTIDPUB SUBNETLISTIDPUB et SUBNETLISTIDPRIV
+            eval $(FXAWS_DESCRIBE "$SVCTYPE" "$DESCRIBECMD" "$REGION" "$QUERY" "$FXDESC_FILTER1")
+            SUBNETLISTIDPRIVDEVID=$T2FXAWS_DESCRETURN
+            SUBNETLISTIDPRIVDEV=$T1FXAWS_DESCRETURN
+
+
+            #Recuperation de la liste de subnet PUBLIC DEV
+            FXDESC_FILTER1="PublicSubnetDEV"
+            #Filtre sur DBINSTANCE et cherche 2 éléments
+            QUERY="Subnets[*].[ [Tags[?Key==\`aws:cloudformation:logical-id\`].Value],[SubnetId] ]"
+            SVCTYPE="ec2"
+            DESCRIBECMD="describe-subnets"
+            ##<==
+            #Retour du tableau SUBNETLISTIDPUB SUBNETLISTIDPUB et SUBNETLISTIDPRIV
+            eval $(FXAWS_DESCRIBE "$SVCTYPE" "$DESCRIBECMD" "$REGION" "$QUERY" "$FXDESC_FILTER1")
+            SUBNETLISTIDPUBDEVID=$T2FXAWS_DESCRETURN
+            SUBNETLISTIDPUBDEV=$T1FXAWS_DESCRETURN
+
+
+            #Recuperation de la liste de subnet PRIVATE QUA
+            FXDESC_FILTER1="PrivateSubnetQUA"
+            #Filtre sur DBINSTANCE et cherche 2 éléments
+            QUERY="Subnets[*].[ [Tags[?Key==\`aws:cloudformation:logical-id\`].Value],[SubnetId] ]"
+            SVCTYPE="ec2"
+            DESCRIBECMD="describe-subnets"
+            ##<==
+            #Retour du tableau SUBNETLISTIDPUB SUBNETLISTIDPUB et SUBNETLISTIDPRIV
+            eval $(FXAWS_DESCRIBE "$SVCTYPE" "$DESCRIBECMD" "$REGION" "$QUERY" "$FXDESC_FILTER1")
+            SUBNETLISTIDPRIVQUAID=$T2FXAWS_DESCRETURN
+            SUBNETLISTIDPRIVQUA=$T1FXAWS_DESCRETURN
+
+            #Recuperation de la liste de subnet PUBLIC QUA
+            FXDESC_FILTER1="PublicSubnetQUA"
+            #Filtre sur DBINSTANCE et cherche 2 éléments
+            QUERY="Subnets[*].[ [Tags[?Key==\`aws:cloudformation:logical-id\`].Value],[SubnetId] ]"
+            SVCTYPE="ec2"
+            DESCRIBECMD="describe-subnets"
+            ##<==
+            #Retour du tableau SUBNETLISTIDPUB SUBNETLISTIDPUB et SUBNETLISTIDPRIV
+            eval $(FXAWS_DESCRIBE "$SVCTYPE" "$DESCRIBECMD" "$REGION" "$QUERY" "$FXDESC_FILTER1")
+            SUBNETLISTIDPUBQUAID=$T2FXAWS_DESCRETURN
+            SUBNETLISTIDPUBQUA=$T1FXAWS_DESCRETURN
+
+
+            #Recuperation de la liste de subnet PRIVATE PROD
+            FXDESC_FILTER1="PrivateSubnetPROD"
+            #Filtre sur DBINSTANCE et cherche 2 éléments
+            QUERY="Subnets[*].[ [Tags[?Key==\`aws:cloudformation:logical-id\`].Value],[SubnetId] ]"
+            SVCTYPE="ec2"
+            DESCRIBECMD="describe-subnets"
+            ##<==
+            #Retour du tableau SUBNETLISTIDPUB SUBNETLISTIDPUB et SUBNETLISTIDPRIV
+            eval $(FXAWS_DESCRIBE "$SVCTYPE" "$DESCRIBECMD" "$REGION" "$QUERY" "$FXDESC_FILTER1")
+            SUBNETLISTIDPRIVPRODID=$T2FXAWS_DESCRETURN
+            SUBNETLISTIDPRIVPROD=$T1FXAWS_DESCRETURN
+
+
+            #Recuperation de la liste de subnet PUBLIC PROD
+            FXDESC_FILTER1="PublicSubnetPROD"
+            #Filtre sur DBINSTANCE et cherche 2 éléments
+            QUERY="Subnets[*].[ [Tags[?Key==\`aws:cloudformation:logical-id\`].Value],[SubnetId] ]"
+            SVCTYPE="ec2"
+            DESCRIBECMD="describe-subnets"
+            ##<==
+            #Retour du tableau SUBNETLISTIDPUB SUBNETLISTIDPUB et SUBNETLISTIDPRIV
+            eval $(FXAWS_DESCRIBE "$SVCTYPE" "$DESCRIBECMD" "$REGION" "$QUERY" "$FXDESC_FILTER1")
+            SUBNETLISTIDPUBPRODID=$T2FXAWS_DESCRETURN
+            SUBNETLISTIDPUBPROD=$T1FXAWS_DESCRETURN
+
+
             #Creation de l'instance
             #Retour instance Infos
             #RETINSTANCEINFOS=$($AWSBIN ec2 --region $REGION --output text )
             RETCODE="254"
 #            PARAM="ParameterKey=KeyName,ParameterValue=$KEYNAME ParameterKey=SubnetIdPub,ParameterValue=\"$SUBNETLISTIDPUBID\" ParameterKey=SSHLocation,ParameterValue=0.0.0.0/0 ParameterKey=SubnetIdPriv,ParameterValue=$SUBNETLISTIDPRIVID ParameterKey=PrivateIP,ParameterValue=$EC2PRIVIP ParameterKey=TypeName,ParameterValue=$TYPEINSTALL ParameterKey=IngressPort,ParameterValue=$PORTAPP ParameterKey=Urlscript,ParameterValue=$CMDSCRIPT ParameterKey=SecurityGroupNameList,ParameterValue=$SECGRPLISTID ParameterKey=SecurityGroupId,ParameterValue=$SECGRPID ParameterKey=InstanceType,ParameterValue=$TYPEINSTANCE"
-            PARAM="ParameterKey=KeyName,ParameterValue=$KEYNAME ParameterKey=Environnement,ParameterValue=dev ParameterKey=RootKey,ParameterValue=$ROOTKEY ParameterKey=JenkinsKey,ParameterValue=$JENKINSKEY ParameterKey=DevOpsKey,ParameterValue=$DEVOPSKEY ParameterKey=AnsibleKey,ParameterValue=$ANSIBKEY ParameterKey=SubnetIdPub,ParameterValue=$SUBNETLISTIDPUBID ParameterKey=SubnetIdPriv,ParameterValue=$SUBNETLISTIDPRIVID ParameterKey=VpcId,ParameterValue=$VPCID ParameterKey=PrivateIP,ParameterValue=$EC2PRIVIP ParameterKey=TypeName,ParameterValue=$TYPEINSTALL ParameterKey=IngressPort,ParameterValue=$PORTAPP ParameterKey=SecurityGroupNameList,ParameterValue=$SECGRPID ParameterKey=Urlscript,ParameterValue=$CMDSCRIPT ParameterKey=SecurityGroupId,ParameterValue=$SECGRPID ParameterKey=InstanceType,ParameterValue=$TYPEINSTANCE ParameterKey=AWSAccessKeyId,ParameterValue=$AAKI ParameterKey=AWSSecretAccessKeyId,ParameterValue=$ASAKI "
+            PARAM="ParameterKey=KeyName,ParameterValue=$KEYNAME ParameterKey=Environnement,ParameterValue=dev ParameterKey=RootKey,ParameterValue=$ROOTKEY ParameterKey=JenkinsKey,ParameterValue=$JENKINSKEY ParameterKey=DevOpsKey,ParameterValue=$DEVOPSKEY ParameterKey=AnsibleKey,ParameterValue=$ANSIBKEY ParameterKey=SubnetIdPubADM,ParameterValue=$SUBNETLISTIDPUBID ParameterKey=SubnetIdPrivADM,ParameterValue=$SUBNETLISTIDPRIVID ParameterKey=SubnetIdPubDEV,ParameterValue=$SUBNETLISTIDPUBDEVID ParameterKey=SubnetIdPrivDEV,ParameterValue=$SUBNETLISTIDPRIVDEVID ParameterKey=SubnetIdPubQUA,ParameterValue=$SUBNETLISTIDPUBQUAID ParameterKey=SubnetIdPrivQUA,ParameterValue=$SUBNETLISTIDPRIVQUAID ParameterKey=SubnetIdPubPROD,ParameterValue=$SUBNETLISTIDPUBPRODID ParameterKey=SubnetIdPrivPROD,ParameterValue=$SUBNETLISTIDPRIVPRODID ParameterKey=VpcId,ParameterValue=$VPCID ParameterKey=PrivateIP,ParameterValue=$EC2PRIVIP ParameterKey=TypeName,ParameterValue=$TYPEINSTALL ParameterKey=IngressPort,ParameterValue=$PORTAPP ParameterKey=SecurityGroupNameList,ParameterValue=$SECGRPID ParameterKey=Urlscript,ParameterValue=$CMDSCRIPT ParameterKey=SecurityGroupId,ParameterValue=$SECGRPID ParameterKey=InstanceType,ParameterValue=$TYPEINSTANCE ParameterKey=AWSAccessKeyId,ParameterValue=$AAKI ParameterKey=AWSSecretAccessKeyId,ParameterValue=$ASAKI "
 
             #echo $PARAM
             QUERY="Stacks[0].Outputs[?OutputKey=='GroupeSec1'].OutputValue"
@@ -395,6 +479,35 @@ select var in "${CHOIX[@]}"; do
             sleep 10s
             STACKLISTNAME=$($AWSBIN cloudformation describe-stack-resources --stack-name $STACKNAMEEC2 --output text --query 'StackResources[*].[ [ResourceStatus] ]')
             echo $STACKLISTNAME
+
+            if [[ $STACKNAMEEC2 == "jenkins" ]]; then
+                echo "En attente 120s de transfert de la clé ssh temps de disponibilité de l'instance ID et de la connexion ssh"
+                sleep 120s
+                #Recupération de l'instance ID
+                FXDESC_FILTER1=$STACKNAMEEC2
+                #Filtre sur DBINSTANCE et cherche 2 éléments
+                FILTER1="Name=instance-state-name,Values=running"
+                FILTER2="Name=tag:Name,Values=$STACKNAMEEC2"
+                NEXTPIPECMD="sort -r -n"
+                FILTEROPTION="$FILTER1 $FILTER2"
+                QUERY="Reservations[].Instances[].[Tags[?Key=='Name'].Value[],InstanceId ]"
+                SVCTYPE="ec2"
+                DESCRIBECMD="describe-instances"
+                eval $(FXAWS_DESCRIBE "$SVCTYPE" "$DESCRIBECMD" "$REGION" "$QUERY" "$FXDESC_FILTER1" "$FILTEROPTION" "$NEXTPIPECMD")
+                echo "InstanceID= $T2FXAWS_DESCRETURN"
+                echo "InstanceName= $T1FXAWS_DESCRETURN"
+                RESULTINSTANCEID=$T2FXAWS_DESCRETURN
+                RESULTPUBDNSNAME=$(aws ec2 describe-instances --query "Reservations[].Instances[].PublicDnsName" --instance-ids $RESULTINSTANCEID --output text)
+                echo "L'id EC2 de l'instance $T1FXAWS_DESCRETURN pour : $RESULTINSTANCEID et son PublicDNSName est: $RESULTPUBDNSNAME"
+                echo ""
+
+                echo "Transfert de la clé ssh vers l'instance $STACKNAMEEC2"
+
+                #Transfert la clé ssh
+                echo "exit" | ssh -o "StrictHostKeyChecking no" -i "projet1grp3key.pem" ec2-user@$RESULTPUBDNSNAME
+                sleep 4s
+                scp -i projet1grp3key.pem projet1grp3key.pem ec2-user@$RESULTPUBDNSNAME:/tmp/projet1grp3key.txt
+            fi
             ;;
         "UPDATE")
             echo "------START UPDATE STACK-------" 1>>trace.log 2>&1

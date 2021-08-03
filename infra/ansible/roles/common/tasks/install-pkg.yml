@@ -13,3 +13,20 @@
     name: python3-devel.x86_64
     state: present
     update_cache: true
+- name: Install python3-devel.x86_64
+  yum:
+    name: mysql
+    state: present
+    update_cache: true
+- name: Install lxml pour ansible nexus module
+  pip:
+    name: lxml
+    executable: pip3
+- name: Install pipenv
+  become_user: devops
+  become: true
+  pip:
+    name: pipenv
+    executable: pip3
+    extra_args: --user
+
