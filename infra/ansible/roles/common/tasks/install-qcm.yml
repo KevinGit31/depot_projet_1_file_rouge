@@ -89,7 +89,7 @@
   become: true
   shell: install-env.sh
   args:
-    chdir: ~/app/quizz/script
+    chdir: /home/devops/app/quizz/script
     executable: /bin/bash
 
 
