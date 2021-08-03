@@ -90,13 +90,18 @@
     dest: /bin/python3
     state: link
 
-- name: Install pipenv ~/app/quizz/script/install-env.sh
-  become_user: devops
-  become: true
-  shell: install-env.sh
+# - name: Install pipenv ~/app/quizz/script/install-env.sh
+#   become_user: devops
+#   become: true
+#   shell: install-env.sh
+#   args:
+#     chdir: /home/devops/app/quizz/script
+#     executable: /bin/bash
+- name: Install pipenv
+  ignore_errors: true
+  command: "pipenv install"
   args:
-    chdir: /home/devops/app/quizz/script
-    executable: /bin/bash
+    chdir: /home/devops/app/quizz/src
 
 - name: Creation de la BDD ~/app/quizz/script/create-test-db.sh
   become_user: devops
