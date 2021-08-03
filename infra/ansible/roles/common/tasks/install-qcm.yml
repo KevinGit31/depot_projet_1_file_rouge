@@ -84,6 +84,17 @@
     - sudo make install
     - rm -f ~/Python-3.9.6.tgz
 
+- name: Delete old symlink python3.7
+  file:
+    path: /bin/python3
+    state: absent
+
+- name: Create symlink
+  file:
+    src: /usr/local/bin/python3.9
+    dest: /bin/python3
+    state: link
+
 - name: Install pipenv ~/app/quizz/script/install-env.sh
   become_user: devops
   become: true
@@ -91,6 +102,7 @@
   args:
     chdir: /home/devops/app/quizz/script
     executable: /bin/bash
+
 
 
 - name: Creation de la BDD ~/app/quizz/script/create-test-db.sh
