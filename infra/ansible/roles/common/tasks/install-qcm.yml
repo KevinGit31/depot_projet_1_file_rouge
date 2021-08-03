@@ -1,6 +1,5 @@
 - name: Creates directory ~/app
   become_user: devops
-  become: true
   file:
     path: ~/app
     state: directory
@@ -10,7 +9,6 @@
 
 - name: Download nexus build
   become_user: devops
-  become: true
   get_url:
     url: http://{{ dnsnexus }}:8081/repository/APP/1/qcm/1.0-{{ numbuild }}/qcm-1.0-{{ numbuild }}.tar.gz
     dest: ~/app
@@ -19,7 +17,6 @@
 
 - name: Extract ~/app/qcmxxx.tar.gz
   become_user: devops
-  become: true
   unarchive:
     src: ~/app/qcm-1.0-{{ numbuild }}.tar.gz
     dest: ~/app
@@ -27,7 +24,6 @@
 
 - name: mise a jour du fichier ~/app/quizz/src/config/appconfig.py
   become_user: devops
-  become: true
   lineinfile:
     path: ~/app/quizz/src/config/appconfig.py
     regexp: '^(.*)app\.config\[(.*)$'
@@ -36,7 +32,6 @@
 
 - name: chmod +x des scripts sh
   become_user: devops
-  become: true
   file:
     dest: "{{ item }}"
     mode: a+x
@@ -123,12 +118,12 @@
 #     chdir: ~/app/quizz/script
 #     executable: /bin/bash
 
-- name: Creation de la BDD ~/app/quizz/script/create-test-db.sh
-  become_user: devops
-  shell: ~/.local/bin/pipenv run python3 tests/init_test_db.py
-  args:
-    chdir: ~/app/quizz/src
-    executable: /bin/bash
+# - name: Creation de la BDD ~/app/quizz/script/create-test-db.sh
+#   become_user: devops
+#   shell: ~/.local/bin/pipenv run python3 tests/init_test_db.py
+#   args:
+#     chdir: ~/app/quizz/src
+#     executable: /bin/bash
 
 - name: mise a jour du fichier ~/app/quizz/src/models/app.py
   become_user: devops
