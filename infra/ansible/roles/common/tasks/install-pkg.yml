@@ -22,13 +22,6 @@
   pip:
     name: lxml
     executable: pip3
-- name: Install pipenv
-  become_user: devops
-  # become: true
-  pip:
-    name: pipenv
-    executable: pip3
-    extra_args: --user
 - name: Install flask
   become_user: devops
   become: true

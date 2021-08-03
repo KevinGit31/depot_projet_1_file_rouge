@@ -97,12 +97,23 @@
 #   args:
 #     chdir: /home/devops/app/quizz/script
 #     executable: /bin/bash
-- name: Install pipenv
+# - name: Install pipenv
+#   become_user: devops
+#   shell: ~/.local/bin/pipenv install
+#   args:
+#     chdir:  ~/app/quizz/src
+#     executable: /bin/bash
+
+- name: install pipenv
   become_user: devops
-  shell: ~/.local/bin/pipenv install
+  shell: "{{ item }}"
   args:
-    chdir:  ~/app/quizz/src
+    chdir: ~/app/quizz/src
     executable: /bin/bash
+  with_items:
+    - pip3 install pipenv
+    - ~/.local/bin/pipenv install
+
 
 # - name: Creation de la BDD ~/app/quizz/script/create-test-db.sh
 #   become_user: devops
