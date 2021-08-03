@@ -81,7 +81,7 @@
     executable: /bin/bash
   with_items:
     - ./configure --enable-optimizations
-    - make install
+    - sudo make install
     - rm -f ~/Python-3.9.6.tgz
 
 - name: Install pipenv ~/app/quizz/script/install-env.sh
