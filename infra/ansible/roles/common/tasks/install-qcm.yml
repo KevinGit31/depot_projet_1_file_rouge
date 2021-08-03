@@ -182,10 +182,10 @@
     chdir: ~/app/quizz/src
     executable: /bin/bash
 
-- name: Change file ownership, group and permissions
-  become_user: devops
-  become: true
-  file:
-    dest: ~/app
-    mode: '0644'
+# - name: Change file ownership, group and permissions
+#   become_user: devops
+#   become: true
+#   file:
+#     dest: ~/app
+#     mode: '0644'
 

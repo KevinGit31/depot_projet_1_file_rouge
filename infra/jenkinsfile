@@ -153,7 +153,7 @@ agent any
         stage('DistribKeyByansible') {
             steps {
                     sh """#!/bin/bash -xe
-                    sudo -u devops -s ansible-playbook -i /var/lib/jenkins/workspace/${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts /var/lib/jenkins/workspace/${env.JOB_BASE_NAME}/infra/ansible/distribkey.yml --user ec2-user --key-file /home/devops/.ssh/projet1grp3key.pem -vvv
+                    sudo -u devops -s ansible-playbook -i /var/lib/jenkins/workspace/${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts /var/lib/jenkins/workspace/${env.JOB_BASE_NAME}/infra/ansible/distribkey.yml --user ec2-user --key-file ~/.ssh/projet1grp3key.pem -vvv
                     """
             }
         }
