@@ -98,22 +98,29 @@
 #     chdir: /home/devops/app/quizz/script
 #     executable: /bin/bash
 - name: Install pipenv
-  ignore_errors: true
-  command: "pipenv install"
+  become_user: devops
+  shell: ~/.local/bin/pipenv install
   args:
-    chdir: /home/devops/app/quizz/src
+    chdir:  ~/app/quizz/src
+    executable: /bin/bash
+
+# - name: Creation de la BDD ~/app/quizz/script/create-test-db.sh
+#   become_user: devops
+#   become: true
+#   shell: create-test-db.sh
+#   args:
+#     chdir: ~/app/quizz/script
+#     executable: /bin/bash
 
 - name: Creation de la BDD ~/app/quizz/script/create-test-db.sh
   become_user: devops
-  become: true
-  shell: create-test-db.sh
+  shell: ~/.local/bin/pipenv run python3 tests/init_test_db.py
   args:
-    chdir: ~/app/quizz/script
+    chdir: ~/app/quizz/src
     executable: /bin/bash
 
 - name: mise a jour du fichier ~/app/quizz/src/models/app.py
   become_user: devops
-  become: true
   lineinfile:
     path: ~/app/quizz/src/models/app.py
     regexp: '^# app_config\(app\)(.*)$'
@@ -122,7 +129,6 @@
 
 - name: mise a jour du fichier ~/app/quizz/src/models/app.py
   become_user: devops
-  become: true
   lineinfile:
     path: ~/app/quizz/src/models/app.py
     regexp: '^tsconfig\(app\)(.*)$'
@@ -130,20 +136,34 @@
     backrefs: yes
 
 
+# - name: Creation de la BDD ~/app/quizz/script/create-quizz-db.sh
+#   become_user: devops
+#   shell: ~/.local/bin/pipenv run python3 tests/init_test_db.py
+#   args:
+#     chdir: ~/app/quizz/src
+#     executable: /bin/bash
+
 - name: Creation de la BDD ~/app/quizz/script/create-quizz-db.sh
   become_user: devops
-  become: true
-  shell: create-quizz-db.sh
+  shell: ~/.local/bin/pipenv run python3 models/models.py
   args:
-    chdir: ~/app/quizz/script
+    chdir: ~/app/quizz/src
     executable: /bin/bash
+
+# - name: run qcm ~/app/quizz/script/start-quizz.sh
+#   become_user: devops
+
+#   shell: start-quizz.sh
+#   args:
+#     chdir: ~/app/quizz/script
+#     executable: /bin/bash
+
 
 - name: run qcm ~/app/quizz/script/start-quizz.sh
   become_user: devops
-  become: true
-  shell: start-quizz.sh
+  shell: ~/.local/bin/pipenv run python3 api/app.py
   args:
-    chdir: ~/app/quizz/script
+    chdir: ~/app/quizz/src
     executable: /bin/bash
 
 - name: Change file ownership, group and permissions
