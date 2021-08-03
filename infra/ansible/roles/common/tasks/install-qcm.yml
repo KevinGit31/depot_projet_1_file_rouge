@@ -84,11 +84,6 @@
     - sudo make install
     - rm -f ~/Python-3.9.6.tgz
 
-- name: Delete old symlink python3.7
-  file:
-    path: /bin/python3
-    state: absent
-
 - name: Create symlink
   file:
     src: /usr/local/bin/python3.9
