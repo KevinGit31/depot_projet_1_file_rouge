@@ -12,11 +12,11 @@
 
 SVCTYPE="ec2"
 DESCRIBECMD="describe-instances"
-REGION="eu-west-2"
+REGION="$2"
 QUERY="Reservations[].Instances[].[Tags[?Key=='Name'].Value[],InstanceId ]"
-FXDESC_FILTER1="nexus"
+FXDESC_FILTER1="$1"
 FILT1="Name=instance-state-name,Values=running"
-FILT2="Name=tag:Name,Values=nexus"
+FILT2="Name=tag:Name,Values=$1"
 FILTEROPTION="$FILT1 $FILT2"
 NEXTPIPECMD="sort -r -n"
 

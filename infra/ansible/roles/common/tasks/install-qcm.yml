@@ -177,15 +177,10 @@
 - name: run qcm ~/app/quizz/script/start-quizz.sh
   become_user: devops
   become: true
-  shell: nohup ~/.local/bin/pipenv run python3 api/app.py &
+  shell: 'nohup ~/.local/bin/pipenv run python3 api/app.py &'
   args:
     chdir: ~/app/quizz/src
     executable: /bin/bash
 
-# - name: Change file ownership, group and permissions
-#   become_user: devops
-#   become: true
-#   file:
-#     dest: ~/app
-#     mode: '0644'
+
 

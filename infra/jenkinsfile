@@ -83,7 +83,7 @@ agent any
             steps {
                 script {
                     env.DNSDB_ENV = "${sh(script:'chmod +x infra/checkrds.sh && ./infra/checkrds.sh ${REGION_ENV} ${ENVIRONNEMENT}', returnStdout: true).trim()}"
-                    env.DNSPUBEC2NEXUS_ENV = "${sh(script:'chmod +x infra/getdnspubEC2id.sh && ./infra/getdnspubEC2id.sh nexus', returnStdout: true).trim()}"
+                    env.DNSPUBEC2NEXUS_ENV = "${sh(script:'chmod +x infra/getdnspubEC2id.sh && ./infra/getdnspubEC2id.sh nexus ${REGION_ENV}', returnStdout: true).trim()}"
                 }
             }
         }
@@ -153,7 +153,7 @@ agent any
         stage('DistribKeyByansible') {
             steps {
                     sh """#!/bin/bash -xe
-                    sudo -u devops -s ansible-playbook -i /var/lib/jenkins/workspace/${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts /var/lib/jenkins/workspace/${env.JOB_BASE_NAME}/infra/ansible/distribkey.yml --user ec2-user --key-file ~/.ssh/projet1grp3key.pem -vvv
+                    sudo -u devops -s ansible-playbook -i /var/lib/jenkins/workspace/${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts /var/lib/jenkins/workspace/${env.JOB_BASE_NAME}/infra/ansible/distribkey.yml --user ec2-user --key-file /home/devops/.ssh/projet1grp3key.pem -vvv
                     """
             }
         }
@@ -168,7 +168,7 @@ agent any
         stage('getdnspublicenv'){
             steps {
                 script {
-                    env.DNSPUBEC2_ENV = "${sh(script:'chmod +x infra/getdnspubEC2id.sh && ./infra/getdnspubEC2id.sh ${TYPENAME_ENV}', returnStdout: true).trim()}"
+                    env.DNSPUBEC2ENV = "${sh(script:'chmod +x infra/getdnspubEC2id.sh && ./infra/getdnspubEC2id.sh ${TYPENAME_ENV} ${REGION_ENV}', returnStdout: true).trim()}"
                 }
             }
         }
@@ -176,8 +176,8 @@ agent any
         stage('testurlquizz'){
             steps {
                 sh 'sleep 5s'
-                sh "echo http://${DNSPUBEC2_ENV}:${INGRPORT}"
-                sh "curl http://${DNSPUBEC2_ENV}:${INGRPORT}"
+                sh "echo http://${DNSPUBEC2ENV}:${INGRPORT}"
+                sh "curl http://${DNSPUBEC2ENV}:${INGRPORT}"
             }
         }
 //A FAIRE TEST si EC2 OK
