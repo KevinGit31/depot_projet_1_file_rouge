@@ -179,6 +179,33 @@ TABSTACKLST[${#TABSTACKLST[@]}]="$STACKNAMESECGRP"
 echo ""
 
 
+#TEST si la stack RDSTEST existe sinon creation de la BDD Mysql
+ENV="TEST"
+STACKNAMEENV=$STACKNAMERDS$ENV
+FXDESC_FILTER1=$STACKNAMEENV
+#Filtre sur DBINSTANCE et cherche 2 éléments
+QUERY="DBInstances[*].[ [[TagList[?Key==\`aws:cloudformation:stack-name\`].Value]],[Endpoint.Address] ]"
+SVCTYPE="rds"
+DESCRIBECMD="describe-db-instances"
+eval $(FXAWS_DESCRIBE "$SVCTYPE" "$DESCRIBECMD" "$REGION" "$QUERY" "$FXDESC_FILTER1")
+if ! [ -n "$T1FXAWS_DESCRETURN"  ]; then
+    #Creation du RDS BDD QUA
+    DBNAMEENV=$DBNAME
+    RETRDSINFOS=$($AWSBIN cloudformation --region $REGION describe-stacks --stack-name $STACKNAMEENV )
+    RETCODE=$?
+    PARAM="ParameterKey=subnet1CIDR,ParameterValue=10.80.200.0/24 ParameterKey=subnet2CIDR,ParameterValue=10.80.201.0/24 ParameterKey=AllocatedStorage,ParameterValue=$DBSIZE ParameterKey=DBName,ParameterValue=$DBNAMEENV ParameterKey=MUser,ParameterValue=$DBUSER ParameterKey=MPass,ParameterValue=$DBPWD ParameterKey=VpcId,ParameterValue=$RESULTVPCID ParameterKey=Env,ParameterValue=$ENV ParameterKey=SecurityGroupId,ParameterValue=$RESULTGRPSECID ParameterKey=PrimaryAZ,ParameterValue=$REGIONAZ"
+    #PARAM="ParameterKey=AllocatedStorage,ParameterValue=$DBSIZE ParameterKey=DBName,ParameterValue=$DBNAMEENV ParameterKey=MUser,ParameterValue=$DBUSER ParameterKey=MPass,ParameterValue=$DBPWD ParameterKey=VpcId,ParameterValue=$RESULTVPCID ParameterKey=Env,ParameterValue=$ENV ParameterKey=SecurityGroupId,ParameterValue=$RESULTGRPSECID ParameterKey=PrimaryAZ,ParameterValue=$REGIONAZ"
+    QUERY="DBInstances[*].[ [DBInstanceIdentifier],[Endpoint[0].[Address] ] ]"
+    TEXTDESC="NULL"
+    TPL=$STACKNAMERDS
+    RESULTRDSDEV=$(FXCREATE_STACK "$RETCODE" "$REGION" "$TPL" "$STACKNAMEENV" "$PARAM" "$QUERY" "$TEXTDESC")
+    echo "La stack $STACKNAMEENV est en cours de creation : $RESULTRDSQUA"
+else
+    eval $(FXAWS_DESCRIBE "$SVCTYPE" "$DESCRIBECMD" "$REGION" "$QUERY" "$FXDESC_FILTER1")
+    echo "LE DNS du stack $T1FXAWS_DESCRETURN est : $T2FXAWS_DESCRETURN"
+fi
+
+
 #TEST si la stack RDSDEV existe sinon creation de la BDD Mysql
 ENV="DEV"
 ##==>ELEMENTS de configuration pour le RDS de DEV/QUA/PROD
