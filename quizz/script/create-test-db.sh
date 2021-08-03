@@ -1,3 +1,3 @@
 #!/bin/bash
 cd ../src
-pipenv run python3 tests/init_test_db.py
+pipenv --python /usr/local/bin/python3.9 run python3.9 tests/init_test_db.py

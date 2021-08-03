@@ -57,20 +57,32 @@
     dest: /home/devops/.bashrc
     line: 'PATH=$PATH:/home/devops/.local/bin:/usr/local/bin'
 
-# - name: Download python3.9
-#   become_user: devops
-#   become: true
-#   get_url:
-#     url: https://www.python.org/ftp/python/3.9.6/Python-3.9.6.tgz
-#     dest: ~/Python-3.9.6.tgz
+- name: Download python3.9
+  become_user: devops
+  become: true
+  get_url:
+    url: https://www.python.org/ftp/python/3.9.6/Python-3.9.6.tgz
+    dest: ~/Python-3.9.6.tgz
 
-# - name: Extract ~/Python-3.9.6.tgz
-#   become_user: devops
-#   become: true
-#   unarchive:
-#     src: ~/Python-3.9.6.tgz
-#     dest: ~/
-#     remote_src: yes
+- name: Extract ~/Python-3.9.6.tgz
+  become_user: devops
+  become: true
+  unarchive:
+    src: ~/Python-3.9.6.tgz
+    dest: ~/
+    remote_src: yes
+
+- name: install python3.9
+  become_user: devops
+  become: true
+  shell: "{{ item }}"
+  args:
+    chdir: ~/Python-3.9.6
+    executable: /bin/bash
+  with_items:
+    - ./configure --enable-optimizations
+    - make install
+    - rm -f ~/Python-3.9.6.tgz
 
 - name: Install pipenv ~/app/quizz/script/install-env.sh
   become_user: devops
@@ -106,20 +118,6 @@
     regexp: '^tsconfig\(app\)(.*)$'
     line: '#tsconfig(app)'
     backrefs: yes
-
-# - name: install python3.9
-#   become_user: devops
-#   become: true
-#   shell: "{{ item }}"
-#   args:
-#     chdir: ~/Python-3.9.6
-#     executable: /bin/bash
-#   with_items:
-#     - ./configure --enable-optimizations
-#     - make install
-#     - rm -f ~/Python-3.9.6.tgz
-
-
 
 
 - name: Creation de la BDD ~/app/quizz/script/create-quizz-db.sh
