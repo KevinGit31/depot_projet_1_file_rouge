@@ -1,5 +1,6 @@
 - name: Creates directory ~/app
   become_user: devops
+  become: true
   file:
     path: ~/app
     state: directory
@@ -9,6 +10,7 @@
 
 - name: Download nexus build
   become_user: devops
+  become: true
   get_url:
     url: http://{{ dnsnexus }}:8081/repository/APP/1/qcm/1.0-{{ numbuild }}/qcm-1.0-{{ numbuild }}.tar.gz
     dest: ~/app
@@ -17,6 +19,7 @@
 
 - name: Extract ~/app/qcmxxx.tar.gz
   become_user: devops
+  become: true
   unarchive:
     src: ~/app/qcm-1.0-{{ numbuild }}.tar.gz
     dest: ~/app
@@ -24,6 +27,7 @@
 
 - name: mise a jour du fichier ~/app/quizz/src/config/appconfig.py
   become_user: devops
+  become: true
   lineinfile:
     path: ~/app/quizz/src/config/appconfig.py
     regexp: '^(.*)app\.config\[(.*)$'
@@ -32,6 +36,7 @@
 
 - name: chmod +x des scripts sh
   become_user: devops
+  become: true
   file:
     dest: "{{ item }}"
     mode: a+x
@@ -101,6 +106,7 @@
 
 - name: install pipenv
   become_user: devops
+  become: true
   shell: "{{ item }}"
   args:
     chdir: ~/app/quizz/src
@@ -127,6 +133,7 @@
 
 - name: mise a jour du fichier ~/app/quizz/src/models/app.py
   become_user: devops
+  become: true
   lineinfile:
     path: ~/app/quizz/src/models/app.py
     regexp: '^# app_config\(app\)(.*)$'
@@ -135,6 +142,7 @@
 
 - name: mise a jour du fichier ~/app/quizz/src/models/app.py
   become_user: devops
+  become: true
   lineinfile:
     path: ~/app/quizz/src/models/app.py
     regexp: '^tsconfig\(app\)(.*)$'
@@ -151,6 +159,7 @@
 
 - name: Creation de la BDD ~/app/quizz/script/create-quizz-db.sh
   become_user: devops
+  become: true
   shell: ~/.local/bin/pipenv run python3 models/models.py
   args:
     chdir: ~/app/quizz/src
@@ -167,6 +176,7 @@
 
 - name: run qcm ~/app/quizz/script/start-quizz.sh
   become_user: devops
+  become: true
   shell: nohup ~/.local/bin/pipenv run python3 api/app.py &
   args:
     chdir: ~/app/quizz/src
