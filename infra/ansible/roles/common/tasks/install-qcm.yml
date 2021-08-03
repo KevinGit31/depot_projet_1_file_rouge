@@ -34,6 +34,61 @@
     line: "     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://{{ userdb }}:{{ pwddb }}@{{ dnsdb }}/{{ namedb }}'"
     backrefs: yes
 
+- name: chmod +x des scripts sh
+  become_user: devops
+  become: true
+  file:
+    dest: "{{ item }}"
+    mode: a+x
+  with_items:
+    - ~/app/quizz/script/create-quizz-db.sh
+    - ~/app/quizz/script/create-test-db.sh
+    - ~/app/quizz/script/start-quizz.sh
+    - ~/app/quizz/src/models/models.py
+    - ~/app/quizz/src/tests/init_test_db.py
+    - ~/app/quizz/src/api/app.py
+    - ~/app/quizz/src/tests/test_answer.py
+    - ~/app/quizz/script/install-env.sh
+
+- name: Add another bin dir to system-wide $PATH
+  become_user: devops
+  become: true
+  lineinfile:
+    dest: /home/devops/.bashrc
+    line: 'PATH=$PATH:/home/devops/.local/bin:/usr/local/bin'
+
+# - name: Download python3.9
+#   become_user: devops
+#   become: true
+#   get_url:
+#     url: https://www.python.org/ftp/python/3.9.6/Python-3.9.6.tgz
+#     dest: ~/Python-3.9.6.tgz
+
+# - name: Extract ~/Python-3.9.6.tgz
+#   become_user: devops
+#   become: true
+#   unarchive:
+#     src: ~/Python-3.9.6.tgz
+#     dest: ~/
+#     remote_src: yes
+
+- name: Install pipenv ~/app/quizz/script/install-env.sh
+  become_user: devops
+  become: true
+  shell: install-env.sh
+  args:
+    chdir: ~/app/quizz/script
+    executable: /bin/bash
+
+
+- name: Creation de la BDD ~/app/quizz/script/create-test-db.sh
+  become_user: devops
+  become: true
+  shell: create-test-db.sh
+  args:
+    chdir: ~/app/quizz/script
+    executable: /bin/bash
+
 - name: mise a jour du fichier ~/app/quizz/src/models/app.py
   become_user: devops
   become: true
@@ -52,27 +107,20 @@
     line: '#tsconfig(app)'
     backrefs: yes
 
-- name: chmod +x des scripts sh
-  become_user: devops
-  become: true
-  file:
-    dest: "{{ item }}"
-    mode: a+x
-  with_items:
-    - ~/app/quizz/script/create-quizz-db.sh
-    - ~/app/quizz/script/create-test-db.sh
-    - ~/app/quizz/script/start-quizz.sh
-    - ~/app/quizz/src/models/models.py
-    - ~/app/quizz/src/tests/init_test_db.py
-    - ~/app/quizz/src/api/app.py
-    - ~/app/quizz/src/tests/test_answer.py
+# - name: install python3.9
+#   become_user: devops
+#   become: true
+#   shell: "{{ item }}"
+#   args:
+#     chdir: ~/Python-3.9.6
+#     executable: /bin/bash
+#   with_items:
+#     - ./configure --enable-optimizations
+#     - make install
+#     - rm -f ~/Python-3.9.6.tgz
 
-- name: Add another bin dir to system-wide $PATH
-  become_user: devops
-  become: true
-  lineinfile:
-    dest: /home/devops/.bashrc
-    line: 'PATH=$PATH:/home/devops/.local/bin'
+
+
 
 - name: Creation de la BDD ~/app/quizz/script/create-quizz-db.sh
   become_user: devops
@@ -96,3 +144,4 @@
   file:
     dest: ~/app
     mode: '0644'
+

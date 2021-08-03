@@ -29,4 +29,25 @@
     name: pipenv
     executable: pip3
     extra_args: --user
+- name: Install flask
+  become_user: devops
+  become: true
+  pip:
+    name: flask
+    executable: pip3
+    extra_args: --user
+- name: Install python3.9 pour pipenv
+  become_user: devops
+  become: true
+  yum:
+    name: "{{ item }}"
+    state: present
+    update_cache: true
+  with_items:
+    - gcc
+    - openssl-devel
+    - bzip2-devel
+    - libffi-devel
+
+
 
