@@ -58,22 +58,6 @@
     dest: /home/devops/.bashrc
     line: 'PATH=$PATH:/home/devops/.local/bin:/usr/local/bin'
 
-- name: install python3.8
-  become_user: devops
-  become: true
-  shell: "{{ item }}"
-  args:
-    chdir: ~/app/quizz/src
-    executable: /bin/bash
-  with_items:
-    - amazon-linux-extras enable python3.8
-
-- name: Install python3.8-devel.x86_64
-  yum:
-    name: python3.8
-    state: present
-    update_cache: true
-
 - name: install pipenv
   become_user: devops
   become: true
