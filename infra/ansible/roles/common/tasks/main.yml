@@ -10,7 +10,7 @@
   include_tasks: install-pkg.yml
   vars:
     ansible_python_interpreter: /usr/bin/python2
-  when: "{{ gotoqcm }}  == no"
+  when: gotoqcm  == "no"
 
 # - name: Delete EC2 instance
 #   include_tasks: cloudformation-delete.yml
@@ -20,8 +20,8 @@
 
 - name: Preparation install qcm + testDB
   include_tasks: install-qcmtestDB.yml
-  when: "{{ gotoqcm }}  == no"
+  when: gotoqcm  == "no"
 
 - name: Preparation install qcm
   include_tasks: install-qcm.yml
-  when: "{{ gotoqcm }}  == yes"
+  when: gotoqcm  == "yes"
