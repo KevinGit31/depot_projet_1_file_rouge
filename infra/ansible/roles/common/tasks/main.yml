@@ -24,4 +24,4 @@
   include_tasks: install-qcm.yml
   tags:
     - qcmdb: "install-qcm-db"
-  when: "{{ gotoqcm }}"  == yes
+  when: "{{ gotoqcm }}  == yes"
