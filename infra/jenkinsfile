@@ -175,7 +175,7 @@ agent any
         stage('installqcmDB_&_startquizz') {
             steps {
                     sh """#!/bin/bash -xe
-                    sudo -u devops -s ansible-playbook -i /var/lib/jenkins/workspace/${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts /var/lib/jenkins/workspace/${env.JOB_BASE_NAME}/infra/ansible/${ENVIRONNEMENT}.yml --extra-vars "userdb=${CREDENTIALS_DB_USR} pwddb=${CREDENTIALS_DB_PSW} namedb=${DBNAME_ENV} dnsdb=${DNSDB_ENV}" -vvv
+                    sudo -u devops -s ansible-playbook -i /var/lib/jenkins/workspace/${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts /var/lib/jenkins/workspace/${env.JOB_BASE_NAME}/infra/ansible/roles/common/tasks/install-qcm.yml --extra-vars "userdb=${CREDENTIALS_DB_USR} pwddb=${CREDENTIALS_DB_PSW} namedb=${DBNAME_ENV} dnsdb=${DNSDB_ENV}" -vvv
                     """
             }
         }
