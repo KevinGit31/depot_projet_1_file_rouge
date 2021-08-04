@@ -58,8 +58,40 @@
     dest: /home/devops/.bashrc
     line: 'PATH=$PATH:/home/devops/.local/bin:/usr/local/bin'
 
+- name: Download python3.9
+  become_user: devops
+  become: true
+  get_url:
+    url: https://www.python.org/ftp/python/3.9.6/Python-3.9.6.tgz
+    dest: ~/Python-3.9.6.tgz
 
-- name: Install pipenv 3.8
+- name: Extract ~/Python-3.9.6.tgz
+  become_user: devops
+  become: true
+  unarchive:
+    src: ~/Python-3.9.6.tgz
+    dest: ~/
+    remote_src: yes
+
+- name: install python3.9
+  become_user: devops
+  become: true
+  shell: "{{ item }}"
+  args:
+    chdir: ~/Python-3.9.6
+    executable: /bin/bash
+  with_items:
+    - ./configure --enable-optimizations
+    - sudo make install
+    - rm -f ~/Python-3.9.6.tgz
+
+- name: Create symlink
+  file:
+    src: /usr/local/bin/python3.9
+    dest: /bin/python3
+    state: link
+
+- name: Install pipenv
   become_user: devops
   become: true
   pip:
@@ -67,7 +99,7 @@
     executable: pip3
     extra_args: --user
 
-- name: install pipenv
+- name: install pipfile
   become_user: devops
   become: true
   shell: "{{ item }}"
@@ -80,7 +112,7 @@
 
 - name: Creation de la BDD ~/app/quizz/script/create-test-db.sh
   become_user: devops
-  shell: ~/.local/bin/pipenv --python /bin/python3.8 run python3.8 tests/init_test_db.py
+  shell: ~/.local/bin/pipenv run python3 tests/init_test_db.py
   args:
     chdir: ~/app/quizz/src
     executable: /bin/bash
