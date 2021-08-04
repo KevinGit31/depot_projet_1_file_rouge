@@ -1,10 +1,10 @@
 node {
+// Chargement des variables d'environnements password + id aws
    load "$JENKINS_HOME/.envvars/stacktest-staging.groovy"
 }
 pipeline {
     environment {
-//        KEYNAME_ENV = "${sh(script:'echo $KEYNAME', returnStdout: true).trim()}"
-//        KEYNAME_ENV = "${sh(script:'$(cat /var/lib/jenkins/.bashrc | grep KEYNAME ) && ${env.KEYNAME}', returnStdout: true).trim()}"
+// initailisation de variable d'environnement supplémentaires
         NEXUS_VERSION = "nexus3"
         NEXUS_PROTOCOL = "http"
         NEXUS_URL = "10.80.140.11:8081"
@@ -31,8 +31,8 @@ pipeline {
     }
 //
 agent any
+// CLONE DU DEPOT
     stages {
-
         stage('clone source') {
             steps {
                 sh 'rm -rf depot_projet_1_file_rouge'
@@ -45,6 +45,7 @@ agent any
                 }
             }
         }
+// MISE EN ARCHIVE de L'APP
         stage("Build") {
             steps {
                 script {
@@ -52,6 +53,7 @@ agent any
                 }
             }
         }
+// MISE EN DEPOT ET VERSION de L'ARCHIVE sur le NEXUS
         stage('push nexus') {
             steps{
                 nexusArtifactUploader artifacts: [
@@ -71,22 +73,24 @@ agent any
                     version: "1.0-${BUILD_NUMBER}"
             }
         }
-//test du build versionné
+// TEST SI L'ARCHIVE VERSIONNé EST DISPO SUR LE NEXUS
         stage('testnexuscible'){
             steps {
-                sh 'sleep 5s'
+                sh 'sleep 2s'
                 sh "curl http://${NEXUS_URL}/repository/${NEXUS_REPOSITORY}/${NEXUS_ARTIFACT_ID}/1.0-${BUILD_NUMBER}/${NEXUS_ARTIFACT_ID}-1.0-${BUILD_NUMBER}.tar.gz"
             }
         }
-//recupere le dns du rds suivant l'env
+// RECUPERATION DU DNS PUBLIC RDS BDD de TEST + BDD + NEXUS
         stage('getdnsrdsdb'){
             steps {
                 script {
+                    env.DNSDBTEST_ENV = "${sh(script:'chmod +x infra/checkrds.sh && ./infra/checkrds.sh ${REGION_ENV} \"TEST\"', returnStdout: true).trim()}"
                     env.DNSDB_ENV = "${sh(script:'chmod +x infra/checkrds.sh && ./infra/checkrds.sh ${REGION_ENV} ${ENVIRONNEMENT}', returnStdout: true).trim()}"
                     env.DNSPUBEC2NEXUS_ENV = "${sh(script:'chmod +x infra/getdnspubEC2id.sh && ./infra/getdnspubEC2id.sh nexus ${REGION_ENV}', returnStdout: true).trim()}"
                 }
             }
         }
+// PREPARATION DES VARIABLES POUR ANSIBLE
         stage('ansibleprep'){
             steps {
                 script {
@@ -133,16 +137,17 @@ agent any
                 }
              }
         }
+// SUPPRESSION DE LA STACK qcmdev / qcmqua / qcmprod
         stage('deleteEC2byansible') {
             steps {
 
                     sh """#!/bin/bash -xe
                     sudo -u devops -s ansible-playbook -i /var/lib/jenkins/workspace/${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts /var/lib/jenkins/workspace/${env.JOB_BASE_NAME}/infra/ansible/roles/common/tasks/cloudformation-delete.yml -vvv
-                    sleep 30s
+                    sleep 5s
                     """
             }
         }
-
+// CREATION DE LA STACK qcmdev / qcmqua / qcmprod
         stage('createEC2byansible') {
             steps {
                     sh """#!/bin/bash -xe
@@ -150,6 +155,7 @@ agent any
                     """
             }
         }
+// Creation du user devops + envoi de la clé ssh sur l'environnment qcmdev / qcmqua / qcmprod
         stage('DistribKeyByansible') {
             steps {
                     sh """#!/bin/bash -xe
@@ -157,14 +163,24 @@ agent any
                     """
             }
         }
-        stage('installqcmEC2ansible') {
+// Decompression du build + Test de creation de la BDD
+        stage('installqcmTESTDB') {
             steps {
                     sh """#!/bin/bash -xe
-                    sudo -u devops -s ansible-playbook -i /var/lib/jenkins/workspace/${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts /var/lib/jenkins/workspace/${env.JOB_BASE_NAME}/infra/ansible/${ENVIRONNEMENT}.yml --extra-vars "adminnexus=${CREDENTIALS_NEXUS_USR} pwdnexus=${CREDENTIALS_NEXUS_PSW} userdb=${CREDENTIALS_DB_USR} pwddb=${CREDENTIALS_DB_PSW} namedb=${DBNAME_ENV} dnsdb=${DNSDB_ENV} artifactId=${NEXUS_ARTIFACT_ID} groupId=${NEXUS_GROUP_ID} numbuild=${BUILD_NUMBER} dnsnexus=${DNSPUBEC2NEXUS_ENV}" -vvv
+                    sudo -u devops -s ansible-playbook -i /var/lib/jenkins/workspace/${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts /var/lib/jenkins/workspace/${env.JOB_BASE_NAME}/infra/ansible/${ENVIRONNEMENT}.yml --extra-vars "adminnexus=${CREDENTIALS_NEXUS_USR} pwdnexus=${CREDENTIALS_NEXUS_PSW} userdb=${CREDENTIALS_DB_USR} pwddb=${CREDENTIALS_DB_PSW} namedb=${DBNAME_ENV} dnsdb=${DNSDBTEST_ENV} artifactId=${NEXUS_ARTIFACT_ID} groupId=${NEXUS_GROUP_ID} numbuild=${BUILD_NUMBER} dnsnexus=${DNSPUBEC2NEXUS_ENV}" -vvv
                     """
             }
         }
-//recupere le dns public de l'environnement pour le test de l'url
+// Creation de la BDD
+        stage('installqcmDB_&_startquizz') {
+            steps {
+                    sh """#!/bin/bash -xe
+                    sudo -u devops -s ansible-playbook -i /var/lib/jenkins/workspace/${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts /var/lib/jenkins/workspace/${env.JOB_BASE_NAME}/infra/ansible/${ENVIRONNEMENT}.yml --extra-vars "userdb=${CREDENTIALS_DB_USR} pwddb=${CREDENTIALS_DB_PSW} namedb=${DBNAME_ENV} dnsdb=${DNSDB_ENV}" -vvv
+                    """
+            }
+        }
+
+//RECUPERATION DU DNS PUBLIC de l'environnement pour le test de l'url
         stage('getdnspublicenv'){
             steps {
                 script {
@@ -172,16 +188,14 @@ agent any
                 }
             }
         }
-//test du build versionné
+//TEST DU BUILD versionné
         stage('testurlquizz'){
             steps {
-                sh 'sleep 5s'
+                sh 'sleep 2s'
                 sh "echo http://${DNSPUBEC2ENV}:${INGRPORT}"
                 sh "curl http://${DNSPUBEC2ENV}:${INGRPORT}"
             }
         }
-//A FAIRE TEST si EC2 OK
-
     }
 }
 

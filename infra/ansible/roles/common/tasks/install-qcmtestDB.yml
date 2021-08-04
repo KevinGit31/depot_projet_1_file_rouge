@@ -1,0 +1,99 @@
+- name: Creates directory ~/app
+  become_user: devops
+  become: true
+  file:
+    path: ~/app
+    state: directory
+    owner: devops
+    group: devops
+    mode: '0766'
+
+- name: Download nexus build
+  become_user: devops
+  become: true
+  get_url:
+    url: http://{{ dnsnexus }}:8081/repository/APP/1/qcm/1.0-{{ numbuild }}/qcm-1.0-{{ numbuild }}.tar.gz
+    dest: ~/app
+    username: "{{ adminnexus }}"
+    password: "{{ pwdnexus }}"
+
+- name: Extract ~/app/qcmxxx.tar.gz
+  become_user: devops
+  become: true
+  unarchive:
+    src: ~/app/qcm-1.0-{{ numbuild }}.tar.gz
+    dest: ~/app
+    remote_src: yes
+
+- name: mise a jour du fichier ~/app/quizz/src/config/testconfig.py pour testconfig
+  become_user: devops
+  become: true
+  lineinfile:
+    path: ~/app/quizz/src/config/testconfig.py
+    regexp: '^(.*)app\.config\[(.*)$'
+    line: "     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://{{ userdb }}:{{ pwddb }}@{{ dnsdb }}/{{ namedb }}'"
+    backrefs: yes
+
+
+- name: chmod +x des scripts sh
+  become_user: devops
+  become: true
+  file:
+    dest: "{{ item }}"
+    mode: a+x
+  with_items:
+    - ~/app/quizz/script/create-quizz-db.sh
+    - ~/app/quizz/script/create-test-db.sh
+    - ~/app/quizz/script/start-quizz.sh
+    - ~/app/quizz/src/models/models.py
+    - ~/app/quizz/src/tests/init_test_db.py
+    - ~/app/quizz/src/api/app.py
+    - ~/app/quizz/src/tests/test_answer.py
+    - ~/app/quizz/script/install-env.sh
+
+- name: Add another bin dir to system-wide $PATH
+  become_user: devops
+  become: true
+  lineinfile:
+    dest: /home/devops/.bashrc
+    line: 'PATH=$PATH:/home/devops/.local/bin:/usr/local/bin'
+
+- name: install python3.8
+  become_user: devops
+  become: true
+  shell: "{{ item }}"
+  args:
+    chdir: ~/app/quizz/src
+    executable: /bin/bash
+  with_items:
+    - amazon-linux-extras enable python3.8
+
+- name: Install python3.8-devel.x86_64
+  yum:
+    name: python3.8
+    state: present
+    update_cache: true
+
+- name: install pipenv
+  become_user: devops
+  become: true
+  shell: "{{ item }}"
+  args:
+    chdir: ~/app/quizz/src
+    executable: /bin/bash
+  with_items:
+    - pip3 install pipenv
+    - ~/.local/bin/pipenv install
+
+
+- name: Creation de la BDD ~/app/quizz/script/create-test-db.sh
+  become_user: devops
+  shell: ~/.local/bin/pipenv run python3 tests/init_test_db.py
+  args:
+    chdir: ~/app/quizz/src
+    executable: /bin/bash
+
+
+
+
+
