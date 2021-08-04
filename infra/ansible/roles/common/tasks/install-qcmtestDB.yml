@@ -63,7 +63,7 @@
   become_user: devops
   become: true
   pip:
-    name: pipenv==2020.11.15
+    name: pipenv==2018.11.26
     executable: pip3
     extra_args: --user
 
