@@ -10,6 +10,7 @@ Parameters:
     Description: "Minimum 8 caractères"
   VpcId:
     Type: String
+
 ##    Type: AWS::EC2::VPC::Id
     Description: 'The VPC ID'
 #  ParameterGroup:
@@ -103,14 +104,14 @@ Resources:
     Type: "AWS::EC2::Subnet"
     Properties:
       VpcId: !Ref VpcId
-      AvailabilityZone: "eu-west-2a"
+      AvailabilityZone: !Sub "${AWS::Region}a"
       CidrBlock: !Ref subnet1CIDR
       # ...
   Subnet2:
     Type: "AWS::EC2::Subnet"
     Properties:
       VpcId: !Ref VpcId
-      AvailabilityZone: "eu-west-2b"
+      AvailabilityZone: !Sub "${AWS::Region}b"
 #        Fn::If:
 #        - IsFirstPrimaryAZ
 #        - !Select [1, !GetAZs ""]

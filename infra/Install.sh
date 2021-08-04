@@ -32,7 +32,9 @@ echo "" > trace.log
 read -p "Saisir un nom de region (London=eu-west-2 Frankfort=eu-central-1) Defaut=> [eu-west-2]: " REGION
 REGION=${REGION:-eu-west-2}
 echo $REGION
-
+REGIONAZ1=$REGION"a"
+REGIONAZ2=$REGION"b"
+REGIONAZ=$REGIONAZ1
 # TEST si la cle existe
 if ! [ -f $PEMKEYNAME ]; then
   $AWSBIN ec2 create-key-pair --key-name $KEYNAME --query "KeyMaterial" --output text > $PEMKEYNAME
