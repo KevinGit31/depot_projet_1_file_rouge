@@ -20,3 +20,8 @@
 - name: Preparation install qcm + testDB
   include_tasks: install-qcmtestDB.yml
 
+- name: Preparation install qcm
+  include_tasks: install-qcm.yml
+  tags:
+    - qcmdb: "install-qcm-db"
+  when: GOTOQCM == yes
