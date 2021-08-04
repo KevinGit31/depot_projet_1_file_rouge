@@ -58,6 +58,15 @@
     dest: /home/devops/.bashrc
     line: 'PATH=$PATH:/home/devops/.local/bin:/usr/local/bin'
 
+
+- name: Install pipenv 3.8
+  become_user: devops
+  become: true
+  pip:
+    name: pipenv==3.8
+    executable: pip3
+    extra_args: --user
+
 - name: install pipenv
   become_user: devops
   become: true
@@ -66,7 +75,6 @@
     chdir: ~/app/quizz/src
     executable: /bin/bash
   with_items:
-    - pip3 install pipenv
     - ~/.local/bin/pipenv install
 
 
