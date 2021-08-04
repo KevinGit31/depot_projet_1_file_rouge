@@ -28,7 +28,7 @@
 - name: Creation de la BDD ~/app/quizz/script/create-quizz-db.sh
   become_user: devops
   become: true
-  shell: ~/.local/bin/pipenv run python3 models/models.py
+  shell: ~/.local/bin/pipenv run python3.8 models/models.py
   args:
     chdir: ~/app/quizz/src
     executable: /bin/bash
@@ -36,7 +36,7 @@
 - name: run qcm ~/app/quizz/script/start-quizz.sh
   become_user: devops
   become: true
-  shell: 'nohup ~/.local/bin/pipenv run python3 api/app.py > /tmp/nohup.out 2>&1 &'
+  shell: 'nohup ~/.local/bin/pipenv run python3.8 api/app.py > /tmp/nohup.out 2>&1 &'
   args:
     chdir: ~/app/quizz/src
     executable: /bin/bash
