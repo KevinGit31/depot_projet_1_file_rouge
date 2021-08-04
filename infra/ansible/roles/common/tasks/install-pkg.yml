@@ -49,7 +49,6 @@
 - name: install python3.8
   shell: "{{ item }}"
   args:
-    chdir: ~/app/quizz/src
     executable: /bin/bash
   with_items:
     - amazon-linux-extras enable python3.8
