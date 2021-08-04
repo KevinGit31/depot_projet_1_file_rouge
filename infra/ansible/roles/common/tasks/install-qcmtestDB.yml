@@ -80,7 +80,7 @@
 
 - name: Creation de la BDD ~/app/quizz/script/create-test-db.sh
   become_user: devops
-  shell: ~/.local/bin/pipenv run python3.8 tests/init_test_db.py
+  shell: ~/.local/bin/pipenv run python3 tests/init_test_db.py
   args:
     chdir: ~/app/quizz/src
     executable: /bin/bash
