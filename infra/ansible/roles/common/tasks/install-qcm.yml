@@ -40,6 +40,3 @@
   args:
     chdir: ~/app/quizz/src
     executable: /bin/bash
-
-
-
