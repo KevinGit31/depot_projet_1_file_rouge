@@ -64,7 +64,7 @@ Parameters:
       - qcmprod
   IngressPort:
     Type: String
-    Description: 'Port administration jenkins (8080) ou nexus(8081)'
+    Description: 'Port administration jenkins (8080) ou nexus(8081) ou qcm(5000)'
     AllowedValues:
       - '8080'
       - '8081'
