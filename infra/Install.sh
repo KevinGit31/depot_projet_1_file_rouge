@@ -510,8 +510,8 @@ select var in "${CHOIX[@]}"; do
             echo $STACKLISTNAME
 
             if [[ $STACKNAMEEC2 == "jenkins" ]]; then
-                echo "En attente 120s de transfert de la clé ssh temps de disponibilité de l'instance ID et de la connexion ssh"
-                sleep 120s
+                echo "En attente 180s de transfert de la clé ssh temps de disponibilité de l'instance ID et de la connexion ssh"
+                sleep 180s
                 #Recupération de l'instance ID
                 FXDESC_FILTER1=$STACKNAMEEC2
                 #Filtre sur DBINSTANCE et cherche 2 éléments

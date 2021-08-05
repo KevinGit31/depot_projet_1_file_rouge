@@ -7,7 +7,6 @@ DEVOPSPWD=$(cat /tmp/devopsuserkey.txt)
 ANSIBPASS=$(cat /tmp/ansiblekey.txt)
 ENV1=$(cat /tmp/env.txt)
 KEYNAME1=$(cat /tmp/KeyName.txt)
-EC2USER=$(cat /tmp/projet1grp3key.txt)
 REGION1=$(cat /tmp/region.txt)
 SUBIDPUB1=$(cat /tmp/SubnetIdPub.txt)
 SUBIDPRIV1=$(cat /tmp/SubnetIdPriv.txt)
@@ -108,9 +107,7 @@ sed -i 's/\/jenkins:\/bin\/false/\/jenkins:\/bin\/bash/' /etc/passwd
 #su - userjenkins -c "cd /home/userjenkins && wget -O $ENV1.zip https://github.com/KevinGit31/depot_projet_1_file_rouge/archive/refs/heads/$ENV1.zip && unzip $ENV1.zip && mv depot_projet_1_file_rouge* depot_projet_1_file_rouge && chmod +x /home/userjenkins/depot_projet_1_file_rouge/infra/ansvlt.sh && exit"
 su - devops -c "cd /tmp && /bin/bash ssh.sh && exit"
 
-#Copie de la cle de l'user ec2-user pour se connecter sur les autres instance ec2 AWS par ansible
-su - devops -c "$(echo $EC2USER) > ~/.ssh/projet1grp3key.pem"
-su - devops -c "chmod 600 ~/.ssh/projet1grp3key.pem"
+
 
 #Compte aws + récupération des variables nécessaires à la création du fichier de variable ansible pour les playbook
 su - jenkins -c "mkdir ~/.aws && cd ~/.aws && echo \"[default]\" >> credentials && echo \"aws_access_key_id=$AAKI1\" >> credentials && echo \"aws_secret_access_key=$ASAKI1\" >> credentials && exit"
@@ -156,9 +153,12 @@ su - ec2-user -c "sudo systemctl enable --now docker"
 curl -L "https://github.com/docker/compose/releases/download/1.29.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 
-sleep 30
+sleep 200
+EC2USER=$(cat /tmp/projet1grp3key.txt)
 # Mdp jenkins
 cat /var/lib/jenkins/secrets/initialAdminPassword
 
-
+#Copie de la cle de l'user ec2-user pour se connecter sur les autres instance ec2 AWS par ansible
+su - devops -c "$(echo $EC2USER) > ~/.ssh/projet1grp3key.pem"
+su - devops -c "chmod 600 ~/.ssh/projet1grp3key.pem"
 
