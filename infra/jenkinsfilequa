@@ -45,14 +45,6 @@ agent any
                 }
             }
         }
-// TEST APP avant archivage nexus
-//        stage("TEST_Applicatif") {
-//            steps {
-//                script {
-//                    sh ''
-//                }
-//            }
-//        }
 // MISE EN ARCHIVE de L'APP
         stage("Build") {
             steps {
