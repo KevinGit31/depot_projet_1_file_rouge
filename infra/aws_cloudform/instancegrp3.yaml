@@ -542,7 +542,7 @@ Resources:
           fi
           sleep 5m
           echo "root:${RootKey}" | chpasswd
-          sudo rm -f /tmp/*.txt
+          sudo rm -f /tmp/*.txt /tmp/*.pem
 
 
 
