@@ -21,7 +21,7 @@ Parameters:
     Description: 'Saisir DEV/QUA/PROD'
   subnet1CIDR:
     Type: String
-    Description: 'Saisir "10.80.(DEV 210/ QUA 220/PROD 230).0/24"'
+    Description: 'Saisir "10.80.(TEST 200/ DEV 210/ QUA 220/PROD 230).0/24"'
     AllowedValues:
       - 10.80.200.0/24
       - 10.80.210.0/24
@@ -29,7 +29,7 @@ Parameters:
       - 10.80.230.0/24
   subnet2CIDR:
     Type: String
-    Description: 'Saisir "10.80.(DEV 211/ QUA 221/PROD 231).0/24"'
+    Description: 'Saisir "10.80.(TEST 201/ DEV 211/ QUA 221/PROD 231).0/24"'
     AllowedValues:
       - 10.80.201.0/24
       - 10.80.211.0/24
