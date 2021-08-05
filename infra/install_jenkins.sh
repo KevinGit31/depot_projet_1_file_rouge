@@ -154,11 +154,11 @@ curl -L "https://github.com/docker/compose/releases/download/1.29.0/docker-compo
 chmod +x /usr/local/bin/docker-compose
 
 sleep 200
-EC2USER=$(cat /tmp/projet1grp3key.txt)
+chown devops: /tmp/projet1grp3key.pem
+su - devops -c "cp /tmp/projet1grp3key.pem ~/.ssh/projet1grp3key.pem"
+su - devops -c "chmod 600 ~/.ssh/projet1grp3key.pem"
 # Mdp jenkins
 cat /var/lib/jenkins/secrets/initialAdminPassword
 
-#Copie de la cle de l'user ec2-user pour se connecter sur les autres instance ec2 AWS par ansible
-su - devops -c "$(echo $EC2USER) > ~/.ssh/projet1grp3key.pem"
-su - devops -c "chmod 600 ~/.ssh/projet1grp3key.pem"
+
 
