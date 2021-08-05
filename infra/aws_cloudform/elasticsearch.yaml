@@ -1,0 +1,129 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: ElasticsearchDomain resource
+Parameters:
+  DomainName:
+    Description: User-defined Elasticsearch domain name
+    Type: String
+    Default: elkqua
+    AllowedValues:
+      - 'elkqua'
+      - 'elkprod'
+  ElasticsearchVersion:
+    Description: User-defined Elasticsearch version
+    Type: String
+    Default: '7.10'
+  AvailabilityZone:
+    Type: String
+    Default: eu-west-2a
+    AllowedValues:
+      - 'eu-west-2a'
+      - 'eu-central-1a'
+  CidrBlock1:
+    Type: String
+    Default: 10.80.145.0/24
+    AllowedValues:
+      - '10.80.145.0/24'
+      - '10.80.146.0/24'
+  GroupDescription:
+    Type: String
+    Default: elkquagrp
+    AllowedValues:
+      - 'elkquagrp'
+      - 'elkprodgrp'
+  SGName:
+    Type: String
+    Description: 'The Security Group'
+    Default: elkquagrpname
+    AllowedValues:
+      - 'elkquagrpname'
+      - 'elkprodgrpname'
+  InstanceType:
+    Type: String
+    Default: t2.small.elasticsearch
+  VpcId:
+    Type: String
+
+Resources:
+  ElasticsearchDomain:
+    Type: 'AWS::Elasticsearch::Domain'
+    Properties:
+      DomainName:
+        Ref: DomainName
+      ElasticsearchVersion:
+        Ref: ElasticsearchVersion
+      ElasticsearchClusterConfig:
+        InstanceCount: '1'
+        InstanceType:
+          Ref: InstanceType
+      EBSOptions:
+        EBSEnabled: true
+        Iops: '0'
+        VolumeSize: '10'
+        VolumeType: 'standard'
+      AccessPolicies:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: '*'
+            Action: 'es:*'
+            # Condition:
+            #   IpAdress:
+
+            Resource: !Sub 'arn:aws:ec2:${AWS::Region}:${AWS::AccountId}:domain/${DomainName}/*'
+      AdvancedOptions:
+        rest.action.multi.allow_explicit_index: true
+      Tags:
+        - Key: Name
+          Value: !Sub
+          - ${AWS::StackName}-${Name}
+          - { Name: !Ref DomainName }
+      VPCOptions:
+        SubnetIds:
+          - Ref: subnet
+        SecurityGroupIds:
+          - Ref: mySecurityGroup
+
+  subnet:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      VpcId:
+        Ref: VpcId
+      CidrBlock:
+        Ref: CidrBlock1
+      AvailabilityZone:
+        Ref: AvailabilityZone
+  mySecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription:
+        Ref: GroupDescription
+      VpcId:
+        Ref: VpcId
+      GroupName:
+        Ref: SGName
+      SecurityGroupIngress:
+        - FromPort: '443'
+          IpProtocol: tcp
+          ToPort: '443'
+          CidrIp: 0.0.0.0/0
+
+
+
+Outputs:
+  DomainArn:
+    Value:
+      'Fn::GetAtt':
+        - ElasticsearchDomain
+        - DomainArn
+  DomainEndpoint:
+    Value:
+      'Fn::GetAtt':
+        - ElasticsearchDomain
+        - DomainEndpoint
+  SecurityGroupId:
+    Value:
+      Ref: mySecurityGroup
+  SubnetId:
+    Value:
+      Ref: subnet

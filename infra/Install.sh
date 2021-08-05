@@ -297,17 +297,35 @@ fi
 #################### END RDS ###############
 echo ""
 
-# echo "Liste des Instances EC2 disponible:"
-# RETEC2INFOS=$($AWSBIN ec2 describe-instances --region $REGION )
-# echo $RETEC2INFOS
-
-# echo ""
-# echo "------START CREATE STACK-------" 1>>trace.log 2>&1
-# read -p "Saisir jenkins ou nexus pour les actions STACK suivante CREATE/UPDATE/DELETE: " n1
-# ${TABSTACKLST[@]}
-# select var in "${CHOIX[@]}"; do
-#     case $var in
-#         "CREATE")
+############ START STACK ELK #############
+#TEST si la stack ELKQUA existe sinon creation
+#ENV="QUA"
+#STACKNAMEENV=$STACKNAMERDS$ENV"ELK"
+#FXDESC_FILTER1=$STACKNAMEENV
+#Filtre sur DBINSTANCE et cherche 2 éléments
+#QUERY="DBInstances[*].[ [[TagList[?Key==\`aws:cloudformation:stack-name\`].Value]],[Endpoint.Address] ]"
+#SVCTYPE="rds"
+#eval $(FXAWS_DESCRIBE "$SVCTYPE" "$DESCRIBECMD" "$REGION" "$QUERY" "$FXDESC_FILTER1")
+#if ! [ -n "$T1FXAWS_DESCRETURN"  ]; then
+# if ! [ -n "$T1FXAWS_DESCRETURN"  ]; then
+#     #Creation du RDS BDD PROD
+#     RETRDSINFOS=$($AWSBIN cloudformation --region $REGION describe-stacks --stack-name $STACKNAMEENV )
+#     RETCODE=$?
+#     DBNAMEENV=$DBNAME
+#     PARAM="ParameterKey=subnet1CIDR,ParameterValue=10.80.230.0/24 ParameterKey=subnet2CIDR,ParameterValue=10.80.231.0/24 ParameterKey=AllocatedStorage,ParameterValue=$DBSIZE ParameterKey=DBName,ParameterValue=$DBNAMEENV ParameterKey=MUser,ParameterValue=$DBUSER ParameterKey=MPass,ParameterValue=$DBPWD ParameterKey=VpcId,ParameterValue=$RESULTVPCID ParameterKey=Env,ParameterValue=$ENV ParameterKey=SecurityGroupId,ParameterValue=$RESULTGRPSECID ParameterKey=PrimaryAZ,ParameterValue=$REGIONAZ"
+#     #PARAM="ParameterKey=AllocatedStorage,ParameterValue=$DBSIZE ParameterKey=DBName,ParameterValue=$DBNAMEENV ParameterKey=MUser,ParameterValue=$DBUSER ParameterKey=MPass,ParameterValue=$DBPWD ParameterKey=VpcId,ParameterValue=$RESULTVPCID ParameterKey=Env,ParameterValue=$ENV ParameterKey=SecurityGroupId,ParameterValue=$RESULTGRPSECID ParameterKey=PrimaryAZ,ParameterValue=$REGIONAZ"
+#     QUERY="DBInstances[*].[ [DBInstanceIdentifier],[Endpoint[0].[Address] ] ]"
+#     TEXTDESC="NULL"
+#     TPL=$STACKNAMERDS
+#     RESULTRDSPROD=$(FXCREATE_STACK "$RETCODE" "$REGION" "$TPL" "$STACKNAMEENV" "$PARAM" "$QUERY" "$TEXTDESC")
+#     echo "La stack $STACKNAMEENV est en cours de creation: $RESULTRDSPROD"
+# else
+#     eval $(FXAWS_DESCRIBE "$SVCTYPE" "$DESCRIBECMD" "$REGION" "$QUERY" "$FXDESC_FILTER1")
+#     echo "LE DNS du stack $T1FXAWS_DESCRETURN est : $T2FXAWS_DESCRETURN"
+# fi
+##
+#################### END ELK ###############
+echo ""
 
 echo ""
 # CHOIX SELECT Dynamique en fonction du tableau la liste des stack
