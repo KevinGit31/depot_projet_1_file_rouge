@@ -46,13 +46,13 @@ agent any
             }
         }
 // TEST APP avant archivage nexus
-        stage("TEST_Applicatif") {
-            steps {
-                script {
+//        stage("TEST_Applicatif") {
+//            steps {
+//                script {
 //                    sh ''
-                }
-            }
-        }
+//                }
+//            }
+//        }
 // MISE EN ARCHIVE de L'APP
         stage("Build") {
             steps {
@@ -204,6 +204,12 @@ agent any
                 sh "curl http://${DNSPUBEC2ENV}:${INGRPORT}"
             }
         }
+//TEST D'ACCEPTANCE'
+//        stage('testACCEPTANCE'){
+//            steps {
+//                sh ''
+//            }
+//        }
     }
 }
 
