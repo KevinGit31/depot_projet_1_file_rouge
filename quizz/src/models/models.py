@@ -9,15 +9,16 @@ sys.path.insert(0, parentdir)
 
 from models.app  import db,ma
 
-from metadata import Metadata
-from auth.user import User
-from auth.role import Role
-from auth.password import Password
-from quizz.mode import Mode
-from quizz.subject import Subject
-from quizz.game import Game
-from quizz.question import Question
-from quizz.answer import Answer
+
+from models.metadata import Metadata
+from models.auth.user import User
+from models.auth.role import Role
+from models.auth.password import Password
+from models.quizz.mode import Mode
+from models.quizz.subject import Subject
+from models.quizz.game import Game
+from models.quizz.question import Question
+from models.quizz.answer import Answer
 
 if __name__ == "__main__":
 
