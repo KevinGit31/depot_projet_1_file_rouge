@@ -13,12 +13,11 @@ Parameters:
     Type: String
     Default: '7.10'
   AvailabilityZone:
+    Description: Attendue zone ex eu-west-2a / eu-central-1a
     Type: String
     Default: eu-west-2a
-    AllowedValues:
-      - 'eu-west-2a'
-      - 'eu-central-1a'
   CidrBlock1:
+    Description: ''
     Type: String
     Default: 10.80.145.0/24
     AllowedValues:
@@ -39,8 +38,15 @@ Parameters:
       - 'elkprodgrpname'
   InstanceType:
     Type: String
-    Default: t2.small.elasticsearch
+    Default: t3.small.elasticsearch
   VpcId:
+    Type: String
+  UserElk:
+    Description: 'Elk login'
+    Type: String
+  PwdElk:
+    Description: 'ElK password'
+    NoEcho: true
     Type: String
 
 Resources:
@@ -52,14 +58,16 @@ Resources:
       ElasticsearchVersion:
         Ref: ElasticsearchVersion
       ElasticsearchClusterConfig:
+        DedicatedMasterEnabled: false
         InstanceCount: '1'
         InstanceType:
           Ref: InstanceType
+        ZoneAwarenessEnabled: false
       EBSOptions:
         EBSEnabled: true
         Iops: '0'
         VolumeSize: '10'
-        VolumeType: 'standard'
+        VolumeType: 'gp2'
       AccessPolicies:
         Version: '2012-10-17'
         Statement:
@@ -68,45 +76,60 @@ Resources:
               AWS: '*'
             Action: 'es:*'
             # Condition:
-            #   IpAdress:
+            #   IpAddress:
+            #     aws:SourceIp:
+            #       - "90.59.0.190"
+            #       - "90.24.39.110"
 
             Resource: !Sub 'arn:aws:ec2:${AWS::Region}:${AWS::AccountId}:domain/${DomainName}/*'
       AdvancedOptions:
         rest.action.multi.allow_explicit_index: true
+      AdvancedSecurityOptions:
+        Enabled: true
+        InternalUserDatabaseEnabled: true
+        MasterUserOptions:
+          MasterUserName: !Ref UserElk
+          MasterUserPassword: !Ref PwdElk
+      EncryptionAtRestOptions:
+        Enabled: true
+      NodeToNodeEncryptionOptions:
+        Enabled: true
+      DomainEndpointOptions:
+        EnforceHTTPS: true
       Tags:
         - Key: Name
           Value: !Sub
           - ${AWS::StackName}-${Name}
           - { Name: !Ref DomainName }
-      VPCOptions:
-        SubnetIds:
-          - Ref: subnet
-        SecurityGroupIds:
-          - Ref: mySecurityGroup
+      # VPCOptions:
+      #   SubnetIds:
+      #     - Ref: subnet
+      #   SecurityGroupIds:
+      #     - Ref: mySecurityGroup
 
-  subnet:
-    Type: 'AWS::EC2::Subnet'
-    Properties:
-      VpcId:
-        Ref: VpcId
-      CidrBlock:
-        Ref: CidrBlock1
-      AvailabilityZone:
-        Ref: AvailabilityZone
-  mySecurityGroup:
-    Type: 'AWS::EC2::SecurityGroup'
-    Properties:
-      GroupDescription:
-        Ref: GroupDescription
-      VpcId:
-        Ref: VpcId
-      GroupName:
-        Ref: SGName
-      SecurityGroupIngress:
-        - FromPort: '443'
-          IpProtocol: tcp
-          ToPort: '443'
-          CidrIp: 0.0.0.0/0
+  # subnet:
+  #   Type: 'AWS::EC2::Subnet'
+  #   Properties:
+  #     VpcId:
+  #       Ref: VpcId
+  #     CidrBlock:
+  #       Ref: CidrBlock1
+  #     AvailabilityZone:
+  #       Ref: AvailabilityZone
+  # mySecurityGroup:
+  #   Type: 'AWS::EC2::SecurityGroup'
+  #   Properties:
+  #     GroupDescription:
+  #       Ref: GroupDescription
+  #     VpcId:
+  #       Ref: VpcId
+  #     GroupName:
+  #       Ref: SGName
+  #     SecurityGroupIngress:
+  #       - FromPort: '443'
+  #         IpProtocol: tcp
+  #         ToPort: '443'
+  #         CidrIp: 0.0.0.0/0
 
 
 
@@ -121,9 +144,8 @@ Outputs:
       'Fn::GetAtt':
         - ElasticsearchDomain
         - DomainEndpoint
-  SecurityGroupId:
-    Value:
-      Ref: mySecurityGroup
-  SubnetId:
-    Value:
-      Ref: subnet
+
+  KibanaEndpoint:
+    Value: !Sub "${ElasticsearchDomain.DomainEndpoint}/_plugin/kibana/"
+  Id:
+    Value: !Ref ElasticsearchDomain
