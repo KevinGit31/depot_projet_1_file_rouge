@@ -141,7 +141,7 @@ agent any
                     f.append( "\nInstanceType: ${INSTTYPE}" )
                     f.append( "\nAWSAccessKeyId: ${AWS_ACCESS_KEY}" )
                     f.append( "\nAWSSecretAccessKeyId: ${AWS_SECRET_KEY}" )
-
+                    f.append( "\nDBName: ${DBNAME_ENV}" )
                 }
              }
         }

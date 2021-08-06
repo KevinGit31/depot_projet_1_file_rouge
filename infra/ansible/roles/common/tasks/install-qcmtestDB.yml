@@ -31,7 +31,7 @@
   lineinfile:
     path: ~/app/quizz/src/config/testconfig.py
     regexp: '^(.*)app\.config\[(.*)$'
-    line: "     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://{{ userdb }}:{{ pwddb }}@{{ dnsdb }}/{{ namedb }}'"
+    line: "    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://{{ userdb }}:{{ pwddb }}@{{ dnsdb }}/{{ namedb }}'"
     backrefs: yes
 
 
@@ -108,7 +108,6 @@
     executable: /bin/bash
   with_items:
     - ~/.local/bin/pipenv install
-
 
 - name: Creation de la BDD ~/app/quizz/script/create-test-db.sh
   become_user: devops

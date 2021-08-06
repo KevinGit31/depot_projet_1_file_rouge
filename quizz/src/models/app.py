@@ -21,8 +21,8 @@ from models.init_helper import helper,db,ma
 app = Flask(__name__)
 
 # Database
-app_config(app)
-#tsconfig(app)
+#app_config(app)
+tsconfig(app)
 
 # Init helper
 helper(app)
@@ -35,4 +35,4 @@ configure_routes(app)
 
 # Run Server
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', debug=True)
