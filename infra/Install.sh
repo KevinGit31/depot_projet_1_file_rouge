@@ -304,7 +304,7 @@ ENV="QUA"
 STACKNAMEENV=$STACKNAMEELKTPL$ENV"ELK"
 RETELKSTACK=$($AWSBIN cloudformation --region $REGION describe-stacks --stack-name $STACKNAMEENV --query "Stacks[*].[ [StackName=='$STACKNAMEENV']]" | if grep -q "true"; then exit 0; else exit 254; fi)
 RETCODE=$?
-FXDESC_FILTER1=""
+FXDESC_FILTER1=$STACKNAMEENV
 SVCTYPE="cloudformation"
 TPL=$STACKNAMEELKTPL
 DESCRIBECMD="describe-stacks"
@@ -315,8 +315,8 @@ if [ $RETCODE == 254 ]; then
     RESULTELKQUAD=$(FXCREATE_STACK "$RETCODE" "$REGION" "$TPL" "$STACKNAMEENV" "$PARAM" "$QUERY" "$TEXTDESC")
     echo "Le ENdPoint $STACKNAMEENV et KIBANA: $RESULTELKQUAD/_plugin/kibana/ Si première creation relancer le script dans 12min pour avoir le dns public de l'ELK"
 else
-    eval $(FXAWS_DESCRIBE "$SVCTYPE" "$DESCRIBECMD" "$REGION" "$QUERY" "$FXDESC_FILTER1")
-    echo "L'URL ELK QUA ENdPoint est $T1FXAWS_DESCRETURN et KIBANA : $T2FXAWS_DESCRETURN/_plugin/kibana/ "
+    RETELK=$(aws $SVCTYPE $DESCRIBECMD --region $REGION --output text --query $QUERY)
+    echo "L'URL ELK PROD ENdPoint est $RETELK et KIBANA : $RETELK/_plugin/kibana/"
 fi
 echo ""
 #TEST si la stack ELK PROD existe sinon creation
@@ -324,7 +324,7 @@ ENV="PROD"
 STACKNAMEENV=$STACKNAMEELKTPL$ENV"ELK"
 RETELKSTACK=$($AWSBIN cloudformation --region $REGION describe-stacks --stack-name $STACKNAMEENV --query "Stacks[*].[ [StackName=='$STACKNAMEENV']]" | if grep -q "true"; then exit 0; else exit 254; fi)
 RETCODE=$?
-FXDESC_FILTER1=""
+FXDESC_FILTER1=$STACKNAMEENV
 SVCTYPE="cloudformation"
 TPL=$STACKNAMEELKTPL
 PARAM="ParameterKey=DomainName,ParameterValue=elkprod ParameterKey=ElasticsearchVersion,ParameterValue=7.10 ParameterKey=AvailabilityZone,ParameterValue=$REGIONAZ ParameterKey=CidrBlock1,ParameterValue=10.80.146.0/24 ParameterKey=GroupDescription,ParameterValue=elkprodgrp ParameterKey=SGName,ParameterValue=elkprodgrpname ParameterKey=InstanceType,ParameterValue=t3.small.elasticsearch ParameterKey=VpcId,ParameterValue=$RESULTVPCID ParameterKey=UserElk,ParameterValue=admin ParameterKey=PwdElk,ParameterValue=$JENKINSKEY-"
@@ -335,8 +335,8 @@ if [ $RETCODE == 254 ]; then
     RESULTELKPROD=$(FXCREATE_STACK "$RETCODE" "$REGION" "$TPL" "$STACKNAMEENV" "$PARAM" "$QUERY" "$TEXTDESC")
     echo "Le ENdPoint $STACKNAMEENV et KIBANA: $RESULTELKPROD/_plugin/kibana/ Si première creation relancer le script dans 12min pour avoir le dns public de l'ELK"
 else
-    eval $(FXAWS_DESCRIBE "$SVCTYPE" "$DESCRIBECMD" "$REGION" "$QUERY" "$FXDESC_FILTER1")
-    echo "L'URL ELK PROD ENdPoint est $T1FXAWS_DESCRETURN et KIBANA : $T2FXAWS_DESCRETURN/_plugin/kibana/"
+    RETELK=$(aws $SVCTYPE $DESCRIBECMD --region $REGION --output text --query $QUERY)
+    echo "L'URL ELK PROD ENdPoint est $RETELK et KIBANA : $RETELK/_plugin/kibana/"
 fi
 ##
 #################### END ELK ###############
