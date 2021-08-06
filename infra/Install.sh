@@ -303,20 +303,21 @@ echo ""
 ENV="QUA"
 STACKNAMEENV=$STACKNAMERDS$ENV"ELK"
 RETELKSTACK=$($AWSBIN cloudformation --region $REGION describe-stacks --stack-name $STACKNAMEENV --query "Stacks[*].[ [StackName=='$STACKNAMEENV']]" | if grep -q "true"; then exit 0; else exit 254; fi)
-echo "RETELKSTACK $RETELKSTACK"
 RETCODE=$?
+echo "RETCODE $RETCODE"
+FXDESC_FILTER1=$STACKNAMEENV
+SVCTYPE="cloudformation"
+TPL=$STACKNAMEELKTPL
+DESCRIBECMD="describe-stacks"
+PARAM="ParameterKey=DomainName,ParameterValue=elkqua ParameterKey=ElasticsearchVersion,ParameterValue=7.10 ParameterKey=AvailabilityZone,ParameterValue=$REGIONAZ ParameterKey=CidrBlock1,ParameterValue=10.80.145.0/24 ParameterKey=GroupDescription,ParameterValue=elkquagrp ParameterKey=SGName,ParameterValue=elkquagrpname ParameterKey=InstanceType,ParameterValue=t3.small.elasticsearch ParameterKey=VpcId,ParameterValue=$RESULTVPCID ParameterKey=UserElk,ParameterValue=admin ParameterKey=PwdElk,ParameterValue=$JENKINSKEY-"
+QUERY="Stacks[0].Outputs[?OutputKey=='DomainEndpoint'].OutputValue"
+TEXTDESC="NULL"
 if [ $RETCODE == 254 ]; then
-    TPL=$STACKNAMEELKTPL
-    echo "TPL $TPL"
-    PARAM="ParameterKey=DomainName,ParameterValue=elkqua ParameterKey=ElasticsearchVersion,ParameterValue=7.10 ParameterKey=AvailabilityZone,ParameterValue=$REGIONAZ ParameterKey=CidrBlock1,ParameterValue=10.80.145.0/24 ParameterKey=GroupDescription,ParameterValue=elkquagrp ParameterKey=SGName,ParameterValue=elkquagrpname ParameterKey=InstanceType,ParameterValue=t3.small.elasticsearch ParameterKey=VpcId,ParameterValue=$RESULTVPCID ParameterKey=UserElk,ParameterValue=admin ParameterKey=PwdElk,ParameterValue=$JENKINSKEY-"
-    echo "PARAM $PARAM"
-    QUERY="Stacks[0].Outputs[?OutputKey=='DomainEndpoint'].OutputValue"
-    TEXTDESC="NULL"
     RESULTELKQUAD=$(FXCREATE_STACK "$RETCODE" "$REGION" "$TPL" "$STACKNAMEENV" "$PARAM" "$QUERY" "$TEXTDESC")
-        echo "Le ENdPoint VPC $STACKNAMEENV et KIBANA: $RESULTELKQUAD/_plugin/kibana/"
+    echo "Le ENdPoint VPC $STACKNAMEENV et KIBANA: $RESULTELKQUAD/_plugin/kibana/"
 else
-     eval $(FXAWS_DESCRIBE "$SVCTYPE" "$DESCRIBECMD" "$REGION" "$QUERY" "$FXDESC_FILTER1")
-     echo "L'URL ELK QUA ENdPoint VPC est $T1FXAWS_DESCRETURN et KIBANA : $T2FXAWS_DESCRETURN/_plugin/kibana/"
+    eval $(FXAWS_DESCRIBE "$SVCTYPE" "$DESCRIBECMD" "$REGION" "$QUERY" "$FXDESC_FILTER1")
+    echo "L'URL ELK QUA ENdPoint est $T1FXAWS_DESCRETURN et KIBANA : $T2FXAWS_DESCRETURN/_plugin/kibana/"
 fi
 echo ""
 #TEST si la stack ELK PROD existe sinon creation
@@ -324,16 +325,20 @@ ENV="PROD"
 STACKNAMEENV=$STACKNAMERDS$ENV"ELK"
 RETELKSTACK=$($AWSBIN cloudformation --region $REGION describe-stacks --stack-name $STACKNAMEENV --query "Stacks[*].[ [StackName=='$STACKNAMEENV']]" | if grep -q "true"; then exit 0; else exit 254; fi)
 RETCODE=$?
+echo "RETCODE $RETCODE"
+FXDESC_FILTER1=$STACKNAMEENV
+SVCTYPE="cloudformation"
+TPL=$STACKNAMEELKTPL
+PARAM="ParameterKey=DomainName,ParameterValue=elkprod ParameterKey=ElasticsearchVersion,ParameterValue=7.10 ParameterKey=AvailabilityZone,ParameterValue=$REGIONAZ ParameterKey=CidrBlock1,ParameterValue=10.80.146.0/24 ParameterKey=GroupDescription,ParameterValue=elkprodgrp ParameterKey=SGName,ParameterValue=elkprodgrpname ParameterKey=InstanceType,ParameterValue=t3.small.elasticsearch ParameterKey=VpcId,ParameterValue=$RESULTVPCID ParameterKey=UserElk,ParameterValue=admin ParameterKey=PwdElk,ParameterValue=$JENKINSKEY-"
+QUERY="Stacks[0].Outputs[?OutputKey=='DomainEndpoint'].OutputValue"
+TEXTDESC="NULL"
+DESCRIBECMD="describe-stacks"
 if [ $RETCODE == 254 ]; then
-    TPL=$STACKNAMEELKTPL
-    PARAM="ParameterKey=DomainName,ParameterValue=elkprod ParameterKey=ElasticsearchVersion,ParameterValue=7.10 ParameterKey=AvailabilityZone,ParameterValue=$REGIONAZ ParameterKey=CidrBlock1,ParameterValue=10.80.146.0/24 ParameterKey=GroupDescription,ParameterValue=elkprodgrp ParameterKey=SGName,ParameterValue=elkprodgrpname ParameterKey=InstanceType,ParameterValue=t3.small.elasticsearch ParameterKey=VpcId,ParameterValue=$RESULTVPCID ParameterKey=UserElk,ParameterValue=admin ParameterKey=PwdElk,ParameterValue=$JENKINSKEY-"
-    QUERY="Stacks[0].Outputs[?OutputKey=='DomainEndpoint'].OutputValue"
-    TEXTDESC="NULL"
     RESULTELKPROD=$(FXCREATE_STACK "$RETCODE" "$REGION" "$TPL" "$STACKNAMEENV" "$PARAM" "$QUERY" "$TEXTDESC")
      echo "Le ENdPoint VPC $STACKNAMEENV et KIBANA: $RESULTELKPROD/_plugin/kibana/"
 else
      eval $(FXAWS_DESCRIBE "$SVCTYPE" "$DESCRIBECMD" "$REGION" "$QUERY" "$FXDESC_FILTER1")
-     echo "L'URL ELK PROD ENdPoint VPC est $T1FXAWS_DESCRETURN et KIBANA : $T2FXAWS_DESCRETURN/_plugin/kibana/"
+     echo "L'URL ELK PROD ENdPoint est $T1FXAWS_DESCRETURN et KIBANA : $T2FXAWS_DESCRETURN/_plugin/kibana/"
 fi
 ##
 #################### END ELK ###############
