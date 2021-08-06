@@ -112,9 +112,8 @@
 
 - name: delete database dbquizz
   mysql_db:
-    name: "{{ DBName}}"
+    name: "{{ DBName }}"
     state: absent
-    check_implicit_admin: yes
     login_user: "{{ userdb }}"
     login_password: "{{ pwddb }}"
 

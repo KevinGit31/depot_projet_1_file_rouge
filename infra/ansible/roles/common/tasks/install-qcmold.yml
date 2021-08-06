@@ -1,0 +1,8 @@
+- name: mise a jour du fichier app/quizz/src/config/appconfig.py
+  become_user: devops
+  become: true
+  lineinfile:
+    path: ~/app/quizz/src/config/appconfig.py
+    regexp: '^(.*)app\.config\[(.*)$'
+    line: "     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://{{ userdb }}:{{ pwddb }}@{{ dnsdb }}/{{ namedb }}'"
+    backrefs: yes

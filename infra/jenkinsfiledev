@@ -141,7 +141,7 @@ agent any
                     f.append( "\nInstanceType: ${INSTTYPE}" )
                     f.append( "\nAWSAccessKeyId: ${AWS_ACCESS_KEY}" )
                     f.append( "\nAWSSecretAccessKeyId: ${AWS_SECRET_KEY}" )
-                    f.append( "\DBName: ${DBNAME_ENV}" )
+                    f.append( "\nDBName: ${DBNAME_ENV}" )
                 }
              }
         }
@@ -167,7 +167,7 @@ agent any
         stage('DistribKeyByansible') {
             steps {
                     sh """#!/bin/bash -xe
-                    sudo -u devops -s ansible-playbook -i /var/lib/jenkins/workspace/${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts /var/lib/jenkins/workspace/${env.JOB_BASE_NAME}/infra/ansible/distribkey.yml --user ec2-user --key-file /home/devops/.ssh/projet1grp3key.pem  --extra-vars "userdb=${CREDENTIALS_DB_USR} pwddb=${CREDENTIALS_DB_PSW} namedb=${DBNAME_ENV} dnsdb=${DNSDBTEST_ENV}" -vvv
+                    sudo -u devops -s ansible-playbook -i /var/lib/jenkins/workspace/${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts /var/lib/jenkins/workspace/${env.JOB_BASE_NAME}/infra/ansible/distribkey.yml --user ec2-user --key-file /home/devops/.ssh/projet1grp3key.pem -vvv
                     """
             }
         }
