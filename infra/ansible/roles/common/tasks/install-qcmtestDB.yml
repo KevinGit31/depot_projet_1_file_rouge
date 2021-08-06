@@ -109,14 +109,6 @@
   with_items:
     - ~/.local/bin/pipenv install
 
-
-- name: delete database dbquizz
-  mysql_db:
-    name: "{{ DBName }}"
-    state: absent
-    login_user: "{{ userdb }}"
-    login_password: "{{ pwddb }}"
-
 - name: Creation de la BDD ~/app/quizz/script/create-test-db.sh
   become_user: devops
   shell: ~/.local/bin/pipenv run python3 tests/init_test_db.py
