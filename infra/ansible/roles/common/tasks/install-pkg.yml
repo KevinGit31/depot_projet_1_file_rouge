@@ -18,9 +18,9 @@
     name: mysql
     state: present
     update_cache: true
-- name: Install mysql
+- name: Install MySQL-python
   yum:
-    name: mysql-python
+    name: MySQL-python
     state: present
     update_cache: true
 - name: Install python2-pip
