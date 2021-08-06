@@ -304,7 +304,7 @@ ENV="QUA"
 STACKNAMEENV=$STACKNAMEELKTPL$ENV"ELK"
 RETELKSTACK=$($AWSBIN cloudformation --region $REGION describe-stacks --stack-name $STACKNAMEENV --query "Stacks[*].[ [StackName=='$STACKNAMEENV']]" | if grep -q "true"; then exit 0; else exit 254; fi)
 RETCODE=$?
-FXDESC_FILTER1=$STACKNAMEENV
+FXDESC_FILTER1=""
 SVCTYPE="cloudformation"
 TPL=$STACKNAMEELKTPL
 DESCRIBECMD="describe-stacks"
@@ -324,7 +324,7 @@ ENV="PROD"
 STACKNAMEENV=$STACKNAMEELKTPL$ENV"ELK"
 RETELKSTACK=$($AWSBIN cloudformation --region $REGION describe-stacks --stack-name $STACKNAMEENV --query "Stacks[*].[ [StackName=='$STACKNAMEENV']]" | if grep -q "true"; then exit 0; else exit 254; fi)
 RETCODE=$?
-FXDESC_FILTER1=$STACKNAMEENV
+FXDESC_FILTER1=""
 SVCTYPE="cloudformation"
 TPL=$STACKNAMEELKTPL
 PARAM="ParameterKey=DomainName,ParameterValue=elkprod ParameterKey=ElasticsearchVersion,ParameterValue=7.10 ParameterKey=AvailabilityZone,ParameterValue=$REGIONAZ ParameterKey=CidrBlock1,ParameterValue=10.80.146.0/24 ParameterKey=GroupDescription,ParameterValue=elkprodgrp ParameterKey=SGName,ParameterValue=elkprodgrpname ParameterKey=InstanceType,ParameterValue=t3.small.elasticsearch ParameterKey=VpcId,ParameterValue=$RESULTVPCID ParameterKey=UserElk,ParameterValue=admin ParameterKey=PwdElk,ParameterValue=$JENKINSKEY-"
