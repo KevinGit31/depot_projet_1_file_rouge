@@ -1,6 +1,4 @@
 import os
-from quizz.src.services.srv_question import _question_answer
-
 
 import sys
 import inspect
