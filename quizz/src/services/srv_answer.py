@@ -27,6 +27,7 @@ def add_answer(request):
 
     # Sauvegarde de la réponse
     db.session.commit()
+    
 
     # Retour de la réponse sauvegarder
     return answer_schema.jsonify(new_answer)
@@ -45,6 +46,7 @@ def update_answer(id,request):
 
     # Sauvegarde de la réponse
     db.session.commit()
+    
 
     # Retour de la réponse modifier
     return answer_schema.jsonify(updateanswer)
@@ -60,6 +62,7 @@ def delete_answer(id):
 
     # Sauvegarde de la suppression
     db.session.commit()
+    
 
     # Retour de la réponse supprimer
     return answer_schema.jsonify(deleteanswer)

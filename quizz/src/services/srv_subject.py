@@ -40,6 +40,8 @@ def add_subject(request):
     # Sauvegarde de la subject
     db.session.commit()
     
+
+    
     # Retour de la subject sauvegarder
     return subject_schema.jsonify(new_subject)
 
@@ -88,6 +90,7 @@ def all_subjects():
 
     # Récupération des données
     allsubjects = Subject.query.all()
+    
     result = subjects_schema.dumps(allsubjects)
 
     # Retour des subjects
@@ -106,6 +109,8 @@ def get_subject(id):
 def _subject_question(new_subject,_questions):
 
     for question in _questions:
+
+        print ('1 - ******************************')
     
         if question != None:
             _question = question.get('question')
@@ -115,10 +120,10 @@ def _subject_question(new_subject,_questions):
         # Si la réponse existe déja
         if _questionId :
             _question = Question.query.get(_questionId)
-            _question = _question_answer(_question,_answers)
+            #_question = _question_answer(_question,_answers)
         else :
             _question = Question(_question)
-            _question = _question_answer(_question,_answers)
+            #_question = _question_answer(_question,_answers)
 
         q = SubjectQuestion(_question)
         new_subject.questions.append(q)

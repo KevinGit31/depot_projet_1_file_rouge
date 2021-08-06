@@ -52,6 +52,8 @@ def controller_subject(app):
     @app.route('/api/v1/subject/<id>', methods=['PUT'])
     def subject_put(id):
 
+        print('subject_put')
+
         # Appel du service de traitement de modification d'une subject
         updatesubject = update_subject(id,json.loads(request.get_data()))
 
