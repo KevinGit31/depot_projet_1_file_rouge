@@ -17,14 +17,14 @@ class Metadata(db.Model):
     updateBy = db.Column(db.String(100))
     updateDate = db.Column(db.DateTime)
 
-    role = db.relationship("Role", back_populates="metadata", uselist=False)
-    user = db.relationship("User", back_populates="metadata", uselist=False)
-    password = db.relationship("Password", back_populates="metadata", uselist=False)
-    mode = db.relationship("Mode", back_populates="metadata", uselist=False)
-    subject = db.relationship("Subject", back_populates="metadata", uselist=False)
-    question = db.relationship("Question", back_populates="metadata", uselist=False)
-    game = db.relationship("Game", back_populates="metadata", uselist=False)
-    answer = db.relationship("Answer", back_populates="metadata", uselist=False)
+    #role = db.relationship("Role", back_populates="metadata", uselist=False)
+    #user = db.relationship("User", back_populates="metadata", uselist=False)
+    #password = db.relationship("Password", back_populates="metadata", uselist=False)
+    #mode = db.relationship("Mode", back_populates="metadata", uselist=False)
+    #subject = db.relationship("Subject", back_populates="metadata", uselist=False)
+    #question = db.relationship("Question", back_populates="metadata", uselist=False)
+    #game = db.relationship("Game", back_populates="metadata", uselist=False)
+    #answer = db.relationship("Answer", back_populates="metadata", uselist=False)
 
     def __init__(self,createBy,createDate,updateBy,updateDate):
         self.createBy = createBy

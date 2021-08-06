@@ -1,0 +1,42 @@
+{% extends "quizz/question/index.html" %}
+
+{% block pills %}
+<link href="{{ url_for('static', filename='css/question/form.css') }}" rel="stylesheet">
+<h3>{% block subtitletext %}Form{% endblock %}</h3>
+
+<form method="post">
+    <div class="row">
+
+        <div class="col-12">
+            <hr>
+            <div class="form-group">
+
+                <div class="row">
+                    <div class="col-12">
+                        <label for="name">Nom</label>
+                        <input type="text" class="form-control" value="{{mode.name}}" name="name" id="name" >
+                    </div>
+                    <div class="col-12">
+                        <label for="name">Nombre de questions</label>
+                        <input type="number" min="1" class="form-control" value="{{mode.nbrQ}}" name="nbrQ" id="nbrQ" >
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <textarea class="form-control" name="description" id="description" rows="5">{{mode.description}}</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="float-right">
+                <a class="btn btn-second" href="{{ url_for('mode') }}">Annuler</a>
+                <button type="submit" class="btn btn-primary">Valider</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+{% endblock %}

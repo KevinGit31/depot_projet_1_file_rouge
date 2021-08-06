@@ -39,6 +39,7 @@ def add_question(request):
     # Sauvegarde de la question
     db.session.commit()
     
+    
     # Retour de la question sauvegarder
     return question_schema.jsonify(new_question)
 
@@ -59,6 +60,7 @@ def update_question(id,request):
 
     # Sauvegarde de la question
     db.session.commit()
+    
 
     # Retour de la question modifier
     return question_schema.jsonify(updatequestion)
@@ -74,6 +76,7 @@ def delete_question(id):
 
     # Sauvegarde de la suppression
     db.session.commit()
+    
 
     # Retour de la question supprimer
     return question_schema.jsonify(deletequestion)
@@ -83,6 +86,7 @@ def all_questions():
 
     # Récupération des données
     allquestions = Question.query.all()
+    
     result = questions_schema.dumps(allquestions)
 
     # Retour des questions
@@ -102,7 +106,6 @@ def _question_answer(new_question,_answers):
 
     for answer in _answers:
         if answer != None:
-            print(answer)
             _queryAnswer = answer.get('answer').get('answer')
             _queryId = answer.get('answer').get('id')
             _queryIsAnswer = answer.get('isAnswer')
