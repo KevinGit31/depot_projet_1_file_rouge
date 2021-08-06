@@ -43,8 +43,6 @@
     executable: pip3
     extra_args: --user
 - name: Install pymysql
-  become_user: devops
-  become: true
   pip:
     name: pymysql
     executable: pip2
