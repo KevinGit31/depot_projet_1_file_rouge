@@ -23,7 +23,7 @@ ROOTKEY=$(cat sec/root.txt)
 EC2USER=$(cat projet1grp3key.pem)
 ENV=""
 DBSIZE=5
-STACKNAMEELKTPL="elastisearch"
+STACKNAMEELKTPL="elasticsearch"
 # EC2PRIVIP=""
 # PORTAPP=""
 
@@ -274,7 +274,7 @@ fi
 
 #TEST si la stack RDSDPROD existe sinon creation de la BDD Mysql
 ENV="PROD"
-STACKNAMEENV=$STACKNAMERDS$ENV
+STACKNAMEENV=$STACKNAME$ENV
 FXDESC_FILTER1=$STACKNAMEENV
 eval $(FXAWS_DESCRIBE "$SVCTYPE" "$DESCRIBECMD" "$REGION" "$QUERY" "$FXDESC_FILTER1")
 #if ! [ -n "$T1FXAWS_DESCRETURN"  ]; then
@@ -301,7 +301,7 @@ echo ""
 ############ START STACK ELK #############
 #TEST si la stack ELK QUA existe sinon creation
 ENV="QUA"
-STACKNAMEENV=$STACKNAMERDS$ENV"ELK"
+STACKNAMEENV=$STACKNAMEELKTPL$ENV"ELK"
 RETELKSTACK=$($AWSBIN cloudformation --region $REGION describe-stacks --stack-name $STACKNAMEENV --query "Stacks[*].[ [StackName=='$STACKNAMEENV']]" | if grep -q "true"; then exit 0; else exit 254; fi)
 RETCODE=$?
 echo "RETCODE $RETCODE"
@@ -322,7 +322,7 @@ fi
 echo ""
 #TEST si la stack ELK PROD existe sinon creation
 ENV="PROD"
-STACKNAMEENV=$STACKNAMERDS$ENV"ELK"
+STACKNAMEENV=$STACKNAMEELKTPL$ENV"ELK"
 RETELKSTACK=$($AWSBIN cloudformation --region $REGION describe-stacks --stack-name $STACKNAMEENV --query "Stacks[*].[ [StackName=='$STACKNAMEENV']]" | if grep -q "true"; then exit 0; else exit 254; fi)
 RETCODE=$?
 echo "RETCODE $RETCODE"
