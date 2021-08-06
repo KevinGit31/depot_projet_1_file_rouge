@@ -313,10 +313,10 @@ QUERY="Stacks[0].Outputs[?OutputKey=='DomainEndpoint'].OutputValue"
 TEXTDESC="NULL"
 if [ $RETCODE == 254 ]; then
     RESULTELKQUAD=$(FXCREATE_STACK "$RETCODE" "$REGION" "$TPL" "$STACKNAMEENV" "$PARAM" "$QUERY" "$TEXTDESC")
-    echo "Le ENdPoint $STACKNAMEENV et KIBANA: $RESULTELKQUAD/_plugin/kibana/"
+    echo "Le ENdPoint $STACKNAMEENV et KIBANA: $RESULTELKQUAD/_plugin/kibana/ Si première creation relancer le script dans 12min pour avoir le dns public de l'ELK"
 else
     eval $(FXAWS_DESCRIBE "$SVCTYPE" "$DESCRIBECMD" "$REGION" "$QUERY" "$FXDESC_FILTER1")
-    echo "L'URL ELK QUA ENdPoint est $T1FXAWS_DESCRETURN et KIBANA : $T2FXAWS_DESCRETURN/_plugin/kibana/ Si première creation relancer le script dans 12min pour avoir le dns public de l'ELK"
+    echo "L'URL ELK QUA ENdPoint est $T1FXAWS_DESCRETURN et KIBANA : $T2FXAWS_DESCRETURN/_plugin/kibana/ "
 fi
 echo ""
 #TEST si la stack ELK PROD existe sinon creation
@@ -333,10 +333,10 @@ TEXTDESC="NULL"
 DESCRIBECMD="describe-stacks"
 if [ $RETCODE == 254 ]; then
     RESULTELKPROD=$(FXCREATE_STACK "$RETCODE" "$REGION" "$TPL" "$STACKNAMEENV" "$PARAM" "$QUERY" "$TEXTDESC")
-     echo "Le ENdPoint $STACKNAMEENV et KIBANA: $RESULTELKPROD/_plugin/kibana/ Si première creation relancer le script dans 12min pour avoir le dns public de l'ELK"
+    echo "Le ENdPoint $STACKNAMEENV et KIBANA: $RESULTELKPROD/_plugin/kibana/ Si première creation relancer le script dans 12min pour avoir le dns public de l'ELK"
 else
-     eval $(FXAWS_DESCRIBE "$SVCTYPE" "$DESCRIBECMD" "$REGION" "$QUERY" "$FXDESC_FILTER1")
-     echo "L'URL ELK PROD ENdPoint est $T1FXAWS_DESCRETURN et KIBANA : $T2FXAWS_DESCRETURN/_plugin/kibana/"
+    eval $(FXAWS_DESCRIBE "$SVCTYPE" "$DESCRIBECMD" "$REGION" "$QUERY" "$FXDESC_FILTER1")
+    echo "L'URL ELK PROD ENdPoint est $T1FXAWS_DESCRETURN et KIBANA : $T2FXAWS_DESCRETURN/_plugin/kibana/"
 fi
 ##
 #################### END ELK ###############
