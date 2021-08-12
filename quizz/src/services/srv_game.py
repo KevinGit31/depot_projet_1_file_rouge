@@ -19,8 +19,6 @@ games_schema = GameSchema(many=True)
 
 # Ajouter une reponse
 def add_game(request):
-    
-    print(request)
 
     # Récupération des données
     _startDate = request.get('startDate')
@@ -33,8 +31,6 @@ def add_game(request):
     new_game = Game(_startDate,_endDate,_score)
     new_game.user_id = _user_id
     new_game.subject_id = _subject_id
-
-    print(game_schema.jsonify(new_game))
 
     # Insertion dans la session de connexion courant
     db.session.add(new_game) 
@@ -50,14 +46,18 @@ def update_game(id,request):
 
     # Récupération des données
     updategame = Game.query.get(id)
-    _questions = request.get('questions')
-    # Modification de l'objet game
-    updategame.name= request.get('name')
-    updategame.description= request.get('description')
-    updategame.mode_id= request.get('mode_id')
-    updategame.questions = []
+    _startDate = request.get('startDate')
+    _endDate = request.get('endDate')
+    _score = request.get('score')
+    _user_id = request.get('user_id')
+    _subject_id = request.get('subject_id')
 
-    updategame = _game_question(updategame,_questions)
+    # Modification de l'objet game
+    updategame.startDate = _startDate
+    updategame.endDate = _endDate
+    updategame.score = _score
+    updategame.user_id = _user_id
+    updategame.subject_id = _subject_id
     
     # Insertion dans la session de connexion courant
     db.session.add(updategame)
@@ -105,25 +105,3 @@ def get_game(id):
     # Retour de la game
     return game_schema.jsonify(getgame)
 
-# Création de la relation game réponse
-def _game_question(new_game,_questions):
-
-    for question in _questions:
-    
-        if question != None:
-            _question = question.get('question')
-            _questionId = question.get('id')
-            _answers = question.get('answers')
-
-        # Si la réponse existe déja
-        if _questionId :
-            _question = Question.query.get(_questionId)
-            #_question = _question_answer(_question,_answers)
-        else :
-            _question = Question(_question)
-            #_question = _question_answer(_question,_answers)
-
-            q=None
-        new_game.questions.append(q)
-
-    return new_game
