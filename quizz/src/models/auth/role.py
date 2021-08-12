@@ -15,8 +15,8 @@ class Role(db.Model):
     user = db.relationship("User")
 
     # Meta data
-    quizz_metadata_id = db.Column(db.Integer, db.ForeignKey('metadata.id'))
-    quizz_metadata = db.relationship("Metadata", back_populates="role")
+    #quizz_metadata_id = db.Column(db.Integer, db.ForeignKey('metadata.id'))
+    #quizz_metadata = db.relationship("Metadata", back_populates="role")
 
     def __init__(self, name):
         self.name = name

@@ -16,8 +16,8 @@ class Password(db.Model):
     user = db.relationship("User", back_populates="password", uselist=False)
 
     # Meta data
-    quizz_metadata_id = db.Column(db.Integer, db.ForeignKey('metadata.id'))
-    quizz_metadata = db.relationship("Metadata", back_populates="password")
+    #quizz_metadata_id = db.Column(db.Integer, db.ForeignKey('metadata.id'))
+    #quizz_metadata = db.relationship("Metadata", back_populates="password")
 
     def __init__(self, pwd):
         self.pwd = pwd

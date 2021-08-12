@@ -27,10 +27,12 @@ def add_game(request):
     _endDate = request.get('endDate')
     _score = request.get('score')
     _user_id = request.get('user_id')
+    _subject_id = request.get('subject_id')
 
     # Création d'un objet game
     new_game = Game(_startDate,_endDate,_score)
     new_game.user_id = _user_id
+    new_game.subject_id = _subject_id
 
     print(game_schema.jsonify(new_game))
 
