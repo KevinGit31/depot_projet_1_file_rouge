@@ -5,7 +5,7 @@ import json
 url = '/api/v1/game'
 client = app.test_client()
 
-# Ajouer une game avec des réponses existantes
+# Ajouer une partie avec des réponses existantes
 def test_add_game():
 
     # Inser un sujet
@@ -26,7 +26,7 @@ def test_add_game():
     }
 
     # Appele du l'endpoint de l'ajout d'une réponse
-    response = client.post(url, data=json.dumps(request_data))
+    response = addgame('')
     resp_data = json.loads(response.data)
 
     # Test des résultat attendu
@@ -37,3 +37,38 @@ def test_add_game():
     assert resp_data.get('score') == 0
     assert resp_data.get('subject_id') == subject_id
     assert resp_data.get('user_id') == 1
+
+# Modifier une partie
+def test_update_game():
+    pass
+
+# Récuppérer une partie
+def test_get_game():
+    pass
+
+# Supprimer une partie
+def test_delete_game():
+    pass
+
+# Lister les parties
+def test_list_game():
+    pass
+
+def addgame(index) :
+
+    insert_subject = addsubject(index)
+    # Récuperer l'id de le subject de jeu à supprimé
+    subject_id = json.loads(insert_subject.data).get('id')
+
+    # Créer un utilisateur
+
+    #Jeu à ajouté
+    request_data = {
+        'startDate': '2021-01-01',
+        'endDate': '2021-12-31',
+        'score': 0,
+        'subject_id': subject_id,
+        'user_id': 1,
+    }
+
+    return client.post(url, data=json.dumps(request_data))
