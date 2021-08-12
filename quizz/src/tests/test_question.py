@@ -1,15 +1,10 @@
 from models.quizz.answer import Answer
-from controllers.controller_answer import controller_answer
-from controllers.controller_question import controller_question
 from tests.__init__ import app
 import json
 
 url = '/api/v1/question'
 urlAnswer = '/api/v1/answer'
 client = app.test_client()
-
-
-controller_question(app)
 
 # Ajouer une question avec de nouvelles réponses
 def test_add_question_new_answer():

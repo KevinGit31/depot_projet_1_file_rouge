@@ -1,11 +1,9 @@
-from controllers.controller_answer import controller_answer
+
 from tests.__init__ import app
 import json
 
 url = '/api/v1/answer'
 client = app.test_client()
-
-controller_answer(app)
 
 # Ajouer une réponse
 def test_add_answer():

@@ -1,15 +1,10 @@
 from models.quizz.answer import Answer
-from controllers.controller_answer import controller_answer
-from controllers.controller_mode import controller_mode
 from tests.__init__ import app
 import json
 
 url = '/api/v1/mode'
 urlAnswer = '/api/v1/answer'
 client = app.test_client()
-
-
-controller_mode(app)
 
 # Ajouer une mode avec des réponses existantes
 def test_add_mode():

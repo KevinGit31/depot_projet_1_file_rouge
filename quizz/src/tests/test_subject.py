@@ -1,5 +1,3 @@
-from controllers.controller_mode import controller_mode
-from controllers.controller_subject import controller_subject
 from tests.__init__ import app
 import json
 
@@ -8,7 +6,6 @@ urlAnswer = '/api/v1/answer'
 urlMode = '/api/v1/mode'
 client = app.test_client()
 
-controller_subject(app)
 
 # Ajouer une subject avec des réponses existantes
 def test_add_subject():

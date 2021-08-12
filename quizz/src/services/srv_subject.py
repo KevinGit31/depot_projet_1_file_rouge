@@ -11,6 +11,7 @@ parentdir = os.path.dirname(currentdir)
 sys.path.append(parentdir)
 from models.quizz.subject import Subject,SubjectSchema
 from models.quizz.subject_question import SubjectQuestion
+from services.srv_question import _question_answer
 from models.app import db
 from models.quizz.question import Question
 
@@ -107,8 +108,6 @@ def get_subject(id):
 def _subject_question(new_subject,_questions):
 
     for question in _questions:
-
-        print ('1 - ******************************')
     
         if question != None:
             _question = question.get('question')
@@ -121,7 +120,7 @@ def _subject_question(new_subject,_questions):
             #_question = _question_answer(_question,_answers)
         else :
             _question = Question(_question)
-            #_question = _question_answer(_question,_answers)
+            _question = _question_answer(_question,_answers)
 
         q = SubjectQuestion(_question)
         new_subject.questions.append(q)
