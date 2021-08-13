@@ -168,8 +168,6 @@ def addQuestion(indexQ):
         'answers': answers
     }
 
-    #print(request_data_toUpdate )
-
     # Ajouter la question à modifié
     return client.post(url, data=json.dumps(request_data_toUpdate))
 

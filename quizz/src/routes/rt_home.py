@@ -66,7 +66,7 @@ def configure_routes_home(app):
       mode_id = id
       if request.method == "GET":
 
-         subjects = requests.get(baseUrl+url_subject+'/'+str(id)).json()
+         subjects = requests.get(baseUrl+url_subject+'/mode/'+str(id)).json()
          subjects = json.loads(subjects)
 
          return render_template('quizz/home/choose_subject.html',

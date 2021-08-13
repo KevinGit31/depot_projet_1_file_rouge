@@ -8,7 +8,7 @@
 {% block subtitle %}
 <div class="row justify-content-between">
     <div class="col-auto mr-auto">
-        <h3>{% block titre %} Sujet [{{subject.name}}] : 1/5 - Questions {% endblock %}</h3>
+        <h3>{% block titre %} Sujet [ {{subject.name}} ] : 1/{{subject|length}} - Questions {% endblock %}</h3>
     </div>
 </div> 
 {% endblock %}
@@ -16,14 +16,19 @@
     <h5>
         Question  
     </h5>
-    <p>{{subject}}</p>
+    <p>{{subject.questions[0].question_id}}</p>
 </div>
 <div>
     <h5>
         Les réponses 
     </h5>
     <p>
-        .....................
+        {% for answer in subject.questions[0].question.answers %}
+        <div class="form-check">
+            <input name="answers" class="form-check-input" type="checkbox" id={{answer.answer_id}} value={{answer.answer_id}} >
+            <label class="form-check-label" for={{answer.answer_id}}>{{answer.answer_id}}</label>
+        </div>
+        {% endfor %}
     </p>
 </div>
 

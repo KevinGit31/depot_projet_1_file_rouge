@@ -22,12 +22,7 @@ def configure_routes_game(app):
    def game(id):
       new_url = baseUrl+url_subject+'/'+str(id)
       print(new_url)
-      subject = requests.get(new_url)
-      # Création du jeux
-      #subject = json.loads(subject.data)
-      #subject = json.loads(subject)
-      #print(subject[0])
-      print("***********************************")
+      subject = requests.get(new_url).json()
 
       return render_template('quizz/game/index.html',menu_list=menu_list,subject=subject )
 
