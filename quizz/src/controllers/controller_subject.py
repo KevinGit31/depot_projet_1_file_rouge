@@ -9,7 +9,7 @@ import inspect
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.append(parentdir)
-from services.srv_subject import add_subject,get_subject,all_subjects,delete_subject,update_subject
+from services.srv_subject import all_subjects_bymode,add_subject,get_subject,all_subjects,delete_subject,update_subject
 
 def controller_subject(app):
 
@@ -18,6 +18,18 @@ def controller_subject(app):
 
         # Appel du service de traitement de la récupération de toutes les subjects
         allsubject = all_subjects()
+
+        # Test sur le résultat
+        if allsubject:
+            return allsubject, 200 #Success
+        else:
+            return 'Bad Request', 400 # Error
+
+    @app.route('/api/v1/subject/mode/<id>', methods=['GET'])
+    def subject_by_mode(id):
+
+        # Appel du service de traitement de la récupération de toutes les subjects
+        allsubject = all_subjects_bymode(id)
 
         # Test sur le résultat
         if allsubject:

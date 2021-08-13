@@ -2,11 +2,11 @@ from models.quizz.answer import AnswerSchema
 import requests
 import json
 from flask import render_template, request, redirect, url_for
+from config.env import baseUrl
 answer_schema = AnswerSchema()
 
 url = '/api/v1/question'
 url_answer = '/api/v1/answer'
-baseUrl = 'http://127.0.0.1:5000'
 
 tableInfo = {
     "headers": [
@@ -21,8 +21,7 @@ tableInfo = {
 
 # Liste des menus
 menu_list = [
-    {"name": "Accueil", "isActive": "", "url": "index"},
-    {"name": "Jouer", "isActive": "", "url": "game"},
+    {"name": "Accueil", "isActive": "", "url": "home"},
     {"name": "Mode", "isActive": "", "url": "mode"},
     {"name": "Sujet", "isActive": "", "url": "subject"},
     {"name": "Question", "isActive": "active", "url": "question"},

@@ -150,6 +150,24 @@ def test_list_subject():
     assert response.status_code == 200
     assert len(resp_data) >= 10
 
+# Lister les subjects en fonction du mode de jeu
+def test_list_subject_bymode():
+
+    mode = None
+
+    # Ajouter 10 subjects
+    for i in range(10):
+        index = str(i)
+        addsubject(index)
+
+    # Appele du l'endpoint de la suppression d'une subject
+    response = client.get(url)
+    resp_data = json.loads(response.data)
+
+    # Test des résultat attendu
+    assert response.status_code == 200
+    assert len(resp_data) >= 10
+
 def addsubject(index) :
     
     # Insertion du mode de jeu

@@ -2,14 +2,14 @@ from flask import render_template
 import requests
 import json
 from flask import render_template, request, redirect, url_for
+from config.env import baseUrl
 
 url = '/api/v1/mode'
-baseUrl = 'http://127.0.0.1:5000'
+
 
 # Liste des menus
 menu_list=[
-      {"name":"Accueil","isActive":"","url":"index"},
-         {"name":"Jouer","isActive":"","url":"game"},
+      {"name":"Accueil","isActive":"","url":"home"},
          {"name":"Mode","isActive":"active","url":"mode"},
          {"name":"Sujet","isActive":"","url":"subject"},
          {"name":"Question","isActive":"","url":"question"},

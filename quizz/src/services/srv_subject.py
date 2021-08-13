@@ -39,8 +39,6 @@ def add_subject(request):
     # Sauvegarde de la subject
     db.session.commit()
     
-
-    
     # Retour de la subject sauvegarder
     return subject_schema.jsonify(new_subject)
 
@@ -89,6 +87,17 @@ def all_subjects():
 
     # Récupération des données
     allsubjects = Subject.query.all()
+    
+    result = subjects_schema.dumps(allsubjects)
+
+    # Retour des subjects
+    return jsonify(result)
+
+# Récupérer les subjects en fonction du mode de jeu
+def all_subjects_bymode(id):
+
+    # Récupération des données
+    allsubjects = Subject.query.filter_by(mode_id=id)
     
     result = subjects_schema.dumps(allsubjects)
 

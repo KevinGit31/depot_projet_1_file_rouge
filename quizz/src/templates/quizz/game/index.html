@@ -1,0 +1,48 @@
+
+
+{% extends "index.html" %}
+
+
+{% block pills %}
+
+{% block subtitle %}
+<div class="row justify-content-between">
+    <div class="col-auto mr-auto">
+        <h3>{% block titre %} Sujet [{{subject.name}}] : 1/5 - Questions {% endblock %}</h3>
+    </div>
+</div> 
+{% endblock %}
+<div>
+    <h5>
+        Question  
+    </h5>
+    <p>{{subject}}</p>
+</div>
+<div>
+    <h5>
+        Les réponses 
+    </h5>
+    <p>
+        .....................
+    </p>
+</div>
+
+<div class="row justify-content-between">
+    <div class="col-auto mr-auto">
+       <button class="btn btn-primary">Précédent</button>
+    </div>
+    <div class="col-auto">
+        <button class="btn btn-primary">Suivant</button>
+    </div>
+</div>
+<br>
+<div class="row justify-content-between">
+    <div class="col-auto mr-auto">
+        
+     </div>
+    <div class="col-auto">
+        <a class="btn btn-primary" href="{{ url_for('end_game') }}">Terminer</a>
+    </div>
+</div>
+
+{% endblock %}

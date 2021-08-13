@@ -1,15 +1,14 @@
 import json
 from models.quizz.answer import Answer
 from flask import render_template,request, redirect, url_for
+from config.env import baseUrl
 import requests
 
 url = '/api/v1/answer' 
-baseUrl='http://127.0.0.1:5000'     
-
+   
 # Liste des menus
 menu_list=[
-         {"name":"Accueil","isActive":"","url":"index"},
-         {"name":"Jouer","isActive":"","url":"game"},
+         {"name":"Accueil","isActive":"","url":"home"},
          {"name":"Mode","isActive":"","url":"mode"},
          {"name":"Sujet","isActive":"","url":"subject"},
          {"name":"Question","isActive":"","url":"question"},
