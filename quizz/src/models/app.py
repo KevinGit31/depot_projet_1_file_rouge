@@ -21,7 +21,7 @@ from models.init_helper import helper,db,ma
 app = Flask(__name__)
 
 # Database
-#app_config(app)
+# app_config(app)
 tsconfig(app)
 
 # Init helper
