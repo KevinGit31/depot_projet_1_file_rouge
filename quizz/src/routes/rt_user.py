@@ -1,6 +1,9 @@
 import json
+import logging
+
+import hashlib
+import requests
 from flask import render_template, request, redirect, url_for
-import requests, hashlib
 
 url = '/api/v1/users'
 url_role = '/api/v1/role'
@@ -24,20 +27,22 @@ def configure_routes_user(app):
 
         user_list = requests.get(baseUrl + url).json()
         # user_list = json.loads(user_list)
-
+        app.logger.info('requests.get(baseUrl + url).json()' + user_list)
         return render_template('auth/page_listuser.html', menu_list=menu_list, users_list=user_list)
 
     @app.route('/user/create', methods=['GET', 'POST'])
     def create_user():
 
+        app.logger.info('/user/create')
         # Rendu de la page de création
         if request.method == "GET":
             all_rols = requests.get(baseUrl + url_role).json()
-
+            app.logger.info('requests.get(baseUrl + url_role).json()' + all_rols)
             return render_template('auth/page_adduser.html', menu_list=menu_list, all_rols=all_rols)
 
             # Soumission du formulaire
         if request.method == "POST":
+
             hashed_password = hashlib.md5(request.form.get('password'))
             newuser = {
                 'firstname': request.form.get('firstname'),
@@ -45,15 +50,13 @@ def configure_routes_user(app):
                 'pseudo': request.form.get('pseudo'),
                 'role_id': request.form.get('role_user')
             }
-            app.logger.info("kevin")
-            app.logger.info(request.form.get('role_user'))
-            app.logger.info(json.dumps(newuser))
+            app.logger.info('requests.get(baseUrl + url_role).json()' + newuser)
             requests.post(baseUrl + url, json.dumps(newuser))
             return redirect(url_for("listuser"))
 
     @app.route('/user/update/<id>', methods=['GET', 'POST'])
     def update_user(id):
-
+        app.logger.info('/user/update/<id>')
         # Mise à jour de l'url
         newurl = baseUrl + url + '/' + str(id)
         all_rols = requests.get(baseUrl + url_role).json()

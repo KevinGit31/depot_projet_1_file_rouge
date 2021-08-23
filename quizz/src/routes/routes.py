@@ -15,4 +15,5 @@ menu_list = [
 def configure_routes(app):
     @app.route('/')
     def index():
+        app.logger.info('index.html')
         return render_template('index.html', menu_list=menu_list)
