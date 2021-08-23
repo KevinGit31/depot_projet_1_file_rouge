@@ -15,16 +15,34 @@ menu_list=[
       ]
 
 url_subject = '/api/v1/subject'
+url_question = '/api/v1/question'
+url_answer = '/api/v1/answer'
+
 
 def configure_routes_game(app):
 
-   @app.route('/game/<id>')
+   def getIdValue(id,option) :
+      test = '';
+      if option=='question':
+         newurl = baseUrl+url_question+'/'+str(id)
+         question = requests.get(newurl).json()
+         test = question['question']
+      if option=='answer':
+         newurl = baseUrl+url_answer+'/'+str(id)
+         answer = requests.get(newurl).json()
+         test = answer['answer']
+      return test;
+
+   @app.route('/game/<id>', methods=['GET', 'POST'])
    def game(id):
       new_url = baseUrl+url_subject+'/'+str(id)
       print(new_url)
       subject = requests.get(new_url).json()
 
-      return render_template('quizz/game/index.html',menu_list=menu_list,subject=subject )
+      return render_template('quizz/game/index.html',
+      menu_list=menu_list,
+      subject=subject,
+      getIdValue=getIdValue)
 
    @app.route('/end_game')
    def end_game():
