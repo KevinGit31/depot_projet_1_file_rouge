@@ -18,16 +18,16 @@ def add_answer(request):
     
     # Récupération des données
     _answer = request.get('answer')
-    _isAnswer = request.get('isAnswer')
 
     # Création d'un objet réponse
-    new_answer = Answer(_answer,_isAnswer)
+    new_answer = Answer(_answer)
 
     # Insertion dans la session de connexion courant
     db.session.add(new_answer)
 
     # Sauvegarde de la réponse
     db.session.commit()
+    
 
     # Retour de la réponse sauvegarder
     return answer_schema.jsonify(new_answer)
@@ -40,13 +40,13 @@ def update_answer(id,request):
 
     # Modification de l'objet réponse
     updateanswer.answer = request.get('answer')
-    updateanswer.isAnswer = request.get('isAnswer')
 
     # Insertion dans la session de connexion courant
     db.session.add(updateanswer)
 
     # Sauvegarde de la réponse
     db.session.commit()
+    
 
     # Retour de la réponse modifier
     return answer_schema.jsonify(updateanswer)
@@ -62,6 +62,7 @@ def delete_answer(id):
 
     # Sauvegarde de la suppression
     db.session.commit()
+    
 
     # Retour de la réponse supprimer
     return answer_schema.jsonify(deleteanswer)
@@ -71,7 +72,7 @@ def all_answers():
 
     # Récupération des données
     allanswers = Answer.query.all()
-    result = answers_schema.dump(allanswers)
+    result = answers_schema.dumps(allanswers)
 
     # Retour des réponses
     return jsonify(result)

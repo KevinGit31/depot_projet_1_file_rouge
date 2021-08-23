@@ -1,139 +1,164 @@
-#!/bin/sh
+#!/bin/bash
 
-# Alias server_jenkins
-# Variable de mise en forme
-RED='\033[0;31m'	# Red Color
-YELLOW='\033[0;33m'	# Yellow Color
-GREEN='\033[0;32m'	# Grean Color
-NC='\033[0m' 		# No Color
-
-
-##Fonction:
-#Execution du script en tant que root
-root_connect(){
-    ID="$(id -u)"
-    if ["$ID" -ne 0]; then
-        1>&2 echo "Vous devez executer le script en tant que root"
-        exit 1
-    fi
-}
-
-#Installation des packages sous forme de fonction avec vérification si le package est installé
-install_package() {
-    PACKAGE="$1"
-    if ! dpkg -l |grep --quiet "^ii.$PACKAGE"; then
-        apt install -y "$PACKAGE"
-    fi
-}
-
-#ajout de la source du package d'installation jenkins
-source_jenkins() {
-        if ! test -f /etc/apt/sources.list.d/jenkins.list ; then
-        wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | apt-key add -
-        sh -c 'echo deb https://pkg.jenkins.io/debian-stable binary/ > \
-            /etc/apt/sources.list.d/jenkins.list'
-    fi
-}
-
-#Droit de l'utilisateur
-permission_user(){
-    #sauvegarde du sudoers
-    cp /etc/sudoers /etc/sudoers.old
-    #ajout des droits du user dans le sudoers
-    cat /etc/sudoers |
-        echo "userjenkins      ALL(ALL)/bin/apt," >> sudo tee -a /etc/sudoers
-}
+#Recupération des variables déposé par le script de cloudformation
+JENKINSPWD=$(cat /tmp/jenkinskey.txt)
+DEVOPSPWD=$(cat /tmp/devopsuserkey.txt)
+#ROOTPASS=$(cat /tmp/root.txt)
+ANSIBPASS=$(cat /tmp/ansiblekey.txt)
+ENV1=$(cat /tmp/env.txt)
+KEYNAME1=$(cat /tmp/KeyName.txt)
+REGION1=$(cat /tmp/region.txt)
+SUBIDPUB1=$(cat /tmp/SubnetIdPub.txt)
+SUBIDPRIV1=$(cat /tmp/SubnetIdPriv.txt)
+SUBIDPUBADM1=$(cat /tmp/SubnetIdPubADM.txt)
+SUBIDPRIVADM1=$(cat /tmp/SubnetIdPrivADM.txt)
+SUBIDPUBDEV1=$(cat /tmp/SubnetIdPubDEV.txt)
+SUBIDPRIVDEV1=$(cat /tmp/SubnetIdPrivDEV.txt)
+SUBIDPUBQUA1=$(cat /tmp/SubnetIdPubQUA.txt)
+SUBIDPRIVQUA1=$(cat /tmp/SubnetIdPrivQUA.txt)
+SUBIDPUBPROD1=$(cat /tmp/SubnetIdPubPROD.txt)
+SUBIDPRIVPROD1=$(cat /tmp/SubnetIdPrivPROD.txt)
+VPCID1=$(cat /tmp/VpcId.txt)
+PRIVIP1=$(cat /tmp/PrivateIP.txt)
+INGRPORT1=$(cat /tmp/IngressPort.txt)
+SECGRPNLST1=$(cat /tmp/SecurityGroupNameList.txt)
+USCRIPT1=$(cat /tmp/Urlscript.txt)
+SECGRPID1=$(cat /tmp/SecurityGroupId.txt)
+INSTTYPE1=$(cat /tmp/InstanceType.txt)
+AAKI1=$(cat /tmp/AWSAccessKeyId.txt)
+ASAKI1=$(cat /tmp/AWSSecretAccessKeyId.txt)
+TYPENAME1=$(cat /tmp/TypeName.txt)
 
 
-# Installation de relay (webhook)
-install_webhook(){
-	wget -O /usr/local/bin/relay https://storage.googleapis.com/webhookrelay/downloads/relay-linux-amd64
-
-	chmod +wx /usr/local/bin/relay
-}
-
-##Main
-
-# On installe le pare-feu
-install_package "ufw"
-
-# On le met en route
-ufw --force enable
-
-# On lui fixe de nouvelles regles
-ufw allow ssh
-ufw allow 8080
+#install java
+yum install -y java-1.8.0-openjdk-devel
+#recuperation package
+wget –O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat-stable/jenkins.repo
+#Modification du fichier de conf
+sh -c ' echo "[jenkins]
+name=Jenkins-stable
+baseurl=http://pkg.jenkins.io/redhat-stable
+gpgcheck=1" > /etc/yum.repos.d/jenkins.repo'
+# recuperation key jenkins
+rpm --import https://pkg.jenkins.io/redhat/jenkins.io.key
 
 # On prepare l'installation de jenkins
-apt-get -y update
-install_package "openjdk-11-jdk"
-install_package "gnupg"
-install_package "git"
-install_package "unzip"
-install_package "python3"
-install_package "python3-pip"
-install_package "python3-venv"
+yum  upgrade -y
+#sudo yum install -y openjdk-11-jdk
+amazon-linux-extras install -y java-openjdk11
+yum install -y gnupg
+yum install -y git
+yum install -y unzip
+yum install -y python2
+yum install -y python2-pip
+yum install -y python3
+yum install -y python3-pip
 
-install_webhook
+# installation jenkins
+yum install -y  jenkins
+sleep 5
+# start jenkins
+systemctl start jenkins
+/sbin/chkconfig jenkins on
 
-# On installe jenkins suivant les preconisations du site
-source_jenkins
-
-# On installe le paquet jenkins
-apt-get update
-install_package "jenkins"
-
-# On demarre le service
-echo "${GREEN}$(date +'%Y-%m-%d %H:%M:%S') [ INFO  ] : Démarrage du service Jenkins ... ${NC}"
-service jenkins start
-
-# On ajoute le nouvel utilisateur userjenkins + définition du password
-echo "${GREEN}$(date +'%Y-%m-%d %H:%M:%S') [ INFO  ] : Création de l'utilisateur userjenkins ... ${NC}"
+# On modifit l' utilisateur jenkins définition du password ajout d'un compte de secours userjenkins
 useradd -m userjenkins
-echo "userjenkins:userjenkins" | chpasswd
+echo "userjenkins:$JENKINSPWD" | sudo chpasswd
+echo 'userjenkins   ALL=(ALL)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
+usermod -a -G jenkins userjenkins
+usermod -a -G userjenkins jenkins
 
-# Modification des droits du userjenkins avec la sauvegarde
-permission_user
+#Pour que jenkins puisse faire executé le playbook par devops avec sudo -u devops -s ansible-playbook
+echo 'jenkins   ALL=(devops)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
 
-# On affiche le mot de passe de jenkins
-#sleep 30s
-#echo "${GREEN}$(date +'%Y-%m-%d %H:%M:%S') [ INFO  ] : Mot de passe jenkins ... ${NC}"
-#cat /var/lib/jenkins/secrets/initialAdminPassword | xargs echo
 
-# On sauvegarde le fichier sshd_config
-cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bck
+#creation de l'utilisateur devops compte d'install ansible sur les environnments EC2
+useradd -m -s /bin/bash devops
+echo "devops:$DEVOPSPWD" | chpasswd
+echo 'devops   ALL=(ALL)       NOPASSWD: ALL' | sudo EDITOR='tee -a' visudo
+echo "root:$ROOTPASS" | chpasswd
 
-# On change l'option PasswordAuthentication de no à yes dans le fichier sshd_config
-sed "s/PasswordAuthentication no/PasswordAuthentication yes/" \
-/etc/ssh/sshd_config.bck > /etc/ssh/sshd_config
 
-#install fail2ban
-install_package "fail2ban"
+#install ansible
+amazon-linux-extras install ansible2 -y
 
-#start du service fail2ban + activation au démarrage
-systemctl start fail2ban
-systemctl enable fail2ban
+#configuration ansible vault paswword
+echo "#!/bin/bash" >> /etc/ansible/ansvlt.sh
+echo "$ANSIBPASS" >> /etc/ansible/.ansvlt
+echo "RET=$(sudo cat /etc/ansible/.ansvlt)" >> /etc/ansible/ansvlt.sh
+echo "echo \$RET" >> /etc/ansible/ansvlt.sh
+sed -i 's/\#vault_password_file = \/path\/to\/vault_password_file/vault_password_file=\/etc\/ansible\/ansvlt.sh/' /etc/ansible/ansible.cfg
+sed -i 's/\#host_key_checking = False/host_key_checking = False/' /etc/ansible/ansible.cfg
+#preparation pour le client aws pour ansible dans jenkins
+pip install boto3==1.15.16
+pip uninstall -y botocore
+pip install botocore==1.18.6
+ansible-galaxy collection install amazon.aws
 
-#configuration fail2ban
-echo "[DEFAULT]
-ignoreip = 127.0.0.1
-findtime = 10m
-bantime = 24h
-maxretry = 3
+#install du client pour verifier la connexion rds
+yum install -y mysql
 
-[sshd]
-enabled = true
-logpath = /var/log/auth.log
+#Preparation et transfert du contenu des  variables pour les vm dev qua et prod
+#positionnement du fichier contenant les variables d'environnement sous jenkins
+mkdir /var/lib/jenkins/.envvars && touch /var/lib/jenkins/.envvars/stacktest-staging.groovy
+chown jenkins: /var/lib/jenkins/.envvars /var/lib/jenkins/.envvars/stacktest-staging.groovy
+su - jenkins -c "echo \"env.PATH=\"$PATH:/var/lib/jenkins/.local/bin\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+sed -i 's/\/jenkins:\/bin\/false/\/jenkins:\/bin\/bash/' /etc/passwd
+#su - userjenkins -c "cd /home/userjenkins && wget -O $ENV1.zip https://github.com/KevinGit31/depot_projet_1_file_rouge/archive/refs/heads/$ENV1.zip && unzip $ENV1.zip && mv depot_projet_1_file_rouge* depot_projet_1_file_rouge && chmod +x /home/userjenkins/depot_projet_1_file_rouge/infra/ansvlt.sh && exit"
+su - devops -c "cd /tmp && /bin/bash ssh.sh && exit"
 
-[jenkins]
-filter = jenkins
-logpath = /var/log/jenkins.log
 
-" >> /etc/fail2ban/jail.d/custom.conf
 
-systemctl restart fail2ban
+#Compte aws + récupération des variables nécessaires à la création du fichier de variable ansible pour les playbook
+su - jenkins -c "mkdir ~/.aws && cd ~/.aws && echo \"[default]\" >> credentials && echo \"aws_access_key_id=$AAKI1\" >> credentials && echo \"aws_secret_access_key=$ASAKI1\" >> credentials && exit"
+su - jenkins -c "cd ~/.aws && echo \"[default]\" >> config && echo \"region=$REGION1\" >> config && echo \"output=json\" >> config && exit"
+su - devops -c "mkdir ~/.aws && cd ~/.aws && echo \"[default]\" >> credentials && echo \"aws_access_key_id=$AAKI1\" >> credentials && echo \"aws_secret_access_key=$ASAKI1\" >> credentials && exit"
+su - devops -c "cd ~/.aws && echo \"[default]\" >> config && echo \"region=$REGION1\" >> config && echo \"output=json\" >> config && exit"
+su - devops -c "echo \"export PATH=$PATH:/var/lib/jenkins/.local/bin\" >> ~/.bashrc"
+su - jenkins -c "echo \"env.SECRETDEVOPS=\"$DEVOPSPWD\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"env.ANS=\"$ANSIBPASS\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"env.KEYNAME=\"$KEYNAME1\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"env.TYPENAME=\"$TYPENAME1\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"env.REGION="$REGION1"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"env.AWS_ACCESS_KEY=\"$AAKI1\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"env.AWS_SECRET_KEY=\"$ASAKI1\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"env.SUBIDPUB=\"$SUBIDPUB1\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"env.SUBIDPRIV=\"$SUBIDPRIV1\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"env.SUBIDPUBADM=\"$SUBIDPUBADM1\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"env.SUBIDPRIVADM=\"$SUBIDPRIVADM1\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"env.SUBIDPUBDEV=\"$SUBIDPUBDEV1\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"env.SUBIDPRIVDEV=\"$SUBIDPRIVDEV1\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"env.SUBIDPUBQUA=\"$SUBIDPUBQUA1\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"env.SUBIDPRIVQUA=\"$SUBIDPRIVQUA1\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"env.SUBIDPUBPROD=\"$SUBIDPUBPROD1\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"env.SUBIDPRIVPROD=\"$SUBIDPRIVPROD1\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"env.VPCID=\"$VPCID1\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"env.PRIVIP=\"$PRIVIP1\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"env.INGRPORT=\"$INGRPORT1\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"env.SECGRPNLST=\"$SECGRPNLST1\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"env.USCRIPT=\"$USCRIPT1\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"env.SECGRPID=\"$SECGRPID1\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "echo \"env.INSTTYPE=\"$INSTTYPE1\"\" >> /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "sed -i -- 's/=/=\"/g' /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+su - jenkins -c "sed -i -- 's/$/\"/g' /var/lib/jenkins/.envvars/stacktest-staging.groovy"
+sed -i 's/\/jenkins:\/bin\/bash/\/jenkins:\/bin\/false/' /etc/passwd
+#sudo su -s /bin/bash jenkins
 
-# On restart le service
-systemctl restart sshd
+#Install docker pour les test partie jenkins
+su - ec2-user -c "sudo amazon-linux-extras enable docker"
+su - ec2-user -c "sudo yum -y install docker"
+su - ec2-user -c "sudo systemctl daemon-reload"
+su - ec2-user -c "sudo systemctl enable --now docker"
+#Install docker compose
+curl -L "https://github.com/docker/compose/releases/download/1.29.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
 
-sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+sleep 200
+chown devops: /tmp/projet1grp3key.pem
+su - devops -c "cp /tmp/projet1grp3key.pem ~/.ssh/projet1grp3key.pem"
+su - devops -c "chmod 600 ~/.ssh/projet1grp3key.pem"
+# Mdp jenkins
+cat /var/lib/jenkins/secrets/initialAdminPassword
+
+
+

@@ -1,11 +1,6 @@
-*.pyc
-__pycache__/
-*.py[cod]
 .idea/
+src/__pycache__/
 venv/
-*.log
-*.pot
-*.pyc
-*/*/*/__pycache__/
-*/*/__pycache__/
-*/__pycache__/
+src/app/__pycache__/
+src/models/auth/__pycache__/
+src/app/__pycache__/app.cpython-39.pyc

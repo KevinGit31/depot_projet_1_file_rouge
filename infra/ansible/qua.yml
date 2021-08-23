@@ -1,0 +1,4 @@
+- hosts: appgrp
+  roles:
+    - common
+    - qua

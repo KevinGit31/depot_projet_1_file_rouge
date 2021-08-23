@@ -1,0 +1,24 @@
+{% extends "quizz/subject/index.html" %}
+
+{% block pills %}
+<form method="post">
+    <div class="row justify-content-center">
+        <div class="col-8">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title">Suppression d'un sujet</h3>
+
+                    <p class="card-text">Souhaitez vous réellement supprimer le sujet ayant l'id: {{subject.id}} ?
+                    </p>
+
+                    <div class="float-right">
+                        <a class="btn btn-second" href="{{ url_for('subject') }}">Annuler</a>
+                        <button type="submit" class="btn btn-danger" value="Submit">supprimer</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</form>
+{% endblock %}
