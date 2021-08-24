@@ -11,7 +11,8 @@ menu_list=[
          {"name":"Mode","isActive":"","url":"mode"},
          {"name":"Sujet","isActive":"","url":"subject"},
          {"name":"Question","isActive":"","url":"question"},
-         {"name":"Réponse","isActive":"","url":"answer"}
+         {"name":"Réponse","isActive":"","url":"answer"},
+         {"name": "Utilisateur", "isActive": "", "url": "user"}
       ]
 
 url_subject = '/api/v1/subject'
