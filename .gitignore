@@ -11,3 +11,14 @@ asaki.txt
 nexus.txt
 projet1grp3key.pem.london
 kibana.txt
+*.pyc
+__pycache__/
+*.py[cod]
+.idea/
+venv/
+*.log
+*.pot
+*.pyc
+*/*/*/__pycache__/
+*/*/__pycache__/
+*/__pycache__/

@@ -20,7 +20,11 @@ from routes.rt_home import configure_routes_home
 from routes.rt_game import configure_routes_game
 from routes.rt_question import configure_routes_question
 from routes.rt_subject import configure_routes_subject
-from routes.routes import configure_routes
+from controllers.controller_user import controller_user
+from controllers.controller_role import controller_role
+#from routes.routes import configure_routes
+from routes.rt_user import configure_routes_user
+from routes.rt_login import configure_routes_login
 from api.__init__ import app
 
 # Configuration des chemins vers les pages html
@@ -29,6 +33,8 @@ controller_question(app)
 controller_mode(app)
 controller_subject(app)
 controller_game(app)
+controller_user(app)
+controller_role(app)
 
 configure_routes_answer(app)
 configure_routes_home(app)
@@ -36,6 +42,10 @@ configure_routes_game(app)
 configure_routes_mode(app)
 configure_routes_question(app)
 configure_routes_subject(app)
+
+configure_routes_user(app)
+configure_routes_login(app)
+#configure_routes(app)
 
 # Run Server
 if __name__ == '__main__':

@@ -1,12 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Appli flask docker</title>
-</head>
-<body>
-    <div style="text-align:center"><h1>Liste des utilisateurs</h1></div>
-    <p><a href="/">Accueil</a></p>
+{% extends "quizz/answer/index.html" %}
 
-</body>
-</html>
+{% block pills %}
+
+<h3>{% block subtitletext %} Liste utilisateurs {% endblock %}</h3>
+
+<div class="table-responsive">
+    <table class="table table-striped table-bordered table-hover">
+        {% for row in users_list %}
+        <tr>
+            <td>{{ row.firstname }} {{ row.lastname }}</td>
+            <td><a class="btn btn-icon" href="{{ url_for('update_user',id=row.id) }}">Modifier user</a></td>
+            <td><a class="btn btn-icon btn-icon-danger" href="{{ url_for('delete_user',id=row.id) }}">Supprimer user</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}
