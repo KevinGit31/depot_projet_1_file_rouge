@@ -27,7 +27,8 @@ menu_list=[
          {"name":"Mode","isActive":"","url":"mode"},
          {"name":"Sujet","isActive":"active","url":"subject"},
          {"name":"Question","isActive":"","url":"question"},
-         {"name":"Réponse","isActive":"","url":"answer"}
+         {"name":"Réponse","isActive":"","url":"answer"},
+         {"name": "Utilisateur", "isActive": "", "url": "user"}
       ]
 
 def configure_routes_subject(app):
