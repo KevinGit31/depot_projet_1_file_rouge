@@ -7,9 +7,9 @@ currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentfram
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 
-from __init__  import db
+from models.app  import db
 
-from models.metedata import Metadata
+from models.metadata import Metadata
 from models.auth.user import User
 from models.auth.role import Role
 from models.auth.password import Password
@@ -22,6 +22,10 @@ from models.quizz.answer import Answer
 if __name__ == "__main__":
 
     # Run this file directly to create the database tables.
-    print ("Creating test database tables...") 
+    print ("Modification ou Création de la base de données Test...") 
+    print ("Suppresion des anciennes tables ...") 
+    db.drop_all()
+    print ("Création de nouvelles tables ...") 
     db.create_all()
-    print ("Done!")
+    print ("Terminer!")
+

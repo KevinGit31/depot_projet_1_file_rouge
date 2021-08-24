@@ -15,27 +15,10 @@
     </div>
 </div> {% endblock %}
 
-<div class="table-responsive">
-    <table class="table table-striped table-bordered table-hover">
-        <tr>
-            <th>Réponse</th>
-            <th class="br">Bonne Réponse</th>
-            <th class="action">Actions</th>
-        </tr>
-        {% for row in rep_list %}
-        <tr>
-            <td>{{ row.answer }}</td>
-            <td>{% if row.isAnswer %} Oui {% else %} Non {% endif %}</td>
-            <td>
-                <div class="float-right">
-                    <a class="btn btn-icon" href="{{ url_for('update_answer',id=row.id) }}"><i
-                            class="fas fa-pen-square"></i></a>
-                    <a class="btn btn-icon btn-icon-danger" href="{{ url_for('delete_answer',id=row.id) }}"> <i
-                            class="fas fa-trash-alt"></i></a>
-                </div>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
-</div>
+{% block table %}
+
+{% include "quizz/helper/table.html" %}
+
+{% endblock %}
+
 {% endblock %}

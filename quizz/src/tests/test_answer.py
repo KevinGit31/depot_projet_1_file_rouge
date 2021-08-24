@@ -1,19 +1,16 @@
-from controllers.controller_answer import controller_answer
+
 from tests.__init__ import app
 import json
 
 url = '/api/v1/answer'
 client = app.test_client()
 
-controller_answer(app)
-
 # Ajouer une réponse
 def test_add_answer():
 
     # Réponse à ajouté
     request_data = {
-        'answer': 'Le soleil est vert',
-        'isAnswer': False
+        'answer': 'Le soleil est vert'
     }
 
     # Appele du l'endpoint de l'ajout d'une réponse
@@ -24,7 +21,6 @@ def test_add_answer():
     assert response.status_code == 200
     assert resp_data.get('id') != None
     assert resp_data.get('answer') == "Le soleil est vert"
-    assert resp_data.get('isAnswer') == False
 
 # Modifier une réponse
 def test_update_answer():
@@ -40,8 +36,7 @@ def test_update_answer():
     
     # Réponse à modifié
     update_data = {
-        'answer': 'Le soleil est vert. Après modification',
-        'isAnswer': False
+        'answer': 'Le soleil est vert. Après modification'
     }
 
     # Appele du l'endpoint de la modification d'une réponse
@@ -51,8 +46,6 @@ def test_update_answer():
     # Test des résultat attendu
     assert response.status_code == 200
     assert resp_data.get('answer') == "Le soleil est vert. Après modification"
-    assert resp_data.get('isAnswer') == False
-
 
 # Récupperer une réponse
 def test_get_answer():
@@ -73,7 +66,6 @@ def test_get_answer():
     # Test des résultat attendu
     assert response.status_code == 200
     assert resp_data.get('answer') == " - Le souleil est vert"
-    assert resp_data.get('isAnswer') == True
 
 # Supprimer une réponse
 def test_delete_answer():
@@ -94,7 +86,6 @@ def test_delete_answer():
     # Test des résultat attendu
     assert response.status_code == 200
     assert resp_data.get('answer') == " - Le souleil est vert"
-    assert resp_data.get('isAnswer') == True
 
 # Lister les réponses
 def test_list_answer():
@@ -118,7 +109,6 @@ def addAnswer(index):
     # Réponse à modifié, à supprimer ou à traité
     request_data_toUpdate = {
         'answer': index+' - Le souleil est vert',
-        'isAnswer': True
     }
 
     # Ajouter la réponse à modifié

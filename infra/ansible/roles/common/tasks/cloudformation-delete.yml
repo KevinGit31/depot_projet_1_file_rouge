@@ -1,0 +1,12 @@
+---
+- name: create a cloudformation stack
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+  - name: delete a stack
+    cloudformation:
+      stack_name: "{{ TypeName }}"
+      region: "{{ REGION }}"
+      state: "absent"

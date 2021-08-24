@@ -3,7 +3,7 @@ body,
 .container-fluid-menu,
 .nav-pills-menu,
 .row-menu{ 
-    height:100%;
+    min-height:100%;
 }
 
 .nav-pills-menu{
@@ -22,4 +22,47 @@ body,
 
 .btn-icon-danger:hover{
     color: #e84118;
+}
+
+.no_mode_create{
+    color: #5f5f5f;
+}
+
+.no_mode_create_img{
+    height: 200px;
+    width: 280px;
+}
+
+.hide{
+    display: none;
+}
+
+.list_question{
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+.q_select{
+    padding-bottom: 10px;
+}
+
+
+.q_option
+{
+width: 100px;
+ overflow: hidden;
+ text-overflow: ellipsis;
+ white-space: nowrap;
+}
+
+select {
+    width:100px; 
+    overflow:hidden; 
+    white-space:nowrap; 
+    text-overflow:ellipsis;
+}
+select option {
+    width:100px;
+    text-overflow:ellipsis;
+    overflow:hidden;
 }
