@@ -12,7 +12,8 @@ menu_list=[
          {"name":"Mode","isActive":"","url":"mode"},
          {"name":"Sujet","isActive":"","url":"subject"},
          {"name":"Question","isActive":"","url":"question"},
-         {"name":"Réponse","isActive":"active","url":"answer"}
+         {"name":"Réponse","isActive":"active","url":"answer"},
+         {"name": "Utilisateur", "isActive": "", "url": "user"}
       ]
 
 tableInfo={
