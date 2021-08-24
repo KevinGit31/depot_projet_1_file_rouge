@@ -13,7 +13,7 @@ menu_list = [
     {"name": "Sujet", "isActive": "", "url": "subject"},
     {"name": "Question", "isActive": "", "url": "question"},
     {"name": "Réponse", "isActive": "", "url": "answer"},
-    {"name": "Utilisateur", "isActive": "active", "url": "user"}
+    {"name": "Utilisateur", "isActive": "", "url": "listuser"}
 ]
 
 url = '/api/v1/users'

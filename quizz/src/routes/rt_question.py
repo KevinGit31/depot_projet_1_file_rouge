@@ -25,7 +25,8 @@ menu_list = [
     {"name": "Mode", "isActive": "", "url": "mode"},
     {"name": "Sujet", "isActive": "", "url": "subject"},
     {"name": "Question", "isActive": "active", "url": "question"},
-    {"name": "Réponse", "isActive": "", "url": "answer"}
+    {"name": "Réponse", "isActive": "", "url": "answer"},
+    {"name": "Utilisateur", "isActive": "", "url": "listuser"}
 ]
 
 

@@ -13,7 +13,7 @@ class Password(db.Model):
     __tablename__ = 'password'
     id = db.Column(db.Integer, primary_key=True)
     pwd = db.Column(db.String(100))
-    user = db.relationship("User", back_populates="password", uselist=False)
+    #user = db.relationship("User", back_populates="password", uselist=False)
 
     # Meta data
     #quizz_metadata_id = db.Column(db.Integer, db.ForeignKey('metadata.id'))
