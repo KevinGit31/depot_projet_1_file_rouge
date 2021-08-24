@@ -8,6 +8,7 @@ parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 
 from models.app  import db,ma
+
 from models.quizz.question_answer import QuestionAnswer, QuestionAnswerSchema
 
 class Question(db.Model):

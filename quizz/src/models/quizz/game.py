@@ -5,6 +5,7 @@ import inspect
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
+
 from models.quizz.answer import Answer
 from models.auth.user import User
 from models.auth.password import Password

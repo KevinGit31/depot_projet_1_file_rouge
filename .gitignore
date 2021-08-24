@@ -1,3 +1,14 @@
+*.pyc
+__pycache__/
+*.py[cod]
+.idea/
+venv/
+*.log
+*.pot
+*.pyc
+*/*/*/__pycache__/
+*/*/__pycache__/
+*/__pycache__/
 projet1grp3key.pem
 trace.log
 dbkey.txt
