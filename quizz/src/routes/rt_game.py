@@ -1,8 +1,10 @@
-from flask import render_template
+from flask import render_template,request,redirect, url_for
 from config.env import baseUrl
+from datetime import date
 import requests
 import json
 
+url = '/api/v1/game'
 url_subject = '/api/v1/subject'
 
 # Liste des menus
@@ -37,18 +39,57 @@ def configure_routes_game(app):
    @app.route('/game/<id>', methods=['GET', 'POST'])
    def game(id):
       new_url = baseUrl+url_subject+'/'+str(id)
-      print(new_url)
+
       subject = requests.get(new_url).json()
+      lastindex=len(subject['questions'])
+      index=0;
+
+      # Précédent ou suivant
+      if request.method == "POST":
+         index = request.form.get('index')
+         if request.form.get('btn-nav') == "PREV":
+            index = int(index) - 1
+         else :
+           index = int(index) + 1 
 
       return render_template('quizz/game/index.html',
       menu_list=menu_list,
       subject=subject,
+      lastindex=lastindex,
+      index=index,
       getIdValue=getIdValue)
 
-   @app.route('/end_game')
-   def end_game():
+   @app.route('/end_game/<subject_id>/<user_id>')
+   def end_game(subject_id,user_id):
+      new_url = baseUrl+url_subject+'/'+str(subject_id)
+      subject = requests.get(new_url).json()
+      lastindex=len(subject['questions'])
+
+      # Calcul des dates
+      startDate = date.today()
+      endDate = date.today()
+
+      # Calcul du score
+      # n le nombre de questions
+      # r le nombre de bonne réponse
+      r=3
+      n=len(subject['questions'])
+      if r==0 :
+         score = 0
+      else :
+         score = r*100/n
+
+      #Création du jeu
+      game = {
+         'startDate': str(startDate),
+         'endDate': str(endDate),
+         'score': score,
+         'subject_id': subject_id,
+         'user_id': user_id,
+      }
+      requests.post(baseUrl+url,json.dumps(game))
       
-      return render_template('quizz/game/end_game.html',menu_list=menu_list )
+      return render_template('quizz/game/end_game.html',menu_list=menu_list,score=score )
 
   
        

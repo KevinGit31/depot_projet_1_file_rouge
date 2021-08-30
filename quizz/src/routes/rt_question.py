@@ -74,7 +74,6 @@ def configure_routes_question(app):
 
             answers = answers.replace("\'", "\"")
             answers = json.loads(answers)
-            print(answers)
 
             # Action pour ajouter une mauvaise réponse
             if request.form.get('btn-answer') == "ADD_FALSE":

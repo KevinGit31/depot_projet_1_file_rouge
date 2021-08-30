@@ -4,7 +4,9 @@
             {% for head in tableInfo.headers %}
             <th class="{{head.class}}">{{head.display}}</th>
             {% endfor %}
+            {% if tableInfo.actions  %}
             <th class="action">Actions</th>
+            {% endif  %}
         </tr>
         {% for row in rep_list %}
         <tr>
@@ -23,6 +25,7 @@
             {% endif  %}
           
             {% endfor %}
+            {% if tableInfo.actions  %}
             <td>
                 <div class="float-right">                
                     {% for action in tableInfo.actions %}
@@ -31,6 +34,7 @@
                     {% endfor %}
                 </div>
             </td>
+            {% endif  %}
         </tr>
         {% endfor %}
     </table>

@@ -9,16 +9,17 @@
 {% block subtitle %}
 <div class="row justify-content-between">
     <div class="col-auto mr-auto">
-        <h3>{% block titre %} Sujet [ {{subject.name}} ] : 1/{{subject|length}} - Questions {% endblock %}</h3>
+        <h3>{% block titre %} Sujet [ {{subject.name}} ] : {{index+1}}/{{lastindex}} - Questions {% endblock %}</h3>
     </div>
 </div> 
 {% endblock %}
 <div>
+    <input type="hidden" name="index" value="{{index}}">
     <h5>
         Question  
     </h5>
     <p>
-    {% with id = subject.questions[0].question_id, option='question' %}
+    {% with id = subject.questions[index].question_id, option='question' %}
         {% include "quizz/game/text_by_id.html" %}
     {% endwith %}
     </p>
@@ -28,7 +29,7 @@
         Les réponses 
     </h5>
     <p>
-        {% for answer in subject.questions[0].question.answers %}
+        {% for answer in subject.questions[index].question.answers %}
         <div class="form-check">
             <input name="answers" class="form-check-input" type="checkbox" id={{answer.answer_id}} value={{answer.answer_id}} >
             <label class="form-check-label" for={{answer.answer_id}}>
@@ -43,10 +44,14 @@
 
 <div class="row justify-content-between">
     <div class="col-auto mr-auto">
-       <button  type="submit" class="btn btn-primary">Précédent</button>
+        {% if index > 0 %}
+       <button  type="submit" name="btn-nav" value="PREV" class="btn btn-primary">Précédent</button>
+       {% endif %}
     </div>
     <div class="col-auto">
-        <button  type="submit" class="btn btn-primary">Suivant</button>
+        {% if index < lastindex -1 %}
+        <button  type="submit" name="btn-nav" value="NEXT"class="btn btn-primary">Suivant</button>
+        {% endif %}
     </div>
 </div>
 <br>
@@ -55,7 +60,9 @@
         
      </div>
     <div class="col-auto">
-        <a class="btn btn-primary" href="{{ url_for('end_game') }}">Terminer</a>
+        {% if index == lastindex -1 %}
+        <a class="btn btn-success" href="{{ url_for('end_game',subject_id=subject.id,user_id=1) }}">Terminer</a>
+        {% endif %}
     </div>
 </div>
 </form>

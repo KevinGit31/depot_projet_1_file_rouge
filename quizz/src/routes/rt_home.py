@@ -21,10 +21,8 @@ tableInfo={
    "headers":[
       {"name":"id","display":"Partie","class":""},
       {"name":"score","display":"Score","class":""},
-   ],
-   "actions":[
-      {"icon":"fa-pen-square","class":"","url":"update_answer"},
-      {"icon":"fa-trash-alt","class":"btn-icon-danger","url":"delete_answer"}
+      {"name":"endDate","display":"Date","class":""},
+      {"name":"user_id","display":"L'id du joueur","class":""},
    ]
 }
 
