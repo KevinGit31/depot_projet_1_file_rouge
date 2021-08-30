@@ -188,7 +188,7 @@ agent any
                 }
             }
         }
-//TEST DE l'ACCES A L'URL QCM
+//TEST DU BUILD versionné
         stage('testurlquizz'){
             steps {
                 sh 'sleep 2s'
@@ -196,12 +196,6 @@ agent any
                 sh "curl http://${DNSPUBEC2ENV}:${INGRPORT}"
             }
         }
-//TEST D'ACCEPTANCE'
-//        stage('testACCEPTANCE'){
-//            steps {
-//                sh ''
-//            }
-//        }
     }
 }
 

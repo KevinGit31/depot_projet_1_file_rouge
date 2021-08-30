@@ -45,14 +45,6 @@ agent any
                 }
             }
         }
-// TEST APP avant archivage nexus
-        stage("TEST_Applicatif") {
-            steps {
-                script {
-//                    sh ''
-                }
-            }
-        }
 // MISE EN ARCHIVE de L'APP
         stage("Build") {
             steps {
@@ -196,7 +188,7 @@ agent any
                 }
             }
         }
-//TEST DE l'ACCES A L'URL QCM
+//TEST DU BUILD versionné
         stage('testurlquizz'){
             steps {
                 sh 'sleep 2s'
