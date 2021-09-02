@@ -11,7 +11,7 @@ ansible_python_interpreter=/usr/bin/python3
 10.80.120.20 ansible_host=10.80.120.20 ansible_environnement=qua
 
 [PROD]
-#10.80.130.30 ansible_host=10.80.130.30 ansible_environnement=main
+#10.80.130.30 ansible_host=10.80.130.30 ansible_environnement=prod
 
 [appgrp:vars]
 
