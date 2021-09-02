@@ -274,7 +274,7 @@ fi
 
 #TEST si la stack RDSDPROD existe sinon creation de la BDD Mysql
 ENV="PROD"
-STACKNAMEENV=$STACKNAME$ENV
+STACKNAMEENV=$STACKNAMERDS$ENV
 FXDESC_FILTER1=$STACKNAMEENV
 eval $(FXAWS_DESCRIBE "$SVCTYPE" "$DESCRIBECMD" "$REGION" "$QUERY" "$FXDESC_FILTER1")
 #if ! [ -n "$T1FXAWS_DESCRETURN"  ]; then
@@ -316,7 +316,7 @@ if [ $RETCODE == 254 ]; then
     echo "Le ENdPoint $STACKNAMEENV et KIBANA: $RESULTELKQUAD/_plugin/kibana/ Si première creation relancer le script dans 12min pour avoir le dns public de l'ELK"
 else
     RETELK=$(aws $SVCTYPE $DESCRIBECMD --region $REGION --output text --query $QUERY)
-    echo "L'URL ELK PROD ENdPoint est $RETELK et KIBANA : $RETELK/_plugin/kibana/"
+    echo "L'URL ELK QUA ENdPoint est $RETELK et KIBANA : $RETELK/_plugin/kibana/"
 fi
 echo ""
 #TEST si la stack ELK PROD existe sinon creation
