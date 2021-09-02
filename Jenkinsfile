@@ -33,6 +33,13 @@ pipeline {
 agent any
 // init IP suivant environnement
     stages {
+        stage("echoVAR") {
+            steps {
+                script {
+                    sh "echo ${BRANCHS_ENV}"
+                }
+            }
+        }
         stage('ipvarenv') {
             steps {
                 //sh 'rm -rf depot_projet_1_file_rouge'
