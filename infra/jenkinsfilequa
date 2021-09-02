@@ -21,7 +21,7 @@ pipeline {
         BRANCHS_ENV = "${env.JOB_BASE_NAME}"
         MAJBRANCHS_ENV = "${BRANCHS_ENV.toUpperCase()}"
         //VARIABLE A MODIFIER SUIVANT L4ENVIRONNEMENT
-        PRIVIP_ENV = "10.80.110.10"
+        PRIVIP_ENV = "10.80.120.20"
         CREDENTIALS_NEXUS = credentials('nexus')
         DBNAME_ENV = "dbquizz"
         CREDENTIALS_DB = credentials('dbqcm')
@@ -107,8 +107,8 @@ agent any
                     }
                     env.INGRPORT = "5000"
                     sh 'yes | cp -rf infra/aws_cloudform/instancegrp3.yaml infra/ansible/roles/common/tasks/instancegrp3.yaml'
-                    writeFile file: "/var/lib/jenkins/workspace/dev/infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all", text: "TypeName: ${TYPENAME_ENV}"
-                    f = new File("/var/lib/jenkins/workspace/dev/infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all")
+                    writeFile file: "/var/lib/jenkins/workspace/${ENVIRONNEMENT}/infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all", text: "TypeName: ${TYPENAME_ENV}"
+                    f = new File("/var/lib/jenkins/workspace/${ENVIRONNEMENT}/infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all")
                     f.append( "\nREGION: ${REGION_ENV}" )
                     f.append( "\nKEYNAME: ${KEYNAME}" )
                     f.append( "\nansible_environnement: ${ENVIRONNEMENT}" )
