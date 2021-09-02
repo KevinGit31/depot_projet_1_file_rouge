@@ -1,0 +1,42 @@
+- name: MAJ appconfig.py
+  become_user: devops
+  become: true
+  lineinfile:
+    path: ~/app/quizz/src/config/appconfig.py
+    regexp: '^(.*)app\.config\[(.*)$'
+    line: "    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://{{ userdb }}:{{ pwddb }}@{{ dnsdb }}/{{ namedb }}'"
+    backrefs: yes
+
+- name: mise a jour du fichier ~/app/quizz/src/models/app.py
+  become_user: devops
+  become: true
+  lineinfile:
+    path: ~/app/quizz/src/models/app.py
+    regexp: '^# app_config\(app\)(.*)$'
+    line: app_config(app)
+    backrefs: yes
+
+- name: mise a jour du fichier ~/app/quizz/src/models/app.py
+  become_user: devops
+  become: true
+  lineinfile:
+    path: ~/app/quizz/src/models/app.py
+    regexp: '^tsconfig\(app\)(.*)$'
+    line: '#tsconfig(app)'
+    backrefs: yes
+
+- name: Creation de la BDD ~/app/quizz/script/create-quizz-db.sh
+  become_user: devops
+  become: true
+  shell: ~/.local/bin/pipenv run python3 models/models.py
+  args:
+    chdir: ~/app/quizz/src
+    executable: /bin/bash
+
+- name: run qcm ~/app/quizz/script/start-quizz.sh
+  become_user: devops
+  become: true
+  shell: 'nohup ~/.local/bin/pipenv run python3 api/app.py > /tmp/nohup.out 2>&1 &'
+  args:
+    chdir: ~/app/quizz/src
+    executable: /bin/bash

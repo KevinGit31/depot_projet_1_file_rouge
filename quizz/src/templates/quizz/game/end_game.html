@@ -1,0 +1,29 @@
+
+
+{% extends "index.html" %}
+
+
+{% block pills %}
+
+{% block subtitle %}
+
+{% endblock %}
+<div>
+    <h5>
+        Vous avez gagner !
+    </h5>
+    </br>
+    <p>
+        score - {{score}}
+    </p>
+</div>
+
+<div class="row justify-content-between">
+    <div class="col-auto mr-auto">
+     </div>
+    <div class="col-auto">
+        <a class="btn btn-primary" href="{{ url_for('choose_mode') }}">Nouvelle Partie</a>
+    </div>
+</div>
+
+{% endblock %}
