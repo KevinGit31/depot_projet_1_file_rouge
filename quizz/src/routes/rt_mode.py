@@ -14,7 +14,9 @@ menu_list=[
          {"name":"Sujet","isActive":"","url":"subject"},
          {"name":"Question","isActive":"","url":"question"},
          {"name":"Réponse","isActive":"","url":"answer"},
-         {"name": "Utilisateur", "isActive": "", "url": "listuser"}
+         {"name": "Utilisateur", "isActive": "", "url": "listuser"},
+         {"name": "Se connecter", "isActive": "", "url": "login"},
+         {"name": "Se déconnecter", "isActive": "", "url": "logout"}
       ]
 
 

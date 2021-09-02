@@ -4,6 +4,7 @@ from flask_marshmallow import Marshmallow
 from models.init_helper import helper
 from config.appconfig import app_config
 import logging
+from flask_session import Session
 
 # Init helper
 app = Flask(__name__,
@@ -24,5 +25,10 @@ helper(app)
 db = SQLAlchemy(app)
 # Init ma
 ma=Marshmallow(app)
+
+# init session
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+Session(app)
 
 

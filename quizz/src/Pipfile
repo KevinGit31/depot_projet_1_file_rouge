@@ -12,6 +12,7 @@ pymysql = "*"
 requests = "*"
 PyJWT = "*"
 jwt = "*"
+Flask-Session = "*"
 
 [dev-packages]
 

@@ -2,6 +2,7 @@
 import os
 import sys
 import inspect
+from insert_bd import add_role_in_bd
 
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
@@ -28,4 +29,5 @@ if __name__ == "__main__":
     db.drop_all()
     print ("Création de nouvelles tables ...") 
     db.create_all()
-    print ("Terminer!")
+    add_role_in_bd()
+    print("Terminer!")

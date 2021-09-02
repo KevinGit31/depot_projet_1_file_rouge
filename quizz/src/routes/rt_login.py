@@ -1,34 +1,46 @@
 import json
-from flask import render_template, request, redirect, url_for, session, jsonify, make_response
+from flask import render_template, request, jsonify, make_response, session, redirect, url_for
 import requests
 import jwt
 from datetime import datetime, timedelta
 from functools import wraps
+from models.auth.user import User
 
 
 menu_list = [
-    {"name": "Accueil", "isActive": "", "url": "index"},
-    {"name": "Jouer", "isActive": "", "url": "game"},
+    {"name": "Accueil", "isActive": "", "url": "home"},
     {"name": "Mode", "isActive": "", "url": "mode"},
     {"name": "Sujet", "isActive": "", "url": "subject"},
     {"name": "Question", "isActive": "", "url": "question"},
     {"name": "Réponse", "isActive": "", "url": "answer"},
-    {"name": "Utilisateur", "isActive": "", "url": "listuser"}
+    {"name": "Utilisateur", "isActive": "", "url": "listuser"},
+    {"name": "Se connecter", "isActive": "active", "url": "login"},
+    {"name": "Se déconnecter", "isActive": "", "url": "logout"}
 ]
+
+tableInfo={
+   "headers":[
+      {"name":"id","display":"Partie","class":""},
+      {"name":"score","display":"Score","class":""},
+   ],
+   "actions":[
+      {"icon":"fa-pen-square","class":"","url":"update_answer"},
+      {"icon":"fa-trash-alt","class":"btn-icon-danger","url":"delete_answer"}
+   ]
+}
 
 url = '/api/v1/users'
 baseUrl = 'http://127.0.0.1:5000'
 
 
 def configure_routes_login(app):
-    app.config['SECRET_KEY'] = 'thisissecret'
 
     @app.route('/login', methods=['GET', 'POST'])
     def login():
         user_id = None
         pseudo_found = False
         if request.method == 'GET':
-            return render_template('login/login.html')
+            return render_template('login/login.html', menu_list=menu_list)
 
         if request.method == 'POST':
             # methode à améliorer
@@ -45,29 +57,33 @@ def configure_routes_login(app):
                     'expiration': str(datetime.utcnow() + timedelta(seconds=60)),
                     'user_id': user_id
                 },
-                    app.config['SECRET_KEY'])
-                return jsonify({'token': token})
+                    app.config['SECRET_KEY'], "HS256")
+                session["token"] = token
             else:
                 return make_response('Unable to verify', 403,
                                      {'WWW-Authenticate': 'Basic realm: "Authentication Failed "'})
 
-    def token_required(func):
+    @app.route("/logout")
+    def logout():
+        session["token"] = None
+        return redirect(url_for('login'))
+
+    def token_required(f):
         # decorator factory which invoks update_wrapper() method and passes decorated function as an argument
-        @wraps(func)
+        @wraps(f)
         def decorated(*args, **kwargs):
-            token = request.args.get('token')
+            token = session.get("token")
             if not token:
-                return jsonify({'Alert!': 'Token is missing!'}), 401
-
+                return render_template('login/login.html', menu_list=menu_list)
             try:
-
                 data = jwt.decode(token, app.config['SECRET_KEY'])
-            # You can use the JWT errors in exception
+
+                # You can use the JWT errors in exception
             # except jwt.InvalidTokenError:
             #     return 'Invalid token. Please log in again.'
             except:
                 return jsonify({'Message': 'Invalid token'}), 403
-            return func(*args, **kwargs)
+            return f(*args, **kwargs)
 
         return decorated
 

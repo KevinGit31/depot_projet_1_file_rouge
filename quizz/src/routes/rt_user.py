@@ -1,5 +1,4 @@
 import json
-import logging
 
 import hashlib
 import requests
@@ -16,7 +15,9 @@ menu_list = [
     {"name": "Sujet", "isActive": "", "url": "subject"},
     {"name": "Question", "isActive": "", "url": "question"},
     {"name": "Réponse", "isActive": "", "url": "answer"},
-    {"name": "Utilisateur", "isActive": "active", "url": "listuser"}
+    {"name": "Utilisateur", "isActive": "active", "url": "listuser"},
+    {"name": "Se connecter", "isActive": "", "url": "login"},
+    {"name": "Se déconnecter", "isActive": "", "url": "logout"}
 ]
 
 
@@ -42,14 +43,17 @@ def configure_routes_user(app):
             # Soumission du formulaire
         if request.method == "POST":
 
-            hashed_password = hashlib.md5(request.form.get('password'))
+            password = request.form.get('password')
+            hashed_password = hashlib.md5(password.encode())
+
             newuser = {
                 'firstname': request.form.get('firstname'),
                 'lastname': request.form.get('lastname'),
                 'pseudo': request.form.get('pseudo'),
                 'role_id': request.form.get('role_user')
             }
-            app.logger.info('requests.get(baseUrl + url_role).json()')
+            app.logger.info('password user no encode ' + password)
+            app.logger.info('password user encode ' + hashed_password.hexdigest())
             requests.post(baseUrl + url, json.dumps(newuser))
             return redirect(url_for("listuser"))
 
@@ -66,15 +70,16 @@ def configure_routes_user(app):
 
         # Soumission du formulaire
         if request.method == "POST":
+            password = request.form.get('password')
+            hashed_password = hashlib.md5(password.encode())
             newuser = {
                 'firstname': request.form.get('firstname'),
                 'lastname': request.form.get('lastname'),
                 'pseudo': request.form.get('pseudo'),
                 'role_id': request.form.get('role_user')
             }
-            app.logger.info("kevin")
-            app.logger.info(request.form.get('role_user'))
-            app.logger.info(json.dumps(newuser))
+            app.logger.info('password user no encode ' + password)
+            app.logger.info('password user encode ' + hashed_password.hexdigest())
             requests.put(newurl, json.dumps(newuser))
             return redirect(url_for("listuser"))
 
