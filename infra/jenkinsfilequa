@@ -4,7 +4,7 @@ node {
 }
 pipeline {
     environment {
-// initailisation de variable d'environnement supplémentaires
+// initialisation de variable d'environnement supplémentaires
         NEXUS_VERSION = "nexus3"
         NEXUS_PROTOCOL = "http"
         NEXUS_URL = "10.80.140.11:8081"

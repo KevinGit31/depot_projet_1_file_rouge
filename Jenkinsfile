@@ -4,7 +4,7 @@ node {
 }
 pipeline {
     environment {
-// initialisation de variable d'environnement supplémentaires
+// initailisation de variable d'environnement supplémentaires
         NEXUS_VERSION = "nexus3"
         NEXUS_PROTOCOL = "http"
         NEXUS_URL = "10.80.140.11:8081"
@@ -21,7 +21,7 @@ pipeline {
         BRANCHS_ENV = "${env.JOB_BASE_NAME}"
         MAJBRANCHS_ENV = "${BRANCHS_ENV.toUpperCase()}"
         //VARIABLE A MODIFIER SUIVANT L4ENVIRONNEMENT
-        PRIVIP_ENV = "10.80.130.30"
+        //PRIVIP_ENV = "10.80.110.10"
         CREDENTIALS_NEXUS = credentials('nexus')
         DBNAME_ENV = "dbquizz"
         CREDENTIALS_DB = credentials('dbqcm')
@@ -31,14 +31,32 @@ pipeline {
     }
 //
 agent any
-// CLONE DU DEPOT
+// init IP suivant environnement
     stages {
+        stage('ipvarenv') {
+            steps {
+                //sh 'rm -rf depot_projet_1_file_rouge'
+                script {
+                    if ( "${BRANCHS_ENV}" == 'dev') {
+                        PRIVIP_ENV = "10.80.110.10"
+                    }
+                    if ( "${BRANCHS_ENV}" == 'qua') {
+                        PRIVIP_ENV = "10.80.120.20"
+                    }
+                    if ( "${BRANCHS_ENV}" == 'prod') {
+                        PRIVIP_ENV = "10.80.130.30"
+                    }
+                }
+            }
+        }
+// CLONE DU DEPOT
+//    stages {
         stage('clone source') {
             steps {
                 sh 'rm -rf depot_projet_1_file_rouge'
                 script {
                     if ( "${BRANCHS_ENV}" == 'prod') {
-                        git branch: 'main', url: 'https://github.com/KevinGit31/depot_projet_1_file_rouge.git'
+                        git branch: 'prod', url: 'https://github.com/KevinGit31/depot_projet_1_file_rouge.git'
                     } else {
                         git branch: "${BRANCHS_ENV}", url: 'https://github.com/KevinGit31/depot_projet_1_file_rouge.git'
                     }
