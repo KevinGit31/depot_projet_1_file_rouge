@@ -50,7 +50,7 @@ agent any
             }
         }
 // CLONE DU DEPOT
-    stages {
+//    stages {
         stage('clone source') {
             steps {
                 sh 'rm -rf depot_projet_1_file_rouge'
