@@ -1,0 +1,20 @@
+<link href="{{ url_for('static', filename='css/mode/card.css') }}" rel="stylesheet">
+
+<div class="col-10 col-sm-8 col-md-4">
+    <div class="card card-mag">
+        <img class="card-img-top" src="static/img/mode.png" alt="Card image cap">
+        <div class="card-body">
+            <h5 class="card-title">{{ mode.name }}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">Nombre de questions : {{ mode.nbrQ }}</h6>
+            <p class="card-text">{{ mode.description }}</p>
+            <div class="">
+                <div class="float-right">
+                    <a class="btn btn-primary" href="{{ url_for('update_mode',id=mode.id) }}"> <i
+                            class="fas fa-pen-square"></i>Modifier</a>
+                    <a class="btn btn-danger" href="{{ url_for('delete_mode',id=mode.id) }}"> <i
+                            class="fas fa-trash-alt"></i>Supprimer</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

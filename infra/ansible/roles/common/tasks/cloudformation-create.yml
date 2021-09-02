@@ -1,0 +1,43 @@
+---
+- name: create a cloudformation stack
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+  - name: create a cloudformation stack task
+    cloudformation:
+      stack_name: "{{ TypeName }}"
+      state: "present"
+      region: "{{ REGION }}"
+      template: "instancegrp3.yaml"
+      template_parameters:
+        KeyName: "{{ KEYNAME }}"
+        Environnement: "{{ ansible_environnement }}"
+        RootKey: "{{ RootKey }}"
+        JenkinsKey: "{{ JenkinsKey }}"
+        DevOpsKey: "{{ secret_devops }}"
+        AnsibleKey: "{{ AnsibleKey }}"
+        SubnetIdPubADM: "{{ SubnetIdPubADM }}"
+        SubnetIdPrivADM: "{{ SubnetIdPrivADM }}"
+        SubnetIdPubDEV: "{{ SubnetIdPubDEV }}"
+        SubnetIdPrivDEV: "{{ SubnetIdPrivDEV }}"
+        SubnetIdPubQUA: "{{ SubnetIdPubQUA }}"
+        SubnetIdPrivQUA: "{{ SubnetIdPrivQUA }}"
+        SubnetIdPubPROD: "{{ SubnetIdPubPROD }}"
+        SubnetIdPrivPROD: "{{ SubnetIdPrivPROD }}"
+        VpcId: "{{ VpcId }}"
+        PrivateIP: "{{ PrivateIP }}"
+        TypeName: "{{ TypeName }}"
+        IngressPort: "{{ IngressPort }}"
+        SecurityGroupNameList: "{{ SecurityGroupNameList }}"
+        Urlscript: "{{ Urlscript }}"
+        SecurityGroupId: "{{ SecurityGroupId }}"
+        InstanceType: "{{ InstanceType }}"
+        AWSAccessKeyId: "NONE"
+        AWSSecretAccessKeyId: "NONE"
+      on_create_failure: DELETE
+      backoff_max_delay: 300
+    register: stack
+  - name: stack outputs
+    debug: msg="Stack outputs are {{stack.stack_outputs}}"

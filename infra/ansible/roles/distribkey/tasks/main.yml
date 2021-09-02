@@ -1,0 +1,2 @@
+- name: Create devops user + distribution de la clé ssh
+  include_tasks: add-user-ssh.yml
