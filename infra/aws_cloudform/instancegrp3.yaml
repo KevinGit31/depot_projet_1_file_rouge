@@ -82,7 +82,7 @@ Parameters:
     AllowedValues:
       - 'dev'
       - 'qua'
-      - 'main'
+      - 'prod'
   SecurityGroupNameList:
     Type: 'List<AWS::EC2::SecurityGroup::Id>'
     Description: 'The Security Group'
