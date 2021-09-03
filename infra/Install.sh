@@ -1,5 +1,19 @@
 #!/bin/bash
 
+# Prérequis pour le fonctionnement du script
+# 1 - le script necessite l'installation du aws cli fournit par amazon
+# 2 - configurer les credentials amazon qui permettront de s'authentifier par aws cli
+#      =>saisir la commande aws configure pour definir le aws key id et le secret access key + definir la region concerné ou le script effectura le traitement
+#      ==> aws configure list     pour verifier la configuration credentials
+##exemple==>
+# aws configure
+# AWS Access Key ID [****************QYGP]:
+# AWS Secret Access Key [****************a0de]:
+# Default region name [eu-west-2]: eu-central-1
+# Default output format [None]:
+# si le fichier pem n'existe pas la commande create-key-pair le genere en clé privé à convertir avec puttygen en clé public, il faut alors importer la clé public dans l'interface AWS dans EC2 dashbord puis key-pair importer la cle public
+
+
 AWSBIN=aws
 STACKNAMEVPC="vpcgrp3"
 STACKNAMESECGRP="securitygroup3"
