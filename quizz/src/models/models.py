@@ -29,5 +29,5 @@ if __name__ == "__main__":
     db.drop_all()
     print ("Création de nouvelles tables ...") 
     db.create_all()
-    add_role_in_bd()
+    #add_role_in_bd()
     print("Terminer!")
