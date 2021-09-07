@@ -33,14 +33,7 @@ pipeline {
 agent any
 // init IP suivant environnement
     stages {
-        stage("echoVAR") {
-            steps {
-                script {
-                    sh "echo ${BRANCHS_ENV}"
-                }
-            }
-        }
-        stage('ipvarenv') {
+        stage('Initialisation IP') {
             steps {
                 //sh 'rm -rf depot_projet_1_file_rouge'
                 script {
@@ -58,7 +51,7 @@ agent any
         }
 // CLONE DU DEPOT
 //    stages {
-        stage('clone source') {
+        stage('Récupération source') {
             steps {
                 sh 'rm -rf depot_projet_1_file_rouge'
                 script {
@@ -71,7 +64,7 @@ agent any
             }
         }
 // MISE EN ARCHIVE de L'APP
-        stage("Build") {
+        stage("Assemblage") {
             steps {
                 script {
                     sh 'tar cvfz qcm.tar.gz quizz/'
@@ -79,7 +72,7 @@ agent any
             }
         }
 // MISE EN DEPOT ET VERSION de L'ARCHIVE sur le NEXUS
-        stage('push nexus') {
+        stage('Envoi vers Nexus') {
             steps{
                 nexusArtifactUploader artifacts: [
                     [
@@ -99,14 +92,14 @@ agent any
             }
         }
 // TEST SI L'ARCHIVE VERSIONNé EST DISPO SUR LE NEXUS
-        stage('testnexuscible'){
+        stage('Test acces url Nexus'){
             steps {
                 sh 'sleep 2s'
                 sh "curl http://${NEXUS_URL}/repository/${NEXUS_REPOSITORY}/${NEXUS_ARTIFACT_ID}/1.0-${BUILD_NUMBER}/${NEXUS_ARTIFACT_ID}-1.0-${BUILD_NUMBER}.tar.gz"
             }
         }
 // RECUPERATION DU DNS PUBLIC RDS BDD de TEST + BDD + NEXUS
-        stage('getdnsrdsdb'){
+        stage('Récup adresses Base de données'){
             steps {
                 script {
                     env.DNSDBTEST_ENV = "${sh(script:'chmod +x infra/checkrds.sh && ./infra/checkrds.sh ${REGION_ENV} \"test\"', returnStdout: true).trim()}"
@@ -116,7 +109,7 @@ agent any
             }
         }
 // PREPARATION DES VARIABLES POUR ANSIBLE
-        stage('ansibleprep'){
+        stage('Prep Variable Ansible'){
             steps {
                 script {
 
@@ -163,7 +156,7 @@ agent any
              }
         }
 // SUPPRESSION DE LA STACK qcmdev / qcmqua / qcmprod
-        stage('deleteEC2byansible') {
+        stage('Suppression VM par Ansible') {
             steps {
 
                     sh """#!/bin/bash -xe
@@ -173,7 +166,7 @@ agent any
             }
         }
 // CREATION DE LA STACK qcmdev / qcmqua / qcmprod
-        stage('createEC2byansible') {
+        stage('Creation VM par Ansible') {
             steps {
                     sh """#!/bin/bash -xe
                     sudo -u devops -s ansible-playbook -i /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/roles/common/tasks/cloudformation-create.yml -vvv
@@ -181,7 +174,7 @@ agent any
             }
         }
 // Creation du user devops + envoi de la clé ssh sur l'environnment qcmdev / qcmqua / qcmprod
-        stage('DistribKeyByansible') {
+        stage('Envoi de la clé SSSH') {
             steps {
                     sh """#!/bin/bash -xe
                     sudo -u devops -s ansible-playbook -i /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/distribkey.yml --user ec2-user --key-file /home/devops/.ssh/projet1grp3key.pem -vvv
@@ -189,7 +182,7 @@ agent any
             }
         }
 // Decompression du build + Test de creation de la BDD
-        stage('installqcmTESTDB') {
+        stage('Test BDD') {
             steps {
                     sh """#!/bin/bash -xe
                     sudo -u devops -s ansible-playbook -i /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/${ENVIRONNEMENT}.yml --extra-vars "adminnexus=${CREDENTIALS_NEXUS_USR} pwdnexus=${CREDENTIALS_NEXUS_PSW} userdb=${CREDENTIALS_DB_USR} pwddb=${CREDENTIALS_DB_PSW} namedb=${DBNAME_ENV} dnsdb=${DNSDBTEST_ENV} artifactId=${NEXUS_ARTIFACT_ID} groupId=${NEXUS_GROUP_ID} numbuild=${BUILD_NUMBER} dnsnexus=${DNSPUBEC2NEXUS_ENV} gotoqcm=no" -vvv
@@ -197,7 +190,7 @@ agent any
             }
         }
 // Creation de la BDD
-        stage('installqcmDB_&_startquizz') {
+        stage('Prep TableBDD & start QCMquizz') {
             steps {
                     sh """#!/bin/bash -xe
                     sudo -u devops -s ansible-playbook -i /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/${ENVIRONNEMENT}.yml --extra-vars "userdb=${CREDENTIALS_DB_USR} pwddb=${CREDENTIALS_DB_PSW} namedb=${DBNAME_ENV} dnsdb=${DNSDB_ENV} gotoqcm=yes" -vvv
@@ -206,7 +199,7 @@ agent any
         }
 
 //RECUPERATION DU DNS PUBLIC de l'environnement pour le test de l'url
-        stage('getdnspublicenv'){
+        stage('Recup adresse site QCMquizz'){
             steps {
                 script {
                     env.DNSPUBEC2ENV = "${sh(script:'chmod +x infra/getdnspubEC2id.sh && ./infra/getdnspubEC2id.sh ${TYPENAME_ENV} ${REGION_ENV}', returnStdout: true).trim()}"
@@ -214,7 +207,7 @@ agent any
             }
         }
 //TEST DU BUILD versionné
-        stage('testurlquizz'){
+        stage('Test url appli QCMQuizz'){
             steps {
                 sh 'sleep 2s'
                 sh "echo http://${DNSPUBEC2ENV}:${INGRPORT}"
