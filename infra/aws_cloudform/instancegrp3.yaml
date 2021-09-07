@@ -429,8 +429,8 @@ Mappings:
       HVM64: ami-08427144fe9ebdef6
       HVMG2: NOT_SUPPORTED
     eu-west-1:
-      HVM64: ami-015232c01a82b847b
-      HVMG2: ami-0d5299b1c6112c3c7
+      HVM64: ami-0d1bf5b68307103c2
+      HVMG2: ami-0585cc9245d7565e4
     eu-west-2:
 #IMG Amazon Linux 2 AMI (HVM), SSD Volume Type - ami-03ac5a9b225e99b02 (64 bits x86)
       HVM64: ami-03ac5a9b225e99b02

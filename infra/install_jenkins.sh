@@ -29,7 +29,7 @@ AAKI1=$(cat /tmp/AWSAccessKeyId.txt)
 ASAKI1=$(cat /tmp/AWSSecretAccessKeyId.txt)
 TYPENAME1=$(cat /tmp/TypeName.txt)
 
-
+amazon-linux-extras install epel -y
 #install java
 yum install -y java-1.8.0-openjdk-devel
 #recuperation package
