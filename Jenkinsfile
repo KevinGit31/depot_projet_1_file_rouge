@@ -64,7 +64,7 @@ agent any
             }
         }
 // MISE EN ARCHIVE de L'APP
-        stage("Assemblage") {
+        stage("Build (Assemblage)") {
             steps {
                 script {
                     sh 'tar cvfz qcm.tar.gz quizz/'
