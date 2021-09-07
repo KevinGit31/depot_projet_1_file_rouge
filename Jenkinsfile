@@ -34,14 +34,7 @@ pipeline {
 agent any
 // init IP suivant environnement
     stages {
-        stage("echoVAR") {
-            steps {
-                script {
-                    sh "echo ${BRANCHS_ENV}"
-                }
-            }
-        }
-        stage('InitialisationIP') {
+        stage('Initialisation IP') {
             steps {
                 //sh 'rm -rf depot_projet_1_file_rouge'
                 script {
@@ -59,7 +52,7 @@ agent any
         }
 // CLONE DU DEPOT
 //    stages {
-        stage('clone source') {
+        stage('Clone source') {
             steps {
                 sh 'rm -rf depot_projet_1_file_rouge'
                 script {
