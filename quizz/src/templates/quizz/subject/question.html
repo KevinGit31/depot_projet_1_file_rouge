@@ -1,0 +1,17 @@
+<link href="{{ url_for('static', filename='css/question/answer.css') }}" rel="stylesheet">
+
+<div class="card border-primary mb-3" >
+    <div class="card-body container-fluid" id="newsHeading">
+        <div class="row">
+            <div class="col">
+                <h6>{{question.question}}</h6>
+                <textarea class="hide" name="index_answer" >{{loop.index}}</textarea>
+            </div>
+            <div class="col">
+                <button type="submit" name="btn-close" value="{{loop.index}}" title="Supprimer" class="btn close" aria-label="Close">
+                    <i class="fa fa-times" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

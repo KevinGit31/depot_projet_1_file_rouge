@@ -1,0 +1,83 @@
+- name: Install package java
+  yum:
+     name: java-1.8.0-*
+     state: present
+
+- name: Download filebeat
+  get_url:
+    url: https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.10.0-x86_64.rpm
+    dest: ~/
+
+- name: Install package filebeat
+  yum:
+     name: ~/filebeat-7.10.0-x86_64.rpm
+     state: present
+
+- name: Download logstash oss
+  get_url:
+    url: https://artifacts.elastic.co/downloads/logstash/logstash-oss-7.10.0-x86_64.rpm
+    dest: ~/
+
+- name: Install package logstash oss
+  yum:
+     name: ~/logstash-oss-7.10.0-x86_64.rpm
+     state: present
+
+#modif du fichier de config filebeat pour transférer à logstash
+- name: create file with content /etc/filebeat/filebeat.yml
+  copy:
+    dest: "/etc/filebeat/filebeat.yml"
+    content: |
+      filebeat.inputs:
+      - type: log
+        enabled: true
+        paths:
+          - /var/log/*/*.log
+      filebeat.config.modules:
+        path: ${path.config}/modules.d/*.yml
+        reload.enabled: false
+      setup.ilm.enabled: false
+      setup.ilm.check_exists: false
+      setup.template.settings:
+        index.number_of_shards: 1
+      output.logstash:
+        hosts: ["localhost:5044"]
+
+#modif du fichier de config logstash
+- name: create file with content /etc/logstash/conf.d/logstash.conf
+  copy:
+    dest: "/etc/logstash/conf.d/logstash.conf"
+    content: |
+      input {
+        beats {
+          port => 5044
+        }
+      }
+      output {
+        elasticsearch {
+          hosts => ["{{ DNSELK }}:443"]
+          ssl => true
+          index => "%{[@metadata][beat]}-%{[@metadata][version]}-%{+YYYY.MM.dd}"
+          ilm_enabled => false
+          user => "admin"
+          password => "{{ PWDELK }}"
+        }
+      }
+
+- name: Install de logstash au boot + install du plugin logstash pour amazon es et démarage de logstash
+  shell: "{{ item }}"
+  with_items:
+    - "/usr/share/logstash/bin/system-install /etc/logstash/startup.options sysv"
+    - "chkconfig --add logstash"
+    - "./logstash-plugin install logstash-output-amazon_es"
+    - "./logstash -f /etc/logstash/conf.d/logstash.conf"
+  args:
+    chdir: /usr/share/logstash/bin/
+    executable: /bin/bash
+
+- name: Restart service filebeat
+  service:
+    name: "{{ item }}"
+    state: restarted
+  with_items:
+    - "filebeat"
