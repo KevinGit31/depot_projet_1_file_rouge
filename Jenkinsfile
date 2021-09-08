@@ -106,6 +106,7 @@ agent any
                     env.DNSDBTEST_ENV = "${sh(script:'chmod +x infra/checkrds.sh && ./infra/checkrds.sh ${REGION_ENV} \"test\"', returnStdout: true).trim()}"
                     env.DNSDB_ENV = "${sh(script:'chmod +x infra/checkrds.sh && ./infra/checkrds.sh ${REGION_ENV} ${ENVIRONNEMENT}', returnStdout: true).trim()}"
                     env.DNSPUBEC2NEXUS_ENV = "${sh(script:'chmod +x infra/getdnspubEC2id.sh && ./infra/getdnspubEC2id.sh nexus ${REGION_ENV}', returnStdout: true).trim()}"
+                    env.DNSELK_ENV = ""
                     if ( "${BRANCHS_ENV}" != 'develk') {
                     env.DNSELK_ENV = "${sh(script:'aws es describe-elasticsearch-domain --domain-name elk${BRANCHS_ENV} --query "DomainStatus.[ [Endpoint ]]" --region ${REGION_ENV} --output text', returnStdout: true).trim()}"
                     }
