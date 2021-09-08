@@ -90,6 +90,7 @@ echo "RET=$(sudo cat /etc/ansible/.ansvlt)" >> /etc/ansible/ansvlt.sh
 echo "echo \$RET" >> /etc/ansible/ansvlt.sh
 sed -i 's/\#vault_password_file = \/path\/to\/vault_password_file/vault_password_file=\/etc\/ansible\/ansvlt.sh/' /etc/ansible/ansible.cfg
 sed -i 's/\#host_key_checking = False/host_key_checking = False/' /etc/ansible/ansible.cfg
+sed -i 's/\#host_key_checking = False/host_key_checking = False/' /etc/ansible/ansible.cfg
 #preparation pour le client aws pour ansible dans jenkins
 pip install boto3==1.15.16
 pip uninstall -y botocore
