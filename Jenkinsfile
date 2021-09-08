@@ -166,9 +166,9 @@ agent any
         stage('deleteEC2byansible') {
             steps {
                     ansibleplaybook{
-                            inventory: '/var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts',
-                            playbook: '/var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/roles/common/tasks/cloudformation-delete.yml',
-                            extras: '-vvv',
+                            inventory: "/var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts",
+                            playbook: "/var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/roles/common/tasks/cloudformation-delete.yml",
+                            extras: "-vvv",
                             become(true),
                             becomeUser("devops")
 //                                    extraVars: [
