@@ -26,7 +26,7 @@ pipeline {
         DBNAME_ENV = "dbquizz"
         CREDENTIALS_DB = credentials('dbqcm')
         NEXUS_STACK_NAME = "nexus"
-// A CHANGER SI NOM MULTIPIPELINE CHANGE  <===============================IMPORTANT======
+// A CHANGER SI LE NOM MULTIPIPELINE A CHANGE  <===============================IMPORTANT======
         JOBMULTINAME = "TESTmulti_"
         CREDENTIALS_ELK = credentials('elk')
     }
@@ -165,7 +165,17 @@ agent any
 // SUPPRESSION DE LA STACK qcmdev / qcmqua / qcmprod
         stage('deleteEC2byansible') {
             steps {
-
+//                    ansibleplaybook{
+//                            inventory: '/var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts',
+//                            playbook: '/var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/roles/common/tasks/cloudformation-delete.yml',
+//                            inventoryPath(String path)
+//                            extras: '-vvv'
+//                            become(true)
+//                            becomeUser("devops")
+//                                    extraVars: [
+//                                        login: 'mylogin',
+//                                        secret_key: [value: 'g4dfKWENpeF6pY05', hidden: true]
+//                    }
                     sh """#!/bin/bash -xe
                     sudo -u devops -s ansible-playbook -i /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/roles/common/tasks/cloudformation-delete.yml -vvv
                     sleep 5s
