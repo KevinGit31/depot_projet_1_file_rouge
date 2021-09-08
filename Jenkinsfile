@@ -26,7 +26,8 @@ pipeline {
         DBNAME_ENV = "dbquizz"
         CREDENTIALS_DB = credentials('dbqcm')
         NEXUS_STACK_NAME = "nexus"
-        JOBMULTINAME = "MULTIQCMQuizz_"
+// A CHANGER SI NOM MULTIPIPELINE CHANGE  <===============================IMPORTANT======
+        JOBMULTINAME = "TESTmulti_"
         CREDENTIALS_ELK = credentials('elk')
 
     }
