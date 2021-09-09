@@ -1,4 +1,4 @@
-from flask import render_template,request,redirect, url_for
+from flask import render_template,request,redirect, url_for,session
 from config.env import baseUrl
 import requests
 import json
@@ -30,6 +30,8 @@ def configure_routes_home(app):
 
    @app.route('/')
    def home():
+
+      session["name"] = "Bonjour"
 
       rep_list = requests.get(baseUrl+url).json()
       rep_list = json.loads(rep_list)

@@ -15,6 +15,7 @@
 {% endblock %}
 <div>
     <input type="hidden" name="index" value="{{index}}">
+    <input  type="hidden" name="question_id" value="{{subject.questions[index].question_id}}" >
     <h5>
         Question  
     </h5>
@@ -61,7 +62,7 @@
      </div>
     <div class="col-auto">
         {% if index == lastindex -1 %}
-        <a class="btn btn-success" href="{{ url_for('end_game',subject_id=subject.id,user_id=1) }}">Terminer</a>
+        <button  type="submit" name="btn-end" value="END" class="btn btn-success">Terminer</button>
         {% endif %}
     </div>
 </div>

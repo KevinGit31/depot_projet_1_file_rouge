@@ -1,0 +1,90 @@
+<div class="container-fluid">
+    <app-page-title [title]="txt?.title" [breadcrumbItems]="breadCrumbItems"></app-page-title>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                <form autocomplete="off" [formGroup]="journalRowForm" (ngSubmit)="crudJr()">
+                    <div class="row">
+                        <div class="col-12">
+
+                            <div class="form-group">
+                                <label class="control-label">Date</label>
+                                <input class="form-control" placeholder="Date d'opération" type="date"
+                                    name="dateOperation" formControlName="dateOperation"
+                                    [min]="currentFy.startDate"
+                                    [max]="currentFy.endDate"
+                                    [ngClass]="{'is-invalid': submitted && journalRowFormCtl.dateOperation.errors}"
+                                    required>
+                                <div *ngIf="submitted && journalRowFormCtl.dateOperation.errors" class="invalid-feedback">
+                                    <span *ngIf="journalRowFormCtl.dateOperation.errors.required">Cette valeur est
+                                        obligatoire.</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label">Nom de l'opération</label>
+                                <input class="form-control" placeholder="Nom de l'opération" type="text" name="label"
+                                    formControlName="label"
+                                    [ngClass]="{'is-invalid': submitted && journalRowFormCtl.label.errors}" required>
+                                <div *ngIf="submitted && journalRowFormCtl.label.errors" class="invalid-feedback">
+                                    <span *ngIf="journalRowFormCtl.label.errors.required">Cette valeur est
+                                        obligatoire.</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label class="control-label">Débit</label>
+                                <ng-select formControlName="debit" name="debit" class="mt-2 mr-1"  [ngClass]="{'is-invalid': submitted && journalRowFormCtl.debit.errors}">
+                                    <ng-option *ngFor="let account of this.accounts" [value]="account">{{account.number}} -
+                                        {{account.label}}</ng-option>
+                                </ng-select>
+                                <div *ngIf="submitted && journalRowFormCtl.debit.errors" class="invalid-feedback">
+                                    <span *ngIf="journalRowFormCtl.debit.errors.required">Cette valeur est
+                                        obligatoire.</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="form-group">
+                                <label class="control-label">Crédit</label>
+                                <ng-select  [ngClass]="{'is-invalid': submitted && journalRowFormCtl.credit.errors}" formControlName="credit" name="credit" class="mt-2 mr-1">
+                                    <ng-option *ngFor="let account of this.accounts" [value]="account">{{account.number}} -
+                                        {{account.label}}</ng-option>
+                                </ng-select>
+                                <div *ngIf="submitted && journalRowFormCtl.credit.errors" class="invalid-feedback">
+                                    <span *ngIf="journalRowFormCtl.credit.errors.required">Cette valeur est
+                                        obligatoire.</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+
+                        <div class="col-12">
+                            <div class="form-group">
+                                <label class="control-label">Montant</label>
+                                <input class="form-control" placeholder="Montant" min=0 type="number" name="amount"
+                                    formControlName="amount"
+                                    [ngClass]="{'is-invalid': submitted && journalRowFormCtl.amount.errors}" required>
+                                <div *ngIf="submitted && journalRowFormCtl.amount.errors" class="invalid-feedback">
+                                    <span *ngIf="journalRowFormCtl.amount.errors.required">Cette valeur est
+                                        obligatoire.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right pt-4">
+                        <button type="button" class="btn btn-light" (click)="close()">Annuler</button>
+                        <button type="submit" class="btn btn-primary save-event ml-1">{{txt.okbtn||"Créer"}}</button>
+                    </div>
+                </form>
+                </div> <!-- end card body-->
+            </div> <!-- end card -->
+        </div>
+    </div>
+
+</div>

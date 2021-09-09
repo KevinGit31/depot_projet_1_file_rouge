@@ -1,0 +1,60 @@
+<div class="modal-header">
+    <h5 class="modal-title">{{txt.title||"Créer un compte"}}</h5>
+    <button type="button" class="close" aria-hidden="true" (click)="close()">×</button>
+</div>
+<div class="modal-body p-3">
+    <form [formGroup]="accountForm" (ngSubmit)="crudAccount()">
+        <div class="row">
+            <div class="col-12">
+
+                <div class="form-group">
+                    <label class="control-label">Compte</label>
+                    <ng-select formControlName="account" (ngModelChange)='change($event)' name="account"
+                        [(ngModel)]="selectAccount" class="mt-2 mr-1">
+                        <ng-option *ngFor="let account of this.accounts" [value]="account">{{account.number}} -
+                            {{account.label}}</ng-option>
+                    </ng-select>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label">Nom du sous compte</label>
+                    <input class="form-control" placeholder="nom du sous compte" type="text" name="label"
+                        formControlName="label" [ngClass]="{'is-invalid': submitted && accountFormCtl.label.errors}"
+                        required>
+                    <div *ngIf="submitted && accountFormCtl.label.errors" class="invalid-feedback">
+                        <span *ngIf="accountFormCtl.label.errors.required">Cette valeur est obligatoire.</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-group">
+                    <label class="control-label">Numéro du sous compte</label>
+                    <div class="row">
+                        <div class="col-4">
+                            <input class="form-control" placeholder="" type="text" name="number0"
+                                formControlName="number0"
+                                [ngClass]="{'is-invalid': submitted && accountFormCtl.number0.errors}" required>
+                            <div *ngIf="submitted && accountFormCtl.number0.errors" class="invalid-feedback">
+                                <span *ngIf="accountFormCtl.number0.errors.required">Cette valeur est
+                                    obligatoire.</span>
+                            </div>
+                        </div>
+                        <div class="col-8">
+                            <input class="form-control" placeholder="" type="text" name="number1"
+                                formControlName="number1"
+                                [ngClass]="{'is-invalid': submitted && accountFormCtl.number1.errors}" required>
+                            <div *ngIf="submitted && accountFormCtl.number1.errors" class="invalid-feedback">
+                                <span *ngIf="accountFormCtl.number1.errors.required">Cette valeur est
+                                    obligatoire.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-right pt-4">
+            <button type="button" class="btn btn-light" (click)="close()">Annuler</button>
+            <button type="submit" class="btn btn-primary save-event ml-1">{{txt.okbtn||"Créer"}}</button>
+        </div>
+    </form>
+</div>

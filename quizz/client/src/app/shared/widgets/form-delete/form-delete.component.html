@@ -1,0 +1,26 @@
+<div class="modal-header">
+    <h5 class="modal-title">{{txt.title||"Supprimer"}}</h5>
+    <button type="button" class="close" aria-hidden="true" (click)="close()">×</button>
+  </div>
+  <div class="modal-body p-3">
+    <form (ngSubmit)="delete()" [formGroup]="formDelete">
+      <div class="row">
+        <div class="col-12">
+          <div class="form-group">
+            <label class="control-label">{{txt.preText||"Saisiser"}} <b>{{item[itemField]}}</b> {{txt.sufText||"pour supprimer"}}</label>
+            <input class="form-control" [placeholder]="txt.placeHold||''" type="text" name="name"
+              formControlName="name" [ngClass]="{'is-invalid': submitted && deleteForm.name.errors}" required>
+            <div *ngIf="submitted && deleteForm.name.errors" class="invalid-feedback">
+              <span *ngIf="deleteForm.name.errors.required">Cette valeur est obligatoire.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-right pt-4">
+        <button type="button" class="btn btn-light" (click)="close()">Annuler</button>
+        <button type="submit" [disabled]="!formDelete.valid || !match()" class="btn btn-danger save-event ml-1">Supprimer</button>
+      </div>
+    </form>
+  </div>
+

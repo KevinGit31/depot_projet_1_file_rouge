@@ -1,0 +1,144 @@
+<div class="container-fluid">
+  <div class="row page-title align-items-center">
+    <div class="col-md-3 col-xl-6">
+      <h4 class="mb-1 mt-0">Créer une offre</h4>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="header-title mt-0 mb-1">Création d'une offre d'emploi</h4>
+          <p class="sub-header">Veuillez renseigner les informations précises concernant votre offre d'emploi.</p>
+
+          <form class="needs-validation" (ngSubmit)="validSubmit()" [formGroup]="validationform">
+            
+            <!-- Titre et description de l'offre -->
+            <div class="form-group position-relative mb-3">
+              <label>Titre de l'offre</label>
+              <input type="text" class="form-control" formControlName="title" placeholder="Titre de l'offre"
+                [ngClass]="{'is-invalid': submit && form.title.errors}">
+              <div *ngIf="submit && form.title.errors" class="invalid-feedback">
+                <span *ngIf="form.title.errors.required">Veuillez indiquer un titre pour l'annonce</span>
+              </div>
+            </div>
+            <div class="form-group position-relative mb-3">
+              <label>Description</label>
+              <textarea class="form-control" formControlName="description" placeholder="Description" rows="5"
+                [ngClass]="{'is-invalid': submit && form.description.errors}"></textarea>
+              <div *ngIf="submit && form.description.errors" class="invalid-feedback">
+                <span *ngIf="form.description.errors.required">Veuillez ajouter une description à votre annonce</span>
+              </div>
+            </div>
+            <div class="form-group position-relative mb-3">
+              <label>Poste à occuper</label>
+              <div class="input-group">
+                <input type="text" class="form-control" formControlName="job" placeholder="Poste à occuper">
+              </div>
+            </div>
+            <div class="form-group position-relative mb-3">
+              <label>Salaire proposé</label>
+              <input type="number" class="form-control" placeholder="Salaire proposé" formControlName="salary">
+            </div>
+            <div class="form-group position-relative mb-3">
+              <label>Nombre de postes disponibles</label>
+              <input type="number" class="form-control" placeholder="Nombre de postes disponibles"
+                formControlName="nbrPost">
+            </div>
+            <hr>
+
+            <!-- Profil -->
+            <app-offer-profil (profilEventEmit)=setProfil($event)></app-offer-profil>
+            <hr>
+
+            <!-- Type de contrat -->
+            <h4 class="header-title mt-0 mb-1">Type de contrat</h4>
+            <p class="sub-header">Veuillez renseigner les informations concernant le type de contrat de travail proposé.
+            </p>
+
+            <div class="form-group position-relative mb-3">
+              <label>Type de contrat</label>
+              <ng-select placeholder="Type de contrat" formControlName="typeContrat"
+                [ngClass]="{'is-invalid': submit && form.typeContrat.errors}">
+                <ng-option *ngFor="let contrat of selectTypeContrat" [value]="contrat.id">{{contrat.text}}</ng-option>
+              </ng-select>
+              <div *ngIf="submit && form.typeContrat.errors" class="invalid-feedback">
+                <span *ngIf="form.typeContrat.errors.required">Veuillez sélectionner un type de contrat.</span>
+              </div>
+            </div>
+            <div class="form-group position-relative mb-3">
+              <label>Date de début du contrat</label>
+              <input class="form-control" id="example-date" type="date" formControlName="startDate"
+                [ngClass]="{'is-invalid': submit && form.startDate.errors}">
+              <div *ngIf="submit && form.startDate.errors" class="invalid-feedback">
+                <span *ngIf="form.startDate.errors.required">Veuillez sélectionner une date.</span>
+              </div>
+            </div>
+            <div class="form-group position-relative mb-3">
+              <label>Date de fin du contrat</label>
+              <input class="form-control" id="example-date" type="date" formControlName="endDate">
+            </div>
+            <div class="form-group position-relative mb-3">
+              <label>Description du contrat</label>
+              <textarea class="form-control" formControlName="descriptionContrat" placeholder="Description du contrat"
+                rows="5"></textarea>
+            </div>
+            <hr>
+
+            <!-- Entreprise -->
+            <h4 class="header-title mt-0 mb-1">Entreprise</h4>
+            <p class="sub-header">Veuillez renseigner les informations concernant votre entreprise.</p>
+
+            <div class="form-group position-relative mb-3">
+              <label>Nom de l'entreprise</label>
+              <input type="text" class="form-control" formControlName="name" placeholder="Nom de l'entreprise"
+                [ngClass]="{'is-invalid': submit && form.name.errors}">
+              <div *ngIf="submit && form.name.errors" class="invalid-feedback">
+                <span *ngIf="form.name.errors.required">Veuillez indiquer le nom de l'entreprise</span>
+              </div>
+            </div>
+            <div class="form-group position-relative mb-3">
+              <label>NIP</label>
+              <input type="text" class="form-control" formControlName="nip" placeholder="NIP de l'entreprise"
+                [ngClass]="{'is-invalid': submit && form.nip.errors}">
+              <div *ngIf="submit && form.nip.errors" class="invalid-feedback">
+                <span *ngIf="form.nip.errors.required">Veuillez indiquer le NIP de l'entreprise</span>
+              </div>
+            </div>
+            <div class="form-group position-relative mb-3">
+              <label>Adresse de l'entreprise</label>
+              <input type="text" class="form-control" formControlName="address" placeholder="Adresse de l'entreprise"
+                [ngClass]="{'is-invalid': submit && form.address.errors}">
+              <div *ngIf="submit && form.address.errors" class="invalid-feedback">
+                <span *ngIf="form.address.errors.required">Veuillez indiquer l'adresse de l'entreprise</span>
+              </div>
+            </div>
+            <div class="form-group position-relative mb-3">
+              <label>Contact de l'entreprise</label>
+              <input type="text" class="form-control" formControlName="contact" placeholder="Contact de l'entreprise"
+                [ngClass]="{'is-invalid': submit && form.contact.errors}">
+              <div *ngIf="submit && form.contact.errors" class="invalid-feedback">
+                <span *ngIf="form.contact.errors.required">Veuillez indiquer le contact de l'entreprise</span>
+              </div>
+            </div>
+
+            <!-- Bouton de validation ou d'annulation -->
+            <div class="row page-title align-items-center">
+              <div class="col-md-12 col-xl-12 text-xl-right">
+                <div class="mt-4 mt-md-0">
+                  <div class="btn-group mb-3 mb-sm-0">
+                    <button class="btn  btn-white" (click)="back()">Annuler</button>
+                  </div>
+                  <div class="btn-group ml-1">
+                    <button class="btn btn-primary " type="submit">Créer</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+
+        </div> <!-- end card-body-->
+      </div> <!-- end card-->
+    </div> <!-- end col-->
+  </div>
+</div>
