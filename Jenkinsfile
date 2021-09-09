@@ -26,7 +26,7 @@ pipeline {
         DBNAME_ENV = "dbquizz"
         CREDENTIALS_DB = credentials('dbqcm')
         NEXUS_STACK_NAME = "nexus"
-// A CHANGER SI LE NOM MULTIPIPELINE A CHANGE  <===============================IMPORTANT======
+// A CHANGER SI NOM MULTIPIPELINE CHANGE  <===============================IMPORTANT======
         JOBMULTINAME = "TESTmulti_"
         CREDENTIALS_ELK = credentials('elk')
     }
@@ -165,40 +165,24 @@ agent any
 // SUPPRESSION DE LA STACK qcmdev / qcmqua / qcmprod
         stage('deleteEC2byansible') {
             steps {
-                ansiblePlaybook(
-                        playbook: "/var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/roles/common/tasks/cloudformation-delete.yml",
-                        inventory: "/var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts",
-                        sudoUser: "devops",
-                        extras: "-vvv" )
-//                    sh """#!/bin/bash
-//                    sudo -u devops -s ansible-playbook -i /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/roles/common/tasks/cloudformation-delete.yml -vvv
-//                    sleep 5s
-//                    """
+
+                    sh """#!/bin/bash -xe
+                    sudo -u devops -s ansible-playbook -i /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/roles/common/tasks/cloudformation-delete.yml -vvv
+                    sleep 5s
+                    """
             }
         }
 // CREATION DE LA STACK qcmdev / qcmqua / qcmprod
         stage('createEC2byansible') {
             steps {
-                ansiblePlaybook(
-                        playbook: "/var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/roles/common/tasks/cloudformation-create.yml",
-                        inventory: "/var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts",
-                        sudoUser: "devops",
-                        extras: "-vvv" )
-//                    sh """#!/bin/bash
-//                    sudo -u devops -s ansible-playbook -i /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/roles/common/tasks/cloudformation-create.yml -vvv
-//                    """
+                    sh """#!/bin/bash -xe
+                    sudo -u devops -s ansible-playbook -i /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/roles/common/tasks/cloudformation-create.yml -vvv
+                    """
             }
         }
 // Creation du user devops + envoi de la clé ssh sur l'environnment qcmdev / qcmqua / qcmprod
         stage('DistribKeyByansible') {
             steps {
-//                ansiblePlaybook(
-//                        playbook: "/var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/distribkey.yml",
-//                        inventory: "/var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts",
-//                        becomeUser: "devops",
-//                        sudoUser: "devops",
-//                        credentialsId: 'sshec2user',
-//                        extras: "-vvv" )
                     sh """#!/bin/bash -xe
                     sudo -u devops -s ansible-playbook -i /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/distribkey.yml --user ec2-user --key-file /home/devops/.ssh/projet1grp3key.pem -vvv
                     """
@@ -207,47 +191,17 @@ agent any
 // Decompression du build + Test de creation de la BDD
         stage('installqcmTESTDB') {
             steps {
-                ansiblePlaybook(
-                        playbook: "/var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/${ENVIRONNEMENT}.yml",
-                        inventory: "/var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts",
-                        sudoUser: "devops",
-//                        extras: "--user ec2-user --key-file /home/devops/.ssh/projet1grp3key.pem -vvv"
-                        extraVars: [
-                            adminnexus: "${CREDENTIALS_NEXUS_USR}",
-                            pwdnexus: "${CREDENTIALS_NEXUS_PSW}",
-                            userdb: "${CREDENTIALS_DB_USR}",
-                            pwddb: "${CREDENTIALS_DB_PSW}",
-                            namedb: "${DBNAME_ENV}",
-                            dnsdb: "${DNSDBTEST_ENV}",
-                            artifactId: "${NEXUS_ARTIFACT_ID}",
-                            groupId: "${NEXUS_GROUP_ID}",
-                            numbuild: "${BUILD_NUMBER}",
-                            dnsnexus: "${DNSPUBEC2NEXUS_ENV}",
-                            gotoqcm: "no"
-                        ] )
-//                    sh """#!/bin/bash
-//                    sudo -u devops -s ansible-playbook -i /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/${ENVIRONNEMENT}.yml --extra-vars "adminnexus=${CREDENTIALS_NEXUS_USR} pwdnexus=${CREDENTIALS_NEXUS_PSW} userdb=${CREDENTIALS_DB_USR} pwddb=${CREDENTIALS_DB_PSW} namedb=${DBNAME_ENV} dnsdb=${DNSDBTEST_ENV} artifactId=${NEXUS_ARTIFACT_ID} groupId=${NEXUS_GROUP_ID} numbuild=${BUILD_NUMBER} dnsnexus=${DNSPUBEC2NEXUS_ENV} gotoqcm=no" -vvv
-//                    """
+                    sh """#!/bin/bash -xe
+                    sudo -u devops -s ansible-playbook -i /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/${ENVIRONNEMENT}.yml --extra-vars "adminnexus=${CREDENTIALS_NEXUS_USR} pwdnexus=${CREDENTIALS_NEXUS_PSW} userdb=${CREDENTIALS_DB_USR} pwddb=${CREDENTIALS_DB_PSW} namedb=${DBNAME_ENV} dnsdb=${DNSDBTEST_ENV} artifactId=${NEXUS_ARTIFACT_ID} groupId=${NEXUS_GROUP_ID} numbuild=${BUILD_NUMBER} dnsnexus=${DNSPUBEC2NEXUS_ENV} gotoqcm=no" -vvv
+                    """
             }
         }
 // Creation de la BDD
         stage('installqcmDB_&_startquizz') {
             steps {
-                ansiblePlaybook(
-                        playbook: "/var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/${ENVIRONNEMENT}.yml",
-                        inventory: "/var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts",
-                        sudoUser: "devops",
-//                        extras: "--user ec2-user --key-file /home/devops/.ssh/projet1grp3key.pem -vvv"
-                        extraVars: [
-                            userdb: "${CREDENTIALS_DB_USR}",
-                            pwddb: "${CREDENTIALS_DB_PSW}",
-                            namedb: "${DBNAME_ENV}",
-                            dnsdb: "${DNSDB_ENV}",
-                            gotoqcm: "yes"
-                        ] )
-//                    sh """#!/bin/bash
-//                    sudo -u devops -s ansible-playbook -i /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/${ENVIRONNEMENT}.yml --extra-vars "userdb=${CREDENTIALS_DB_USR} pwddb=${CREDENTIALS_DB_PSW} namedb=${DBNAME_ENV} dnsdb=${DNSDB_ENV} gotoqcm=yes" -vvv
-//                    """
+                    sh """#!/bin/bash -xe
+                    sudo -u devops -s ansible-playbook -i /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/${ENVIRONNEMENT}.yml --extra-vars "userdb=${CREDENTIALS_DB_USR} pwddb=${CREDENTIALS_DB_PSW} namedb=${DBNAME_ENV} dnsdb=${DNSDB_ENV} gotoqcm=yes" -vvv
+                    """
             }
         }
 
