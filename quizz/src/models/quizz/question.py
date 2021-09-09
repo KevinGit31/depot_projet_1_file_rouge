@@ -16,8 +16,8 @@ class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     question = db.Column(db.String(1024))
 
-    # La collection de reponse
-    answers =  db.relationship("QuestionAnswer", cascade="all, delete-orphan")
+    # La collection de reponseanswers =  db.relationship("QuestionAnswer", cascade="all, delete-orphan")
+    
 
     def __init__(self,question):
         self.question = question
