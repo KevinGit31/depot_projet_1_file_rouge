@@ -166,7 +166,7 @@ agent any
         stage('deleteEC2byansible') {
             steps {
                     sh """#!/bin/bash -xe
-                    sudo -u devops -s ansible-playbook -i /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/roles/common/tasks/cloudformation-delete.yml -vvv
+                    sudo -u devops -s ansible-playbook -i /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/roles/common/tasks/cloudformation-delete.yml -vvv >> /tmp/tracedel.txt
                     sleep 5s
                     """
             }
