@@ -192,7 +192,7 @@ agent any
 // Creation du user devops + envoi de la clé ssh sur l'environnment qcmdev / qcmqua / qcmprod
         stage('DistribKeyByansible') {
             steps {
-                ansiblePlaybook(
+//                ansiblePlaybook(
 //                        playbook: "/var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/distribkey.yml",
 //                        inventory: "/var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts",
 //                        sudoUser: "devops",
