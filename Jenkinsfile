@@ -174,9 +174,14 @@ agent any
 // CREATION DE LA STACK qcmdev / qcmqua / qcmprod
         stage('createEC2byansible') {
             steps {
-                    sh """#!/bin/bash
-                    sudo -u devops -s ansible-playbook -i /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/roles/common/tasks/cloudformation-create.yml -vvv > /tmp/tracecreate.txt
-                    """
+                ansiblePlaybook(
+                        playbook: "/var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/roles/common/tasks/cloudformation-create.yml",
+                        inventory: "/var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts",
+                        sudoUser: "devops",
+                        extras: "-vvv" )
+//                    sh """#!/bin/bash
+//                    sudo -u devops -s ansible-playbook -i /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/roles/common/tasks/cloudformation-create.yml -vvv > /tmp/tracecreate.txt
+//                    """
             }
         }
 // Creation du user devops + envoi de la clé ssh sur l'environnment qcmdev / qcmqua / qcmprod
