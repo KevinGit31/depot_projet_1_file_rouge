@@ -166,7 +166,7 @@ agent any
         stage('deleteEC2byansible') {
             steps {
                     sh """#!/bin/bash
-                    sudo -u devops -s ansible-playbook -i /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/roles/common/tasks/cloudformation-delete.yml -vvv >> /tmp/tracedel.txt
+                    sudo -u devops -s ansible-playbook -i /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/roles/common/tasks/cloudformation-delete.yml -vvv
                     sleep 5s
                     """
             }
@@ -174,7 +174,7 @@ agent any
 // CREATION DE LA STACK qcmdev / qcmqua / qcmprod
         stage('createEC2byansible') {
             steps {
-                    sh """#!/bin/bash
+                    sh """#!/bin/bash -xe
                     sudo -u devops -s ansible-playbook -i /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/roles/common/tasks/cloudformation-create.yml -vvv
                     """
             }
