@@ -195,7 +195,9 @@ agent any
                 ansiblePlaybook(
                         playbook: "/var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/distribkey.yml",
                         inventory: "/var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts",
-                        sudoUser: "devops",
+                        become: true,
+                        becomeUser: "devops",
+//                        sudoUser: "devops",
                         credentialsId: 'sshec2user',
                         extras: "-vvv" )
 //                    sh """#!/bin/bash
