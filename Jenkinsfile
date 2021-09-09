@@ -192,17 +192,16 @@ agent any
 // Creation du user devops + envoi de la clé ssh sur l'environnment qcmdev / qcmqua / qcmprod
         stage('DistribKeyByansible') {
             steps {
-                ansiblePlaybook(
-                        playbook: "/var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/distribkey.yml",
-                        inventory: "/var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts",
-                        sudo: true,
+//                ansiblePlaybook(
+//                        playbook: "/var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/distribkey.yml",
+//                        inventory: "/var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts",
 //                        becomeUser: "devops",
 //                        sudoUser: "devops",
-                        credentialsId: 'sshec2user',
-                        extras: "-vvv" )
-//                    sh """#!/bin/bash
-//                    sudo -u devops -s ansible-playbook -i /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/distribkey.yml --user ec2-user --key-file /home/devops/.ssh/projet1grp3key.pem -vvv
-//                    """
+//                        credentialsId: 'sshec2user',
+//                        extras: "-vvv" )
+                    sh """#!/bin/bash -xe
+                    sudo -u devops -s ansible-playbook -i /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/distribkey.yml --user ec2-user --key-file /home/devops/.ssh/projet1grp3key.pem -vvv
+                    """
             }
         }
 // Decompression du build + Test de creation de la BDD
