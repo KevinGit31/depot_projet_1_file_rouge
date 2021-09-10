@@ -19,7 +19,7 @@ export class QuizzQcmComponent implements OnInit {
 
   getAll(){
     this.qcmService.getAll().subscribe((qcms)=>{
-        this.qcms = qcms;
+        this.qcms = qcms.filter((q)=>q.questions.length>0);
     })
   }
 
