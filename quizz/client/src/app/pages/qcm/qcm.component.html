@@ -15,10 +15,10 @@
                                     Elle permet également, d'ajouter, de modifier ou de supprimer les sujets.
                                 </p>
 
-                                <a routerLink="/user/create"><button class="btn btn-primary mt-2 mr-1" id="btn-new-event"><i
-                                        class="uil-plus-circle"></i>
-                                    Nouveau qcm</button></a>
-                                    
+                                <a routerLink="/user/create"><button class="btn btn-primary mt-2 mr-1"
+                                        id="btn-new-event"><i class="uil-plus-circle"></i>
+                                        Nouveau qcm</button></a>
+
                             </div>
                         </div>
                     </div>
@@ -28,10 +28,10 @@
         </div>
 
         <div class="col-xl-12">
-            <div class="card">
-                <div class="card-body pt-2">
-                        <h6 class="font-size-16 mb-4">Liste des QCM</h6>
-                        
+            <h5>Liste des sujets</h5>
+            <div class="row">
+                <div class="col-md" *ngFor="let qcm of this.qcms">
+                    <app-stat [title]="qcm.sujet" [value]="qcm.description" [qnbr]="qcm.questions.length" icon="folder" color="primary"></app-stat>
                 </div>
             </div>
         </div>

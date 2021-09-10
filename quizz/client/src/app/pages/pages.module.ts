@@ -18,10 +18,13 @@ import { UsersComponent } from './users/users.component';
 import { FormUserComponent } from './users/form-user/form-user.component';
 import { FormDeleteComponent } from './form-delete/form-delete.component';
 import { QcmComponent } from './qcm/qcm.component';
+import { QuestionComponent } from './question/question.component';
+import { AnswerComponent } from './answer/answer.component';
+import { FormQuestionComponent } from './question/form-question/form-question.component';
 
 
 @NgModule({
-  declarations: [DashboardComponent, UsersComponent, FormUserComponent, FormDeleteComponent, QcmComponent],
+  declarations: [DashboardComponent, UsersComponent, FormUserComponent, FormDeleteComponent, QcmComponent, QuestionComponent, AnswerComponent, FormQuestionComponent],
   imports: [
     CommonModule,
     FormsModule,

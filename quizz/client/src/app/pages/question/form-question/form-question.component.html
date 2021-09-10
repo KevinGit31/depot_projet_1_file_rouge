@@ -1,0 +1,52 @@
+<div class="container-fluid">
+    <br>
+    <div class="row justify-content-md-center">
+      <div class="col-12 col-sm-10 col-md-8 col-lg-5 ">
+        <div class="card">
+          <div class="card-body">
+            <div class="row align-items-center">
+              <div class="col-12">
+                <form class="authentication-form" [formGroup]="questionForm" (ngSubmit)="onSubmit()" novalidate>
+  
+                  <!-- <app-ui-preloader [display]="loading"></app-ui-preloader> -->
+                  <h4 class="font-size-24 mb-4">{{ title||"Créer un utilisateur"}}</h4>
+  
+                  <ngb-alert type="danger" *ngIf="error" [dismissible]="false">{{ error }}</ngb-alert>
+  
+                  <div class="form-group">
+                    <label class="form-control-label">Question</label>
+                    <div class="input-group input-group-merge">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">
+                          <i class="icon-dual" data-feather="user" appFeatherIcon></i>
+                        </span>
+                      </div>
+                      <input type="text" class="form-control" formControlName="name"
+                        [ngClass]="{ 'is-invalid': submitted && f.name.errors }" id="name"
+                        placeholder="Votre nom ou pseudo" />
+  
+                      <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
+                        <div *ngIf="f.name.errors.required">Le nom est requis</div>
+                      </div>
+                    </div>
+                  </div>
+  
+                  <br>
+                  <br>
+                  <div class="form-group mb-0 text-center">
+                    <button class="btn btn-primary btn-block" type="submit">{{ btn_valid||"Créer"}}</button>
+                  </div>
+                  <div class="form-group mb-0 text-center">
+                    <button class="btn cancel" (click)="cancel()" >Annuler</button>
+                  </div>
+                  <br>
+                </form>
+              </div>
+            </div>
+  
+          </div> <!-- end card body-->
+        </div> <!-- end card -->
+      </div>
+  
+    </div>
+  </div>

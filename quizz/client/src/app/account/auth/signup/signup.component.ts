@@ -1,6 +1,9 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { first } from 'rxjs/operators';
+import { User } from 'src/app/core/models/auth.models';
+import { UserProfileService } from 'src/app/core/services/user.service';
 
 @Component({
   selector: 'app-signup',
@@ -11,10 +14,12 @@ export class SignupComponent implements OnInit, AfterViewInit {
 
   signupForm: FormGroup;
   submitted = false;
+  returnUrl: string;
   error = '';
   loading = false;
+  user:User
 
-  constructor(private formBuilder: FormBuilder, private route: ActivatedRoute, private router: Router) { }
+  constructor(private userService: UserProfileService,private formBuilder: FormBuilder, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit() {
 
@@ -23,6 +28,9 @@ export class SignupComponent implements OnInit, AfterViewInit {
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
     });
+
+    this.user = new User;
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
 
   ngAfterViewInit() {
@@ -44,8 +52,23 @@ export class SignupComponent implements OnInit, AfterViewInit {
       return;
     }
 
+    this.user.email = this.f.email.value
+    this.user.name = this.f.name.value
+    this.user.admin = false
+    this.user.password = this.f.password.value
+
     this.loading = true;
 
-    console.log(this.signupForm.value);
+    this.userService.createUser(this.user)
+        .pipe(first())
+        .subscribe(
+          data => {
+            this.router.navigate([this.returnUrl]);
+            this.loading = false;
+          },
+          error => {
+            this.error = error;
+            this.loading = false;
+          });
   }
 }

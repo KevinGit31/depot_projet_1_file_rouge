@@ -40,6 +40,8 @@ export class FormUserComponent implements OnInit {
       password: ['', Validators.required],
     });
 
+    this.user = new User
+
     this.setText()
     this.setFormData();
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/user';

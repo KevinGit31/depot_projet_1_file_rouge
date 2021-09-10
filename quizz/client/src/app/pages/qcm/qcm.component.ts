@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Qcm } from 'src/app/core/models/qcm';
+import { QcmService } from 'src/app/core/services/qcm.service';
 
 @Component({
   selector: 'app-qcm',
@@ -7,9 +9,18 @@ import { Component, OnInit } from '@angular/core';
 })
 export class QcmComponent implements OnInit {
 
-  constructor() { }
+  qcms:Qcm[]
+
+  constructor(private qcmService:QcmService) { }
 
   ngOnInit() {
+    this.getAll()
+  }
+
+  getAll(){
+    this.qcmService.getAll().subscribe((qcms)=>{
+        this.qcms = qcms;
+    })
   }
 
 }

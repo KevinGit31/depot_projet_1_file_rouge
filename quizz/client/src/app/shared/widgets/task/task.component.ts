@@ -8,7 +8,7 @@ import { Component, OnInit, Input } from '@angular/core';
 export class TaskComponent implements OnInit {
 
   @Input() title: string;
-  @Input() text: string;
+  @Input() nbr: number;
   @Input() id: number;
   constructor() { }
 

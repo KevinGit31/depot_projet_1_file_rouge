@@ -1,11 +1,19 @@
-<div class="row mt-2">
-    <div class="col">
-        <div class="custom-control custom-checkbox">
-            <input type="checkbox" class="custom-control-input" id="task{{ id }}">
-            <label class="custom-control-label" for="task{{ id }}">
-                {{ title }}
-            </label>
-            <p class="font-size-13 text-muted">{{ text }}</p>
-        </div> <!-- end checkbox -->
+<div class="media mt-1 border-top pt-3">
+    <div class="media-body">
+        <h6 class="mt-1 mb-0 font-size-15">{{ title }}</h6>
+        <p class="font-size-13 text-muted">Nombre de réponse : {{ nbr }}</p>
+    </div>
+    <div class="dropdown align-self-center float-right" ngbDropdown>
+        <a href="javascript: void(0);" class="dropdown-toggle arrow-none text-muted" ngbDropdownToggle>
+            <i class="uil uil-ellipsis-v"></i>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" ngbDropdownMenu>
+            <!-- item-->
+            <a [routerLink]="update" [state]="{ item: userdata }" class="dropdown-item"><i class="uil uil-edit-alt mr-2"></i>Modifier</a>
+            
+            <div class="dropdown-divider"></div>
+            <!-- item-->
+            <a [routerLink]="delete" [state]="{ item: userdata }" class="dropdown-item text-danger"><i class="uil uil-trash mr-2"></i>Supprimer</a>
+        </div>
     </div>
 </div>
