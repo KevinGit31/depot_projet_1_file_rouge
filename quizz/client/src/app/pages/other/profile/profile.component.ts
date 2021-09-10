@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { User } from 'src/app/core/models/auth.models';
+import { AuthenticationService } from 'src/app/core/services/auth.service';
 
 import { messageData, activities, tasks, projectData } from './data';
 
@@ -14,29 +16,23 @@ import { Message, Activity, Tasks, List } from './profile.model';
  */
 export class ProfileComponent implements OnInit {
 
-  // bread crumb items
-  breadCrumbItems: Array<{}>;
+  user:User;
 
-  messageData: Message[];
-  activities: Activity[];
-  tasks: Tasks[];
-  projectData: List[];
-
-  constructor() { }
+  constructor(private authService: AuthenticationService) { }
 
   ngOnInit() {
-    this.breadCrumbItems = [{ label: 'Shreyu', path: '/' }, { label: 'Pages', path: '/' }, { label: 'Profile', active: true }];
 
     this._fetchData();
+  }
+
+  getAdmin(){
+    return this.authService.getAdmin()
   }
 
   /**
    * Fetches the data
    */
   private _fetchData() {
-    this.messageData = messageData;
-    this.activities = activities;
-    this.tasks = tasks;
-    this.projectData = projectData;
+    this.user= this.authService.currentUser();
   }
 }

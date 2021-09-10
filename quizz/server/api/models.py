@@ -6,7 +6,6 @@ from sqlalchemy.sql import func
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(150),unique=True)
-    first_name = db.Column(db.String(150))
     name = db.Column(db.String(150))
     password = db.Column(db.String(1024))
     admin = db.Column(db.Boolean)

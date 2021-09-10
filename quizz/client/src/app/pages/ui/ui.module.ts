@@ -18,7 +18,6 @@ import { TablesModule } from './tables/tables.module';
 import { WidgetsComponent } from './widgets/widgets.component';
 import { BootstrapComponent } from './bootstrap/bootstrap.component';
 import { ChartsComponent } from './charts/charts.component';
-import { AnalyseModule } from '../apps/analyse/analyse.module';
 
 @NgModule({
     declarations: [WidgetsComponent, BootstrapComponent, ChartsComponent],
@@ -44,7 +43,6 @@ import { AnalyseModule } from '../apps/analyse/analyse.module';
         IconsModule,
         TablesModule,
         FormModule,
-        AnalyseModule
     ]
 })
 

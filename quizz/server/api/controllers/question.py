@@ -37,7 +37,7 @@ def get_all_questions(current_user):
         question_data['answers'] = questionAnswerToJson(question)
         output.append(question_data)
 
-    return jsonify({'questions':output})
+    return jsonify(output)
 
 @questions.route('/<id>',methods=['GET'])
 @token_required

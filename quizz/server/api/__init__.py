@@ -2,6 +2,9 @@ from flask import Flask, sessions
 from flask_sqlalchemy import SQLAlchemy
 from os import path
 from flask_login import LoginManager
+from flask_cors import CORS
+
+
 
 db = SQLAlchemy()
 DB_NAME = 'database.db'
@@ -9,6 +12,8 @@ DB_NAME = 'database.db'
 def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = 'DevOps'
+    CORS(app)
+
     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://user.quizz:dru98eDFC90@localhost/db.quizz'
     db.init_app(app)
 

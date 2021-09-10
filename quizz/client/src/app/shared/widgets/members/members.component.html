@@ -4,19 +4,20 @@
         <h6 class="mt-1 mb-0 font-size-15">{{ name }}</h6>
         <h6 class="text-muted font-weight-normal mt-1 mb-3">{{ text }}</h6>
     </div>
+    <div class="align-self-center float-right">
+        <span class="badge badge-soft-{{ getColor() }} ml-1">{{ getValue() }}</span>
+    </div>
     <div class="dropdown align-self-center float-right" ngbDropdown>
         <a href="javascript: void(0);" class="dropdown-toggle arrow-none text-muted" ngbDropdownToggle>
             <i class="uil uil-ellipsis-v"></i>
         </a>
         <div class="dropdown-menu dropdown-menu-right" ngbDropdownMenu>
             <!-- item-->
-            <a href="javascript:void(0);" class="dropdown-item"><i class="uil uil-edit-alt mr-2"></i>Edit</a>
-            <!-- item-->
-            <a href="javascript:void(0);" class="dropdown-item"><i class="uil uil-exit mr-2"></i>Remove
-                from Team</a>
+            <a [routerLink]="update" [state]="{ item: userdata }" class="dropdown-item"><i class="uil uil-edit-alt mr-2"></i>Modifier</a>
+            
             <div class="dropdown-divider"></div>
             <!-- item-->
-            <a href="javascript:void(0);" class="dropdown-item text-danger"><i class="uil uil-trash mr-2"></i>Delete</a>
+            <a [routerLink]="delete" [state]="{ item: userdata }" class="dropdown-item text-danger"><i class="uil uil-trash mr-2"></i>Supprimer</a>
         </div>
     </div>
 </div>

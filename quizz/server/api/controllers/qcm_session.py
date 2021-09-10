@@ -41,7 +41,7 @@ def get_all_qcm_sessions(current_user):
         qcm_session_data['qcms'] = qcm_sessionAnswerToJson(qcm_session)
         output.append(qcm_session_data)
 
-    return jsonify({'qcm_sessions': output})
+    return jsonify(output)
 
 
 @qcm_sessions.route('/<id>', methods=['GET'])
@@ -185,6 +185,5 @@ def qcm_sessionUserToJson(user_id):
     user_data['name'] = user.name
     user_data['admin'] = user.admin
     user_data['email'] = user.email
-    user_data['first_name'] = user.first_name
 
     return user_data

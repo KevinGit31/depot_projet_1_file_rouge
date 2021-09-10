@@ -15,7 +15,7 @@ const routes: Routes = [
         component: StarterComponent
     },
     {
-        path: 'pages-profile',
+        path: 'score',
         component: ProfileComponent
     },
     {

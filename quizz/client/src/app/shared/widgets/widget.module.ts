@@ -20,14 +20,9 @@ import { Profile2Component } from './userprofile/profile2/profile2.component';
 import { Profile3Component } from './userprofile/profile3/profile3.component';
 import { Profile4Component } from './userprofile/profile4/profile4.component';
 import { ActivitiesComponent } from './activities/activities.component';
-import { FormDeleteComponent } from './form-delete/form-delete.component';
-import { FlatpickrModule } from 'angularx-flatpickr';
-import { FormModule } from 'src/app/pages/ui/form/form.module';
-import { IconsModule } from 'src/app/pages/ui/icons/icons.module';
-import { TablesModule } from 'src/app/pages/ui/tables/tables.module';
-import { UiRoutingModule } from 'src/app/pages/ui/ui-routing.module';
 import { TableAdvancedComponent } from './table-advanced/table-advanced.component';
 import { AdvancedSortableDirective } from './table-advanced/table-advanced-sortable.directive';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
     // tslint:disable-next-line: max-line-length
@@ -45,11 +40,11 @@ import { AdvancedSortableDirective } from './table-advanced/table-advanced-sorta
         Profile3Component, 
         Profile4Component, 
         ActivitiesComponent,
-        FormDeleteComponent,
         AdvancedSortableDirective,
         TableAdvancedComponent],
     imports: [
         CommonModule,
+        RouterModule,
         NgApexchartsModule,
         UIModule,
         NgbProgressbarModule, NgbDropdownModule,
@@ -72,7 +67,6 @@ import { AdvancedSortableDirective } from './table-advanced/table-advanced-sorta
         Profile3Component,
         Profile4Component, 
         ActivitiesComponent,
-        FormDeleteComponent,
         AdvancedSortableDirective,
         TableAdvancedComponent]
 })

@@ -9,22 +9,22 @@ export const MENU: MenuItem[] = [
     {
         label: 'Les utilisateurs',
         icon: 'users',
-        link: '/users',
+        link: '/user',
     },
     {
         label: 'Les sujets',
         icon: 'layers',
-        link: '/subject',
+        link: '/qcm',
     },
     {
         label: 'Les questions',
         icon: 'bookmark',
-        link: '/questions',
+        link: '/question',
     },
     {
         label: 'Les réponses',
         icon: 'at-sign',
-        link: '/answers',
+        link: '/answer',
     },
     {
         label: 'QCM',
@@ -38,7 +38,7 @@ export const MENU: MenuItem[] = [
     {
         label: 'Mes scores',
         icon: 'activity',
-        link: '/scores',
+        link: '/score',
     },
     {
         label: 'Tableau de bord',

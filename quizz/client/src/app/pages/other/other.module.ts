@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 import { OtherRoutingModule } from './other-routing.module';
 import { UIModule } from '../../shared/ui/ui.module';
 
-import { OfferModule } from '../apps/offer/offer.module';
 import { NgbTabsetModule, NgbTooltipModule, NgbProgressbarModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { StarterComponent } from './starter/starter.component';
@@ -22,8 +21,7 @@ import { Error404Component } from './error404/error404.component';
         UIModule,
         NgbTabsetModule,
         NgbTooltipModule,
-        NgbProgressbarModule,
-        OfferModule
+        NgbProgressbarModule
     ],
     // tslint:disable-next-line: max-line-length
     declarations: [StarterComponent, ProfileComponent, ActivityComponent, InvoiceComponent, PricingComponent, Error500Component, Error404Component]

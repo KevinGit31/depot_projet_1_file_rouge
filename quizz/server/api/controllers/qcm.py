@@ -37,7 +37,7 @@ def get_all_qcms(current_user):
         qcm_data['questions'] = qcmQuestionToJson(qcm)
         output.append(qcm_data)
 
-    return jsonify({'qcms':output})
+    return jsonify(output)
 
 @qcms.route('/<id>',methods=['GET'])
 @token_required

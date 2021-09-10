@@ -18,7 +18,7 @@ SECRET_KEY="DevOps"
 
 users = Blueprint('users',__name__)
 
-@users.route('/',methods=['GET'])
+@users.route('',methods=['GET'])
 @token_required
 def get_all_users(current_user):
 
@@ -35,11 +35,10 @@ def get_all_users(current_user):
         user_data['name'] = user.name
         user_data['admin'] = user.admin
         user_data['email'] = user.email
-        user_data['first_name'] = user.first_name
-        user_data['partys'] = user.partys
+
         output.append(user_data)
 
-    return jsonify({'users':output})
+    return jsonify(output)
 
 @users.route('/<id>',methods=['GET'])
 @token_required
@@ -58,18 +57,16 @@ def get_one_user(current_user,id):
     user_data['name'] = user.name
     user_data['admin'] = user.admin
     user_data['email'] = user.email
-    user_data['first_name'] = user.first_name
-    user_data['partys'] = user.partys
 
     return jsonify(user_data)
 
-@users.route('/',methods=['POST'])
+@users.route('',methods=['POST'])
 def create_user():
 
     data = request.get_json()
 
     hashed_password = generate_password_hash(data['password'],method='sha256')
-    new_user = User(name=data['name'],password=hashed_password,admin=False)
+    new_user = User(email=data['email'], name=data['name'],password=hashed_password,admin=data['admin'])
     db.session.add(new_user)
     db.session.commit()
     return jsonify({'message':'Nouvel utilisateur créé !'})
@@ -105,10 +102,8 @@ def update_user(current_user,id):
     if not user:
         return jsonify({'message': 'Aucun utilisateur trouvé !'})
     
-    user.id = data['id']
     user.name = data['name']
     user.admin =data['admin']
-    user.first_name = data['first_name']
 
     db.session.commit()
     return jsonify({'message':'L\'utilisateur a été modifier !'})

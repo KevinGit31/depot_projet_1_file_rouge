@@ -3,9 +3,7 @@ import { Router } from '@angular/router';
 
 import { AuthenticationService } from '../../../core/services/auth.service';
 
-import { Notification } from './topbar.model';
-
-import { notificationItems } from './data';
+import { User } from 'src/app/core/models/auth.models';
 
 @Component({
   selector: 'app-topbar',
@@ -15,51 +13,18 @@ import { notificationItems } from './data';
 export class TopbarComponent implements OnInit {
 
   notificationItems: Notification[];
-  languages: Array<{
-    id: number,
-    flag?: string,
-    name: string
-  }>;
-  selectedLanguage: {
-    id: number,
-    flag?: string,
-    name: string
-  };
-
-  openMobileMenu: boolean;
-
-  @Output() settingsButtonClicked = new EventEmitter();
-  @Output() mobileMenuButtonClicked = new EventEmitter();
+  user:User;
 
   constructor(private router: Router, private authService: AuthenticationService) {}
 
   ngOnInit() {
-    // get the notifications
-    this._fetchNotifications();
-    this.openMobileMenu = false;
+
+    this.user= this.authService.currentUser();
   }
 
-  /**
-   * Change the language
-   * @param language language
-   */
-  changeLanguage(language) {
-    this.selectedLanguage = language;
-  }
-
-  /**
-   * Toggles the right sidebar
-   */
-  toggleRightSidebar() {
-    this.settingsButtonClicked.emit();
-  }
-
-  /**
-   * Toggle the menu bar when having mobile screen
-   */
-  toggleMobileMenu(event: any) {
-    event.preventDefault();
-    this.mobileMenuButtonClicked.emit();
+ 
+  getAdmin(){
+    return this.authService.getAdmin()
   }
 
   /**
@@ -70,11 +35,4 @@ export class TopbarComponent implements OnInit {
     this.router.navigate(['/account/login']);
   }
 
-  /**
-   * Fetches the notification
-   * Note: For now returns the hard coded notifications
-   */
-  _fetchNotifications() {
-    this.notificationItems = notificationItems;
-  }
 }

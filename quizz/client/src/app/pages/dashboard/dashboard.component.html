@@ -7,25 +7,5 @@
 
   </div>
 
-  <!-- end widget -->
-  <div class="row">
-    <div class="col-xl-2">
-      <div class="card">
-        <div class="card-body p-0">
-          <h5 class="card-title header-title border-bottom p-2 mb-0">Banque Vue d'ensemble</h5>
-          
-          <!-- Overview data -->
-          <div *ngFor="let accountSolde of accountSoldes">
-              <app-overview  [value]="accountSolde.solde" [title]="accountSolde.account.label" classNames="px-3 py-4">
-              </app-overview>
-          </div>
-
-        </div>
-      </div>
-    </div>
-    <div class="col-xl-10">
-      <app-budget></app-budget>
-    </div>
-  </div>
-
+ 
 </div>

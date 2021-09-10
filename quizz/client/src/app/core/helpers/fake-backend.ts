@@ -9,7 +9,7 @@ import { User } from '../models/auth.models';
 export class FakeBackendInterceptor implements HttpInterceptor {
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         const users: User[] = [
-            { id: 1, username: 'test', email: 'shreyu@coderthemes.com', password: 'test', firstName: 'Test', lastName: 'User' }
+            { id: 1,  email: 'shreyu@coderthemes.com'}
         ];
 
         const authHeader = request.headers.get('Authorization');
@@ -20,13 +20,10 @@ export class FakeBackendInterceptor implements HttpInterceptor {
 
             // authenticate - public
             if (request.url.endsWith('/api/login') && request.method === 'POST') {
-                const user = users.find(x => x.email === request.body.email && x.password === request.body.password);
+                const user = users.find(x => x.email === request.body.email );
                 if (!user) { return error('Email ou mot de passe incorrect'); }
                 return ok({
                     id: user.id,
-                    username: user.username,
-                    firstName: user.firstName,
-                    lastName: user.lastName,
                     email: user.email,
                     token: `fake-jwt-token`
                 });

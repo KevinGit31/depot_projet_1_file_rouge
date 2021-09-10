@@ -28,10 +28,12 @@ def login():
 
     auth = request.authorization
 
+    print(request.authorization)
+
     if not auth or not auth.username or not auth.password:
         return make_response('Could not verify',401,{'www-Authenticate': 'Basic realm="Login required!"'})
 
-    user = User.query.filter_by(name=auth.username).first()
+    user = User.query.filter_by(email=auth.username).first()
 
     if not user:
         return make_response('Could not verify',401,{'www-Authenticate': 'Basic realm="Login required!"'})
@@ -41,7 +43,6 @@ def login():
             'id': user.id,
             'name': user.name,
             'email': user.email,
-            'first_name': user.first_name,
             'admin': user.admin,
         }, 'exp': datetime.datetime.utcnow()+datetime.timedelta(minutes=3600)}, SECRET_KEY)
         return jsonify({'token': token})

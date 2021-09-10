@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbAlertModule, NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { FlatpickrModule } from 'angularx-flatpickr';
 
@@ -14,13 +14,19 @@ import { WidgetModule } from '../shared/widgets/widget.module';
 import { UiModule } from './ui/ui.module';
 import { AppsModule } from './apps/apps.module';
 import { OtherModule } from './other/other.module';
+import { UsersComponent } from './users/users.component';
+import { FormUserComponent } from './users/form-user/form-user.component';
+import { FormDeleteComponent } from './form-delete/form-delete.component';
+import { QcmComponent } from './qcm/qcm.component';
 
 
 @NgModule({
-  declarations: [DashboardComponent],
+  declarations: [DashboardComponent, UsersComponent, FormUserComponent, FormDeleteComponent, QcmComponent],
   imports: [
     CommonModule,
     FormsModule,
+    NgbAlertModule,
+    ReactiveFormsModule,
     NgbDropdownModule,
     NgApexchartsModule,
     FlatpickrModule.forRoot(),
