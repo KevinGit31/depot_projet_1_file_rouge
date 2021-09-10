@@ -1,4 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { User } from 'src/app/core/models/auth.models';
+import { AuthenticationService } from 'src/app/core/services/auth.service';
 
 @Component({
   selector: 'app-stat',
@@ -16,6 +18,8 @@ export class StatComponent implements OnInit {
   @Input() update: string;
   @Input() delete: string;
   @Input() qcmdata: any;
+  @Input() isShow: boolean;
+
 
   constructor() { }
 

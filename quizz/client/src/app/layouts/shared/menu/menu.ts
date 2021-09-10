@@ -29,7 +29,7 @@ export const MENU: MenuItem[] = [
     {
         label: 'Démarrer un QCM',
         icon: 'target',
-        link: '/qcm',
+        link: '/',
         isNotAdmin:true
     },
     {

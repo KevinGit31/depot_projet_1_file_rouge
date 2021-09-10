@@ -12,7 +12,7 @@
                 </span>
             </div>
             
-            <div class="dropdown float-right" ngbDropdown>
+            <div *ngIf="!isShow" class="dropdown float-right" ngbDropdown>
                 <a href="javascript: void(0);" class="dropdown-toggle arrow-none text-muted" ngbDropdownToggle>
                     <i class="uil uil-ellipsis-v"></i>
                 </a>

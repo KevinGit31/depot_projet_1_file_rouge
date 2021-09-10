@@ -25,6 +25,7 @@ import { AnswerRowComponent } from './question/answer-row/answer-row.component';
 import { FormQcmComponent } from './qcm/form-qcm/form-qcm.component';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { QuestionRowComponent } from './qcm/question-row/question-row.component';
+import { QuizzQcmComponent } from './quizz-qcm/quizz-qcm.component';
 
 
 @NgModule({
@@ -36,7 +37,7 @@ import { QuestionRowComponent } from './qcm/question-row/question-row.component'
       QuestionComponent, 
       AnswerComponent,
        FormQuestionComponent,
-        AnswerRowComponent, FormQcmComponent, QuestionRowComponent],
+        AnswerRowComponent, FormQcmComponent, QuestionRowComponent, QuizzQcmComponent],
   imports: [
     NgSelectModule,
     CommonModule,
