@@ -7,7 +7,7 @@ sys.path.insert(0, parentdir)
 from functools import wraps
 from flask import request,jsonify
 from flask.helpers import make_response
-from api.models import User,Todo
+from api.models import User
 import jwt
 
 SECRET_KEY="DevOps"

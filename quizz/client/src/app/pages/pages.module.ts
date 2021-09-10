@@ -21,11 +21,24 @@ import { QcmComponent } from './qcm/qcm.component';
 import { QuestionComponent } from './question/question.component';
 import { AnswerComponent } from './answer/answer.component';
 import { FormQuestionComponent } from './question/form-question/form-question.component';
+import { AnswerRowComponent } from './question/answer-row/answer-row.component';
+import { FormQcmComponent } from './qcm/form-qcm/form-qcm.component';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { QuestionRowComponent } from './qcm/question-row/question-row.component';
 
 
 @NgModule({
-  declarations: [DashboardComponent, UsersComponent, FormUserComponent, FormDeleteComponent, QcmComponent, QuestionComponent, AnswerComponent, FormQuestionComponent],
+  declarations: [DashboardComponent,
+     UsersComponent, 
+     FormUserComponent,
+      FormDeleteComponent, 
+      QcmComponent, 
+      QuestionComponent, 
+      AnswerComponent,
+       FormQuestionComponent,
+        AnswerRowComponent, FormQcmComponent, QuestionRowComponent],
   imports: [
+    NgSelectModule,
     CommonModule,
     FormsModule,
     NgbAlertModule,

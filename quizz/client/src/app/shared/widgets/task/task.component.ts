@@ -10,6 +10,10 @@ export class TaskComponent implements OnInit {
   @Input() title: string;
   @Input() nbr: number;
   @Input() id: number;
+  @Input() update: string;
+  @Input() delete: string;
+  @Input() questiondata:any;
+
   constructor() { }
 
   ngOnInit() {

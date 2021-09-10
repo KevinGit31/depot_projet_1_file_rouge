@@ -7,6 +7,7 @@ export interface MenuItem {
     expanded?: boolean;
     subItems?: any;
     isTitle?: boolean;
+    isNotAdmin?: boolean;
     badge?: any;
     parentId?: number;
 }

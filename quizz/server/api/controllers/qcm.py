@@ -25,7 +25,8 @@ qcms = Blueprint('qcms',__name__)
 @token_required
 def get_all_qcms(current_user):
 
-    qcms = Qcm.query.all()
+    qcms = Qcm.query.order_by(Qcm.sujet).all()
+    
 
     output = []
 

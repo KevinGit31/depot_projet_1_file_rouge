@@ -29,7 +29,7 @@ def create_app():
     app.register_blueprint(qcms,url_prefix='/api/qcm')
     app.register_blueprint(qcm_sessions,url_prefix='/api/qcm-session')
 
-    from .models import User,Todo,Qcm,QcmQuestion,Question
+    from .models import User,Qcm,QcmQuestion,Question
 
     create_database(app)
 

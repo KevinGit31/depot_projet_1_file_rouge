@@ -8,7 +8,7 @@ sys.path.insert(0, parentdir)
 from functools import wraps
 from flask import Blueprint, json,render_template,flash,request,jsonify
 from flask.helpers import make_response
-from api.models import User,Todo
+from api.models import User
 from api import db
 from flask_sqlalchemy import SQLAlchemy
 from api.controllers import token_required

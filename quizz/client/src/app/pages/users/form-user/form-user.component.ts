@@ -23,7 +23,7 @@ export class FormUserComponent implements OnInit {
   btn_valid = '';
   title = ''
   update = false;
-  user:User;
+  user:User 
 
   constructor(
 
@@ -41,7 +41,6 @@ export class FormUserComponent implements OnInit {
     });
 
     this.user = new User
-
     this.setText()
     this.setFormData();
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/user';
@@ -61,6 +60,8 @@ export class FormUserComponent implements OnInit {
   onSubmit() {
     this.submitted = true;
 
+    console.log(this.user)
+
     // stop here if form is invalid
     if (this.signupForm.invalid) {
       return;
@@ -68,8 +69,10 @@ export class FormUserComponent implements OnInit {
 
     this.user.email = this.f.email.value
     this.user.name = this.f.name.value
-    this.user.admin = this.f.admin.value
+    this.user.admin =this.f.admin.value
     this.user.password = this.f.password.value
+
+    console.log(this.user)
 
     this.loading = true;
     if (!this.update) {
@@ -120,12 +123,12 @@ export class FormUserComponent implements OnInit {
 
     if (history.state) {
 
-      this.user = history.state.item
+      history.state.item?this.user =history.state.item:1==1; 
       if (this.user) {
         this.signupForm = this.formBuilder.group({
           admin: [this.user.admin],
           name: [this.user.name, Validators.required],
-          email: [this.user.email],
+          email: [this.user.email, Validators.required],
           password: [''],
         });
       }

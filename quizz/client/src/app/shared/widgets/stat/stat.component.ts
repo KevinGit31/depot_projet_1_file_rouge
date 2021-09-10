@@ -13,6 +13,9 @@ export class StatComponent implements OnInit {
   @Input() qnbr: number;
   @Input() icon: string;
   @Input() color: string;
+  @Input() update: string;
+  @Input() delete: string;
+  @Input() qcmdata: any;
 
   constructor() { }
 

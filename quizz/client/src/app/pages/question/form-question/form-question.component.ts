@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs/operators';
+import { Answer } from 'src/app/core/models/answer';
 import { Question } from 'src/app/core/models/question';
 import { QuestionService } from 'src/app/core/services/question.service';
 
@@ -20,7 +21,10 @@ export class FormQuestionComponent implements OnInit {
   btn_valid = '';
   title = ''
   update = false;
-  question:Question;
+  question: Question;
+
+  answerStr = '';
+
 
   constructor(
 
@@ -29,9 +33,10 @@ export class FormQuestionComponent implements OnInit {
     private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit() {
-
+    this.question = new Question;
     this.questionForm = this.formBuilder.group({
       text: ['', Validators.required],
+      answerStr: [''],
     });
 
     this.setText()
@@ -59,9 +64,8 @@ export class FormQuestionComponent implements OnInit {
     }
 
     this.question.text = this.f.text.value
-    this.question.answers = this.f.name.value
-
-
+    console.log(this.question)
+    
     this.loading = true;
     if (!this.update) {
 
@@ -79,6 +83,7 @@ export class FormQuestionComponent implements OnInit {
     }
     else {
 
+      console.log(this.question)
       this.questionService.updateQuestion(this.question)
         .pipe(first())
         .subscribe(
@@ -110,19 +115,43 @@ export class FormQuestionComponent implements OnInit {
   setFormData() {
 
     if (history.state) {
-
-      this.question = history.state.item
+      history.state.item ? this.question = history.state.item : 1 == 1;
       if (this.question) {
         this.questionForm = this.formBuilder.group({
-          text: [this.question.text],
+          text: [this.question.text, Validators.required],
+          answerStr: [''],
         });
       }
     }
 
   }
 
+  addAnswer(event) {
+    event.preventDefault()
+    if (this.f.answerStr.value.trim() != '' && 
+    !this.question.answers.find((q)=>q.text==this.f.answerStr.value)) {
+      let answer = new Answer
+      answer.text = this.f.answerStr.value
+      this.f.answerStr.setValue("");
+
+      this.question.answers.push(answer);
+
+    }
+
+  }
+
   cancel() {
     this.router.navigate(['/question'])
+  }
+
+  handleAnswerEvent(event) {
+    console.log(event)
+    if (event.option == "delete") {
+      this.question.answers = this.question.answers.filter((item) => item.text != event.answer.text)
+    } else {
+      this.f.answerStr.setValue(event.answer.text);
+      this.question.answers = this.question.answers.filter((item) => item.text != event.answer.text)
+    }
   }
 
 }

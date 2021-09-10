@@ -72,7 +72,6 @@ export class AuthenticationService {
         return this.token;
     }
 
-
     /**
      * Logout the user
      */

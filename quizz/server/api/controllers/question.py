@@ -26,7 +26,7 @@ def get_all_questions(current_user):
     if not current_user.admin:
         return jsonify({'message':'Impossible d\'exécuter cette fonction !'})
 
-    questions = Question.query.all()
+    questions = Question.query.order_by(Question.text).all()
 
     output = []
 

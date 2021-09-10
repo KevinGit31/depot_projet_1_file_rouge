@@ -4,7 +4,7 @@ export const MENU: MenuItem[] = [
 
     {
         label: 'ADMINISTRATION',
-        isTitle: true
+        isTitle: true,
     },
     {
         label: 'Les utilisateurs',
@@ -12,27 +12,30 @@ export const MENU: MenuItem[] = [
         link: '/user',
     },
     {
-        label: 'Les sujets',
-        icon: 'layers',
-        link: '/qcm',
-    },
-    {
         label: 'Les questions',
         icon: 'bookmark',
         link: '/question',
     },
     {
+        label: 'Les sujets',
+        icon: 'layers',
+        link: '/qcm',
+    },
+    {
         label: 'QCM',
-        isTitle: true
+        isTitle: true,
+        isNotAdmin:true,
     },
     {
         label: 'Démarrer un QCM',
         icon: 'target',
         link: '/qcm',
+        isNotAdmin:true
     },
     {
         label: 'Mes scores',
         icon: 'activity',
         link: '/score',
+        isNotAdmin:true
     }
 ];

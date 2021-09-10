@@ -25,7 +25,7 @@ def get_all_users(current_user):
     if not current_user.admin:
         return jsonify({'message':'Impossible d\'exécuter cette fonction !'})
 
-    users = User.query.all()
+    users = User.query.order_by(User.name).all()
 
     output = []
 

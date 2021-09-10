@@ -6,6 +6,9 @@ import MetisMenu from 'metismenujs/dist/metismenujs';
 import { activateMenuItems, resetMenuItems } from './utils';
 import { MENU } from './menu';
 import { MenuItem } from './menu.model';
+import { UserProfileService } from 'src/app/core/services/user.service';
+import { User } from 'src/app/core/models/auth.models';
+import { AuthenticationService } from 'src/app/core/services/auth.service';
 
 @Component({
   selector: 'app-menu',
@@ -19,11 +22,12 @@ export class MenuComponent implements OnInit, AfterViewInit, OnChanges {
   sidebarScrollRef: any;
 
   menu: any;
+  user:User;
 
   menuItems = [];
   @ViewChild('sideMenu', { static: false }) sideMenu: ElementRef;
 
-  constructor(router: Router) {
+  constructor(router: Router,private authService:AuthenticationService) {
     router.events.forEach((event) => {
       if (event instanceof NavigationEnd) {
         this._activateMenuDropdown();
@@ -92,7 +96,11 @@ export class MenuComponent implements OnInit, AfterViewInit, OnChanges {
    * Initilize
    */
   initialize(): void {
+    this.user = this.authService.currentUser();
     this.menuItems = MENU;
+    if(!this.user.admin){
+      this.menuItems = this.menuItems.filter((item)=> item.isNotAdmin)
+    }
   }
 
   /**

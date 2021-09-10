@@ -32,7 +32,12 @@
                 <div class="card-body pt-2 pb-3">
                     <h6 class="font-size-16 mb-4">Liste des questions</h6>
                     <div *ngFor="let question of this.questions">
-                        <app-task [title]="question.text" [nbr]="question.answers.length">
+                        <app-task
+                        update="/question/update" 
+                        delete="/question/delete" 
+                        [title]="question.text" 
+                        [questiondata]="question"
+                        [nbr]="question.answers.length">
                         </app-task>
                     </div>
                 </div>

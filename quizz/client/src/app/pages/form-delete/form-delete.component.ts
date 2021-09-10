@@ -3,6 +3,10 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs/operators';
 import { User } from 'src/app/core/models/auth.models';
+import { Qcm } from 'src/app/core/models/qcm';
+import { Question } from 'src/app/core/models/question';
+import { QcmService } from 'src/app/core/services/qcm.service';
+import { QuestionService } from 'src/app/core/services/question.service';
 import { UserProfileService } from 'src/app/core/services/user.service';
 
 @Component({
@@ -12,7 +16,7 @@ import { UserProfileService } from 'src/app/core/services/user.service';
 })
 export class FormDeleteComponent implements OnInit {
 
-  delForm: FormGroup;
+
   submitted = false;
   returnUrl: string;
   error = '';
@@ -21,26 +25,23 @@ export class FormDeleteComponent implements OnInit {
   title = '';
   text = ''
   update = false;
-  user:User;
+  user: User;
+  qcm:Qcm;
+  question: Question;
 
   constructor(
-
+    private qcmService: QcmService,
     private userService: UserProfileService,
+    private questionService: QuestionService,
     private formBuilder: FormBuilder,
     private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit() {
 
-    this.delForm = this.formBuilder.group({
-      admin: [false],
-      name: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required],
-    });
-
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/user';
     this.setText()
     this.setFormData();
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/user';
+
   }
 
   ngAfterViewInit() {
@@ -48,8 +49,6 @@ export class FormDeleteComponent implements OnInit {
     document.body.classList.add('authentication-bg-pattern');
   }
 
-  // convenience getter for easy access to form fields
-  get f() { return this.delForm.controls; }
 
   /**
    * On submit form
@@ -58,42 +57,94 @@ export class FormDeleteComponent implements OnInit {
     this.submitted = true;
 
     this.loading = true;
-    if (!this.update) {
 
-      this.userService.deleteUser(this.user)
-        .pipe(first())
-        .subscribe(
-          data => {
-            this.router.navigate([this.returnUrl]);
-            this.loading = false;
-          },
-          error => {
-            this.error = error;
-            this.loading = false;
-          });
+    switch(this.router.url){
+        case '/user/delete':
+           this.deleteUser()
+           break;
+        case '/question/delete':
+          this.deleteQuestion()
+          break;
+        case '/qcm/delete':
+            this.deleteQcm()
+            break;
     }
-
-  }
+}
 
   setText() {
     if (this.router.url === '/user/delete') {
       this.title = 'Supprimer un utilisateur'
-      this.text = 'Vous allez supprimer cette utilisateur!'
-      this.returnUrl= '/user'
-    } else {
-      this.title = 'Modifier un utilisateur'
-      this.update = true;
+      this.text = 'Vous allez supprimer cet utilisateur!'
+      this.returnUrl = '/user'
     }
+
+    if (this.router.url === '/question/delete') {
+      this.title = 'Supprimer une question'
+      this.text = 'Vous allez supprimer cette question!'
+      this.returnUrl = '/question'
+    }
+
+    if (this.router.url === '/qcm/delete') {
+      this.title = 'Supprimer un QCM'
+      this.text = 'Vous allez supprimer ce QCM!'
+      this.returnUrl = '/qcm'
+    }
+
   }
 
   setFormData() {
     if (history.state) {
       this.user = history.state.item
+      this.question = history.state.item
+      this.qcm = history.state.item
     }
+    console.log(this.qcm)
   }
 
   cancel() {
-    this.router.navigate(['/user'])
+    this.router.navigate([this.returnUrl])
+  }
+
+  deleteUser(){
+    this.userService.deleteUser(this.user)
+      .pipe(first())
+      .subscribe(
+        data => {
+          this.router.navigate([this.returnUrl]);
+          this.loading = false;
+        },
+        error => {
+          this.error = error;
+          this.loading = false;
+        });
+  }
+
+  deleteQcm(){
+    this.qcmService.deleteQcm(this.qcm)
+      .pipe(first())
+      .subscribe(
+        data => {
+          this.router.navigate([this.returnUrl]);
+          this.loading = false;
+        },
+        error => {
+          this.error = error;
+          this.loading = false;
+        });
+  }
+
+  deleteQuestion(){
+      this.questionService.deleteQuestion(this.question)
+      .pipe(first())
+      .subscribe(
+        data => {
+          this.router.navigate([this.returnUrl]);
+          this.loading = false;
+        },
+        error => {
+          this.error = error;
+          this.loading = false;
+        });
   }
 
 }
