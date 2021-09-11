@@ -32,8 +32,8 @@
     dest: "{{ item }}"
     mode: a+x
   with_items:
-    - ~/app/server/main.py
-    - ~/app/server/requirement.txt
+    - ~/app/quizz/server/main.py
+    - ~/app/quizz/server/requirement.txt
 
 - name: Add another bin dir to system-wide $PATH
   become_user: devops
