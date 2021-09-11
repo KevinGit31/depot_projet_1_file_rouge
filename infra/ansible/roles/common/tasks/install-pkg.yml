@@ -74,3 +74,21 @@
     name: sqlite-devel.x86_64
     state: present
     update_cache: true
+
+- name: Install Gcc
+  yum:
+    name: gcc-c++
+    state: present
+    update_cache: true
+
+- name: Install Make
+  yum:
+    name: make
+    state: present
+    update_cache: true
+
+- name: Install NodeJs
+  yum:
+    name: nodejs
+    state: present
+    update_cache: true
