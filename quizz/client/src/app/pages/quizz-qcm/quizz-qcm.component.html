@@ -1,0 +1,43 @@
+
+<div class="container-fluid">
+    <br>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-xl-2 col-lg-3 col-6">
+                            <img src="assets/images/answer.png" class="mr-4 align-self-center img-fluid " alt="cal" />
+                        </div>
+                        <div class="col-xl-10 col-lg-9">
+                            <div class="mt-4 mt-lg-0">
+                                <h5 class="mt-0 mb-1 font-weight-bold">Quizz QCM</h5>
+                                <p class="text-muted mb-2">Bienvenue sur notre plateforme de questions réponses.
+                                    Choisisser un sujet et commancer une nouvelle expérience.
+                                </p>
+                           </div>
+                        </div>
+                    </div>
+
+                </div> <!-- end card body-->
+            </div> <!-- end card -->
+        </div>
+
+        <div class="col-xl-12">
+            <h5>Liste des sujets</h5>
+            <div class="row">
+                <div class="col-md-4" *ngFor="let qcm of this.qcms">
+                    <app-stat  class="app-stat" (click)="startQuizz(qcm)"
+                    update="/qcm/update"
+                    delete="/qcm/delete"
+                    [qcmdata]="qcm"
+                    [title]="qcm.sujet" 
+                    [value]="qcm.description" 
+                    [qnbr]="qcm.questions.length" 
+                    isShow="true"
+                    icon="folder" color="primary"></app-stat>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
