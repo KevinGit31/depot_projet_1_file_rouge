@@ -7,17 +7,3 @@
     line: "    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://{{ userdb }}:{{ pwddb }}@{{ dnsdb }}/{{ namedb }}'"
     backrefs: yes
 
-- name: Demarrage du serveur back
-  become_user: devops
-  shell: python main.py
-  args:
-    chdir: ~/app/quizz/server
-    executable: /bin/bash
-
-
-- name: Demarrage du serveur Front
-  become_user: devops
-  shell: node app.js
-  args:
-    chdir: ~/app/quizz/client-server
-    executable: /bin/bash
