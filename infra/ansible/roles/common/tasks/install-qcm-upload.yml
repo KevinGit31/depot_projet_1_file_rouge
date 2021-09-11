@@ -1,0 +1,50 @@
+- name: Creates directory ~/app
+  become_user: devops
+  become: true
+  file:
+    path: ~/app
+    state: directory
+    owner: devops
+    group: devops
+    mode: '0766'
+
+- name: Download nexus build
+  become_user: devops
+  become: true
+  get_url:
+    url: http://{{ dnsnexus }}:8081/repository/APP/1/qcm/1.0-{{ numbuild }}/qcm-1.0-{{ numbuild }}.tar.gz
+    dest: ~/app
+    username: "{{ adminnexus }}"
+    password: "{{ pwdnexus }}"
+
+- name: Extract ~/app/qcmxxx.tar.gz
+  become_user: devops
+  become: true
+  unarchive:
+    src: ~/app/qcm-1.0-{{ numbuild }}.tar.gz
+    dest: ~/app
+    remote_src: yes
+
+- name: chmod +x des scripts sh
+  become_user: devops
+  become: true
+  file:
+    dest: "{{ item }}"
+    mode: a+x
+  with_items:
+    - ~/app/server/main.py
+    - ~/app/server/requirement.txt
+
+- name: Add another bin dir to system-wide $PATH
+  become_user: devops
+  become: true
+  lineinfile:
+    dest: /home/devops/.bashrc
+    line: 'PATH=$PATH:/home/devops/.local/bin:/usr/local/bin'
+
+
+
+
+
+
+

@@ -22,10 +22,7 @@ def create_app():
     from .controllers.question import questions
     from .controllers.qcm import qcms
     from .controllers.qcm_session import qcm_sessions
-    from .controllers.client import client
 
-
-    app.register_blueprint(client,url_prefix='/')
     app.register_blueprint(users,url_prefix='/api/user')
     app.register_blueprint(auths,url_prefix='/api/auth')
     app.register_blueprint(questions,url_prefix='/api/question')
@@ -35,10 +32,6 @@ def create_app():
     from .models import User,Qcm,QcmQuestion,Question
 
     create_database(app)
-
-    @app.errorhandler(404)
-    def not_found(e):
-        return render_template("index.html")
 
     return app
 
