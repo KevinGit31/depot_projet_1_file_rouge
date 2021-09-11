@@ -3,14 +3,6 @@
   become: true
   lineinfile:
     path: ~/app/quizz/server/api/__init__.py
-    regexp: '^(.*)    app\.config\[(.*)$'
+    regexp: '^(.*)app\.config\[(.*)$'
     line: "    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://{{ userdb }}:{{ pwddb }}@{{ dnsdb }}/{{ namedb }}'"
     backrefs: yes
-
-- name: Start Qcm Api Server
-  become_user: devops
-  become: true
-  shell: 'nohup ~/.local/bin/pipenv run python3 main.py > /tmp/nohup.out 2>&1 &'
-  args:
-    chdir: ~/app/quizz/server
-    executable: /bin/bash
