@@ -20,8 +20,6 @@ import { Profile2Component } from './userprofile/profile2/profile2.component';
 import { Profile3Component } from './userprofile/profile3/profile3.component';
 import { Profile4Component } from './userprofile/profile4/profile4.component';
 import { ActivitiesComponent } from './activities/activities.component';
-import { TableAdvancedComponent } from './table-advanced/table-advanced.component';
-import { AdvancedSortableDirective } from './table-advanced/table-advanced-sortable.directive';
 import { RouterModule } from '@angular/router';
 
 @NgModule({
@@ -39,9 +37,7 @@ import { RouterModule } from '@angular/router';
         Profile2Component, 
         Profile3Component, 
         Profile4Component, 
-        ActivitiesComponent,
-        AdvancedSortableDirective,
-        TableAdvancedComponent],
+        ActivitiesComponent,],
     imports: [
         CommonModule,
         RouterModule,
@@ -67,8 +63,7 @@ import { RouterModule } from '@angular/router';
         Profile3Component,
         Profile4Component, 
         ActivitiesComponent,
-        AdvancedSortableDirective,
-        TableAdvancedComponent]
+]
 })
 export class WidgetModule { }
 

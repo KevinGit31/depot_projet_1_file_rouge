@@ -1,5 +1,5 @@
 {
-  "name": "vedag-erp",
+  "name": "quizz-qcm",
   "version": "1.0.0",
   "scripts": {
     "ng": "ng",
@@ -8,8 +8,9 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "build:stats": "ng build --aot --prod --stats-json",
-    "analyze": "webpack-bundle-analyzer dist/shreyu/stats-es2015.json"
+    "build:prod": "ng build --prod && npm run cp:server",
+    "cp:server" : "rm -Rf ../client_server/quizz && cp -r dist/quizz ../client_server",
+    "build:stats": "ng build --aot --prod --stats-json"
   },
   "private": true,
   "dependencies": {

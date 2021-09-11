@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "shreyu": {
+    "quizz": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/shreyu",
+            "outputPath": "dist/quizz",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -51,8 +51,9 @@
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
-              "vendorChunk": false,
+              "vendorChunk": true,
               "buildOptimizer": true,
+              "deleteOutputPath": true,
               "budgets": [
                 {
                   "type": "initial",
@@ -71,18 +72,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "shreyu:build"
+            "browserTarget": "quizz:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "shreyu:build:production"
+              "browserTarget": "quizz:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "shreyu:build"
+            "browserTarget": "quizz:build"
           }
         },
         "test": {
@@ -119,16 +120,16 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "shreyu:serve"
+            "devServerTarget": "quizz:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "shreyu:serve:production"
+              "devServerTarget": "quizz:serve:production"
             }
           }
         }
       }
     }
   },
-  "defaultProject": "shreyu"
+  "defaultProject": "quizz"
 }

@@ -10,8 +10,8 @@
                     [tooltip]="tooltip" [stroke]="stroke" [fill]="fill" [markers]="markers">
                 </apx-chart>
                 <span class="text-success font-weight-bold font-size-13"
-                    [ngClass]="{ 'text-danger': value <= '0' }"><i class='uil'
-                        [ngClass]="{ 'uil uil-arrow-down': value  <= '0' , 'uil uil-arrow-up': value > '0'}"></i>
+                    [ngClass]="{ 'text-danger': value <= 0 }"><i class='uil'
+                        [ngClass]="{ 'uil uil-arrow-down': value  <= 0 , 'uil uil-arrow-up': value > 0}"></i>
                     {{ subValue }}</span>
             </div>
         </div>
