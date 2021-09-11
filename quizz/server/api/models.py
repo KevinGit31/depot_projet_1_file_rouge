@@ -6,9 +6,9 @@ from sqlalchemy.sql import func
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(1024),unique=True)
-    name = db.Column(db.String(1024))
-    password = db.Column(db.String(1024))
+    email = db.Column(db.String(255),unique=True)
+    name = db.Column(db.String(255))
+    password = db.Column(db.String(255))
     admin = db.Column(db.Boolean)
     qcm_sessions = db.relationship('QcmSession')
 
@@ -28,8 +28,8 @@ class QcmSessionAnswer(db.Model):
 
 class Qcm(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    sujet = db.Column(db.String(1024), unique=True)
-    description = db.Column(db.String(1024))
+    sujet = db.Column(db.String(255), unique=True)
+    description = db.Column(db.String(255))
     questions = db.relationship('QcmQuestion', cascade="all, delete-orphan")
 
 class QcmQuestion(db.Model):
@@ -38,7 +38,7 @@ class QcmQuestion(db.Model):
 
 class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    text = db.Column(db.String(1024), unique=True)
+    text = db.Column(db.String(255), unique=True)
     answers = db.relationship('QuestionAnswer', cascade="all, delete-orphan")
 
 class QuestionAnswer(db.Model):
@@ -48,5 +48,5 @@ class QuestionAnswer(db.Model):
 
 class Answer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    text = db.Column(db.String(1024), unique=True)
+    text = db.Column(db.String(255), unique=True)
 
