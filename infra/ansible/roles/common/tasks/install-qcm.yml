@@ -2,15 +2,15 @@
   become_user: devops
   become: true
   lineinfile:
-    path: ~/app/quizz/src/config/appconfig.py
-    regexp: '^(.*)app\.config\[(.*)$'
+    path: ~/app/quizz/server/api/__init__.py
+    regexp: '^(.*)app.config['SQLALCHEMY_DATABASE_URI'](.*)$'
     line: "    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://{{ userdb }}:{{ pwddb }}@{{ dnsdb }}/{{ namedb }}'"
     backrefs: yes
 
-- name: run qcm ~/app/quizz/script/start-quizz.sh
+- name: Start Qcm Api Server
   become_user: devops
   become: true
-  shell: 'nohup ~/.local/bin/pipenv run python3 api/app.py > /tmp/nohup.out 2>&1 &'
+  shell: 'nohup ~/.local/bin/pipenv run python3 main.py > /tmp/nohup.out 2>&1 &'
   args:
-    chdir: ~/app/quizz/src
+    chdir: ~/app/quizz/server
     executable: /bin/bash
