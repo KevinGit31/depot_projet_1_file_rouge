@@ -1,1 +1,0 @@
-cd ../src && pipenv run pytest
