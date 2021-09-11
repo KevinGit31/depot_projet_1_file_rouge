@@ -26,6 +26,8 @@ import { FormQcmComponent } from './qcm/form-qcm/form-qcm.component';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { QuestionRowComponent } from './qcm/question-row/question-row.component';
 import { QuizzQcmComponent } from './quizz-qcm/quizz-qcm.component';
+import { QuizzWizardComponent } from './quizz-wizard/quizz-wizard.component';
+import { ArchwizardModule } from 'angular-archwizard';
 
 
 @NgModule({
@@ -37,7 +39,7 @@ import { QuizzQcmComponent } from './quizz-qcm/quizz-qcm.component';
       QuestionComponent, 
       AnswerComponent,
        FormQuestionComponent,
-        AnswerRowComponent, FormQcmComponent, QuestionRowComponent, QuizzQcmComponent],
+        AnswerRowComponent, FormQcmComponent, QuestionRowComponent, QuizzQcmComponent, QuizzWizardComponent],
   imports: [
     NgSelectModule,
     CommonModule,
@@ -49,6 +51,7 @@ import { QuizzQcmComponent } from './quizz-qcm/quizz-qcm.component';
     FlatpickrModule.forRoot(),
     UIModule,
     WidgetModule,
+    ArchwizardModule,
     PagesRoutingModule,
     UiModule,
     AppsModule,

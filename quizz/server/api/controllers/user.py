@@ -23,9 +23,9 @@ users = Blueprint('users',__name__)
 def get_all_users(current_user):
 
     if not current_user.admin:
-        return jsonify({'message':'Impossible d\'exécuter cette fonction !'})
-
-    users = User.query.order_by(User.name).all()
+        users = User.query.filter_by(id=current_user.id)
+    else :
+        users = User.query.order_by(User.name).all()
 
     output = []
 
@@ -35,6 +35,14 @@ def get_all_users(current_user):
         user_data['name'] = user.name
         user_data['admin'] = user.admin
         user_data['email'] = user.email
+        qcm_sessions = []
+        for qcm_session in user.qcm_sessions:
+            qcm_session_data = {}
+            qcm_session_data['id'] = qcm_session.id
+            qcm_session_data['score'] = qcm_session.score
+            qcm_session_data['created_date'] = qcm_session.created_date
+            qcm_sessions.append( qcm_session_data )
+        user_data['qcm_sessions'] = qcm_sessions
 
         output.append(user_data)
 
@@ -57,6 +65,14 @@ def get_one_user(current_user,id):
     user_data['name'] = user.name
     user_data['admin'] = user.admin
     user_data['email'] = user.email
+    qcm_sessions = []
+    for qcm_session in user.qcm_sessions:
+        qcm_session_data = {}
+        qcm_session_data['id'] = qcm_session.id
+        qcm_session_data['score'] = qcm_session.score
+        qcm_session_data['created_date'] = qcm_session.created_date
+        qcm_sessions.append( qcm_session_data )
+    user_data['qcm_sessions'] = qcm_sessions
 
     return jsonify(user_data)
 

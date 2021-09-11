@@ -14,6 +14,7 @@ class User(db.Model):
 class QcmSession(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     score = db.Column(db.Integer)
+    created_date = db.Column(db.DateTime,default=func.now())
     answers = db.relationship('QcmSessionAnswer', cascade="all, delete-orphan")
     user_id=db.Column(db.Integer,db.ForeignKey('user.id'))
 

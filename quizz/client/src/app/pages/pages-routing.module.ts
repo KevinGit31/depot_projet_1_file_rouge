@@ -8,6 +8,7 @@ import { QcmComponent } from './qcm/qcm.component';
 import { FormQuestionComponent } from './question/form-question/form-question.component';
 import { QuestionComponent } from './question/question.component';
 import { QuizzQcmComponent } from './quizz-qcm/quizz-qcm.component';
+import { QuizzWizardComponent } from './quizz-wizard/quizz-wizard.component';
 import { FormUserComponent } from './users/form-user/form-user.component';
 import { UsersComponent } from './users/users.component';
 
@@ -25,7 +26,8 @@ const routes: Routes = [
   { path: 'question',component:QuestionComponent},
   { path: 'question/create',component:FormQuestionComponent},
   { path: 'question/update',component:FormQuestionComponent},
-  { path: 'question/delete',component:FormDeleteComponent}
+  { path: 'question/delete',component:FormDeleteComponent},
+  { path: 'quizz-wizard',component:QuizzWizardComponent}
 ];
 
 @NgModule({

@@ -4,6 +4,40 @@
     <div class="col-lg-3">
       <ng-template [ngTemplateOutlet]="ProfileData"></ng-template>
     </div>
+    <div class="col-lg-9">
+      <div class="">
+        <div class="">
+          <div class="">
+            <div class="message-list" *ngFor="let _user of users">
+              <li class="unread" *ngFor="let qcm_session of _user.qcm_sessions">
+                <div class="col-mail col-mail-1">
+                  <span class="star-toggle uil uil-star text-warning"></span>
+                  <a href="" class="title">{{ _user.name }} - {{ _user.email }}</a>
+                </div>
+
+                <div class="col-mail col-mail-2">
+                  <div class="subject" [ngClass]="{bad: qcm_session.score<50,good: qcm_session.score>=50,prefect: qcm_session.score>80}"> Score : {{ qcm_session.score }} %</div>
+                  <div class="created_date">{{ qcm_session.created_date | date: 'dd/MM/yyyy HH:mm:ss'}}</div>
+                </div>
+              </li>
+            </div>
+            <!--<ul class="message-list" *ngFor="let _user of users">
+              <li class="unread" *ngFor="let qcm_session of _user.qcm_sessions; let i = index; ">
+                <div class="col-mail col-mail-1">
+                  <span class="star-toggle uil uil-star text-warning"></span>
+                  <a href="" class="title">{{ _user.name }}</a>
+                </div>
+                <div class="col-mail col-mail-2">
+                  <a href="" class="subject">{{ _user.email. }}
+                  </a>
+                  <div class="date">{{ qcm_session.score }}</div>
+                </div>
+              </li>
+            </ul>-->
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 

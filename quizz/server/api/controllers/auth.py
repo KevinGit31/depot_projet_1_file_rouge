@@ -44,7 +44,7 @@ def login():
             'name': user.name,
             'email': user.email,
             'admin': user.admin,
-        }, 'exp': datetime.datetime.utcnow()+datetime.timedelta(minutes=3600)}, SECRET_KEY)
+        }, 'exp': datetime.datetime.utcnow()+datetime.timedelta(minutes=60)}, SECRET_KEY)
         return jsonify({'token': token})
 
     return make_response('Could not verify',401,{'www-Authenticate': 'Basic realm="Login required!"'})
