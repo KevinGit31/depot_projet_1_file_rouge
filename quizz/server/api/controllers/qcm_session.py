@@ -1,9 +1,11 @@
-from quizz.server.api.models import Question, QuestionAnswer
+# -*- coding: utf-8 -*-
+
 from flask import Blueprint, request, jsonify
 from api.models import Answer, User
 from api.models import QcmSessionAnswer
 from werkzeug.security import generate_password_hash
 from api.controllers import token_required
+from api.models import Question, QuestionAnswer
 from api import db
 from api.models import QcmSession
 from functools import wraps

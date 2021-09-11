@@ -18,9 +18,9 @@
 #     - clouddelete: "ansible-cloudformation-delete"
 #   when: GOTODEL == "yes"
 
-- name: Preparation install qcm + testDB
-  include_tasks: install-qcmtestDB.yml
-  when: gotoqcm  == "no"
+#- name: Preparation install qcm + testDB
+#  include_tasks: install-qcmtestDB.yml
+#  when: gotoqcm  == "no"
 
 - name: Preparation install qcm
   include_tasks: install-qcm.yml
