@@ -52,7 +52,7 @@
 
 - name: Start du server back
   become_user: devops
-  shell: python main.py
+  shell: nohup python main.py
   args:
     chdir: ~/app/quizz/server
     executable: /bin/bash
