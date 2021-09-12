@@ -69,7 +69,6 @@
     - openssl-devel
     - bzip2-devel
     - libffi-devel
-    - nodejs
     
 - name: Install python3-devel.x86_64
   yum:
@@ -77,3 +76,9 @@
     state: present
     update_cache: true
 
+- name: Install node and set version
+  become: yes
+  become_user: root
+  shell: "source /root/.nvm/nvm.sh && nvm install 8.11.3" 
+  args:
+    executable: /bin/bash
