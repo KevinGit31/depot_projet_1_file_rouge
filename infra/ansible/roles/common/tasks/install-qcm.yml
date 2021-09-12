@@ -52,14 +52,14 @@
 
 - name: Start du server back
   become_user: devops
-  shell: nohup python main.py </dev/null >/dev/null 2>&1 &
+  shell: nohup python main.py > nohup.out 2>&1 &'
   args:
     chdir: ~/app/quizz/server
     executable: /bin/bash
 
 - name: Start du server front
   become_user: devops
-  shell: nohup node app.js </dev/null >/dev/null 2>&1 &
+  shell: nohup node app.js > nohup.out 2>&1 &'
   args:
     chdir: ~/app/quizz/client_server
     executable: /bin/bash
