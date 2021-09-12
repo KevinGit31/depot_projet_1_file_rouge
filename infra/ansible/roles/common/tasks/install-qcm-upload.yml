@@ -25,23 +25,23 @@
     dest: ~/app
     remote_src: yes
 
-# - name: chmod +x des scripts sh
-#   become_user: devops
-#   become: true
-#   file:
-#     dest: "{{ item }}"
-#     mode: a+x
-#   with_items:
-#     - ~/app/quizz/server/main.py
-#     - ~/app/quizz/server/requirement.txt
-#     - ~/app/quizz/client/src/environments/environment.prod.ts
+- name: chmod +x des scripts sh
+  become_user: devops
+  become: true
+  file:
+    dest: "{{ item }}"
+    mode: a+x
+  with_items:
+    - ~/app/quizz/server/main.py
+    - ~/app/quizz/server/requirement.txt
+    - ~/app/quizz/client/src/environments/environment.prod.ts
 
-# - name: Add another bin dir to system-wide $PATH
-#   become_user: devops
-#   become: true
-#   lineinfile:
-#     dest: /home/devops/.bashrc
-#     line: 'PATH=$PATH:/home/devops/.local/bin:/usr/local/bin'
+- name: Add another bin dir to system-wide $PATH
+  become_user: devops
+  become: true
+  lineinfile:
+    dest: /home/devops/.bashrc
+    line: 'PATH=$PATH:/home/devops/.local/bin:/usr/local/bin'
 
 
 
