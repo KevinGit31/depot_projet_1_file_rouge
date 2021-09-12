@@ -68,8 +68,10 @@ Parameters:
     AllowedValues:
       - '8080'
       - '8081'
-      - '5000'
+      - '3000'
+      - '4000'
       - '80'
+     
   Urlscript:
     Type: String
     Description: 'command du script'
