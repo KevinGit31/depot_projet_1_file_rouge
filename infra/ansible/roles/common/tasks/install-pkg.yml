@@ -69,7 +69,6 @@
     - openssl-devel
     - bzip2-devel
     - libffi-devel
-    - npm
     - nodejs-legacy
     
 - name: Install python3-devel.x86_64
