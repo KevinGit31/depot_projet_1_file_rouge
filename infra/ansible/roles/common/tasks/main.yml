@@ -22,8 +22,8 @@
   include_tasks: install-qcm-upload.yml
   when: gotoqcm  == "no"
 
-- name: Preparation install qcm 2
-  include_tasks: install-qcm.yml
-  when: gotoqcm  == "yes"
+# - name: Preparation install qcm 2
+#   include_tasks: install-qcm.yml
+#   when: gotoqcm  == "yes"
 
   
