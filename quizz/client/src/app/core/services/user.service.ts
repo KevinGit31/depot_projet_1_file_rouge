@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { User } from '../models/auth.models';
+import { environment } from 'src/environments/environment';
 
-const baseUrl = "http://127.0.0.1:5000/"
+const baseUrl = environment.api_url
 
 @Injectable({ providedIn: 'root' })
 export class UserProfileService {

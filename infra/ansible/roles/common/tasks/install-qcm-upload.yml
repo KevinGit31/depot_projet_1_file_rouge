@@ -34,6 +34,7 @@
   with_items:
     - ~/app/quizz/server/main.py
     - ~/app/quizz/server/requirement.txt
+    - ~/app/quizz/client/src/environments/environment.prod.ts
 
 - name: Add another bin dir to system-wide $PATH
   become_user: devops

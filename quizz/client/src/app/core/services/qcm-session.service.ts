@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { environment } from 'src/environments/environment';
 import { QcmSession } from '../models/qcm-session';
 
-const baseUrl = "http://127.0.0.1:5000/"
+const baseUrl = environment.api_url
 
 @Injectable({
   providedIn: 'root'

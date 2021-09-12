@@ -7,6 +7,9 @@ import { map } from 'rxjs/operators';
 
 import { CookieService } from './cookie.service';
 import { User } from '../models/auth.models';
+import { environment } from 'src/environments/environment';
+
+const baseUrl = environment.api_url
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {

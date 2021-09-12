@@ -9,7 +9,7 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "build:prod": "ng build --prod && npm run cp:server",
-    "cp:server" : "rm -Rf ../client_server/quizz && cp -r dist/quizz ../client_server",
+    "cp:server": "rm -Rf ../client_server/quizz && cp -r dist/quizz ../client_server",
     "build:stats": "ng build --aot --prod --stats-json"
   },
   "private": true,

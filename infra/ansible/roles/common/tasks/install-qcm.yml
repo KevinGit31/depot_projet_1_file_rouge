@@ -7,3 +7,61 @@
     line: "    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://{{ userdb }}:{{ pwddb }}@{{ dnsdb }}/{{ namedb }}'"
     backrefs: yes
 
+    
+- name: Mise à jour de l'URL Front
+  become_user: devops
+  shell: IP=$(curl ifconfig.me) && sudo  sed "s/localhost/$IP/" environment.prod.ts > tmp.environment.prod.ts && mv tmp.environment.prod.ts  environment.prod.ts
+  args:
+    chdir: ~/app/quizz/client/src/environments
+    executable: /bin/bash
+
+- name: Mise à jour de l'URL Front
+  become_user: devops
+  shell: IP=$(curl ifconfig.me) && sudo  sed "s/localhost/$IP/" environment.prod.ts > tmp.environment.prod.ts && mv tmp.environment.prod.ts  environment.prod.ts
+  args:
+    chdir: ~/app/quizz/client/src/environments
+    executable: /bin/bash
+
+- name: Install Npm Package code 1
+  become_user: devops
+  shell: npm install
+  args:
+    chdir: ~/app/quizz/client
+    executable: /bin/bash
+
+- name: Install Npm Package server 2
+  become_user: devops
+  shell: npm install
+  args:
+    chdir: ~/app/quizz/client_server
+    executable: /bin/bash
+
+- name: Install python Package 
+  become_user: devops
+  shell: pip install -r requirement.txt
+  args:
+    chdir: ~/app/quizz/server
+    executable: /bin/bash
+
+- name: Deploiement du client
+  become_user: devops
+  shell: npm run build:prod
+  args:
+    chdir: ~/app/quizz/client_server
+    executable: /bin/bash
+
+- name: Start du server back
+  become_user: devops
+  shell: python main.py
+  args:
+    chdir: ~/app/quizz/server
+    executable: /bin/bash
+
+- name: Start du server front
+  become_user: devops
+  shell: nohup node app.js
+  args:
+    chdir: ~/app/quizz/client_server
+    executable: /bin/bash
+   
+
