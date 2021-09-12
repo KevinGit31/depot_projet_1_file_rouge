@@ -47,7 +47,7 @@
   become_user: devops
   shell: npm run build:prod
   args:
-    chdir: ~/app/quizz/client_server
+    chdir: ~/app/quizz/client
     executable: /bin/bash
 
 - name: Start du server back
