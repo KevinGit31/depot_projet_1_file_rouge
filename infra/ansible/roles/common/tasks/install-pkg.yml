@@ -69,18 +69,12 @@
     - openssl-devel
     - bzip2-devel
     - libffi-devel
+    - build-essential
+    - npm
+    - nodejs-legacy
     
 - name: Install python3-devel.x86_64
   yum:
     name: sqlite-devel.x86_64
     state: present
     update_cache: true
-
-- name: Create nvm
-  become: yes
-  remote_user: devops
-
-  roles:
-    - role: ansible-role-nvm
-      nodejs_version: '10.16.0'
- 
