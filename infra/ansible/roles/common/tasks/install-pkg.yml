@@ -79,6 +79,6 @@
 - name: Install node and set version
   become: yes
   become_user: root
-  shell: sudo yum install nodejs npm --enablerepo=epel
+  shell: yum install nodejs npm --enablerepo=epel
   args:
     executable: /bin/bash
