@@ -76,9 +76,12 @@
     state: present
     update_cache: true
 
-- name: Install node and set version
-  become: yes
-  become_user: root
-  shell: yum install nodejs npm --enablerepo=epel
-  args:
-    executable: /bin/bash
+  roles:
+    - role: ansible-role-nvm
+      nodejs_version: "8.16.0"
+      nvm_commands:
+       - "nvm exec default npm install"
+      become: true           
+      become_user: devops  
+
+ 
