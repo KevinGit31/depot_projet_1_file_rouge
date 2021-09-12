@@ -77,7 +77,6 @@
     update_cache: true
 
 - name: Create nvm
-  gather_facts: 'no'
   become: yes
   remote_user: devops
 
