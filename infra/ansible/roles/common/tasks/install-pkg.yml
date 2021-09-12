@@ -76,25 +76,45 @@
     state: present
     update_cache: true
 
-- name: Install nvm
-  git: repo=https://github.com/creationix/nvm.git dest=~/.nvm version=v0.33.11
-  tags: nvm
+- name: Check for node.js
+    vars:
+      node_version: "14.17.0"
+    shell: test "$(node -v 2> /dev/null)" = v{{node_version}}
+    register: nodejs_installed
+    ignore_errors: True
+    tags:
+      - nodejs
 
-- name: Source nvm in ~/.{{ item }}
-  lineinfile: >
-      dest=~/.{{ item }}
-      line="source ~/.nvm/nvm.sh"
-      create=yes
-  tags: nvm
-  with_items:
-    - bashrc
-    - profile
+- name: Create temp dir for compiling node.js
+    vars:
+      node_version: "14.17.0"
+    shell: mktemp -d node.XXXXXXX
+    register: node_tmp_dir
+    when: nodejs_installed|failed
+    tags:
+      - nodejs
 
-- name: Install node and set version
-  become: yes
-  become_user: root
-  shell: "source /root/.nvm/nvm.sh && nvm install 8.11.3" 
-  args:
-    executable: /bin/bash 
+- name: Download node.js source
+    vars:
+      node_version: "14.17.0"
+    shell: curl http://nodejs.org/dist/v{{node_version}}/node-v{{node_version}}.tar.gz | tar xz --strip-components=1 chdir={{ node_tmp_dir.stdout }}
+    when: nodejs_installed|failed
+    tags:
+      - nodejs
 
+- name: Configure, build and install node.js
+    vars:
+      node_version: "14.17.0"
+    shell: ./configure && make && make install chdir={{ node_tmp_dir.stdout }}
+    when: nodejs_installed|failed
+    tags:
+      - nodejs
+
+- name: Cleanup node.js source
+    vars:
+      node_version: "14.17.0"
+    shell: rm -rf {{ node_tmp_dir.stdout }}
+    when: nodejs_installed|failed
+    tags:
+      - nodejs
  
