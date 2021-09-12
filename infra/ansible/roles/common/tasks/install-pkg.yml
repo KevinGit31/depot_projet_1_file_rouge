@@ -80,13 +80,11 @@
   become_user: devops
   shell: sudo yum install -y gcc-c++ make && curl -sL https://rpm.nodesource.com/setup_14.x | sudo -E bash -
   args:   
-    chdir: ~/app
     executable: /bin/bash
 
 - name: Install Node 2
   become_user: devops
-  shell: sudo yum install nodejs 
+  shell: sudo yum -y install nodejs 
   args:
-    chdir: ~/app
     executable: /bin/bash
  
