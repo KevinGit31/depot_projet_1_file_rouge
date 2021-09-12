@@ -69,7 +69,6 @@
     - openssl-devel
     - bzip2-devel
     - libffi-devel
-    - build-essential
     - npm
     - nodejs-legacy
     
