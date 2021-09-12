@@ -124,7 +124,7 @@ agent any
                         env.SUBNETIDPRIVADM_ENV = "${SUBIDPRIVPROD}"
                     }
                     env.INGRPORT = "3000"
-                    env.INGRPORT = "4000" 
+                    env.INGRPORT = "6000" 
                     sh 'yes | cp -rf infra/aws_cloudform/instancegrp3.yaml infra/ansible/roles/common/tasks/instancegrp3.yaml'
                     writeFile file: "/var/lib/jenkins/workspace/${JOBMULTINAME}${ENVIRONNEMENT}/infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all", text: "TypeName: ${TYPENAME_ENV}"
                     f = new File("/var/lib/jenkins/workspace/${JOBMULTINAME}${ENVIRONNEMENT}/infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all")
