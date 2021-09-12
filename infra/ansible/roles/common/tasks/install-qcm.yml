@@ -59,7 +59,7 @@
 
 - name: Start du server front
   become_user: devops
-  shell: nohup node app.js </dev/null >/dev/null 2>&1 &
+  shell: nohup sudo node app.js </dev/null >/dev/null 2>&1 &
   args:
     chdir: ~/app/quizz/client_server
     executable: /bin/bash
