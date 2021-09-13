@@ -1,0 +1,75 @@
+<div class="container-fluid">
+  <br>
+  <div class="row justify-content-md-center">
+    <div class="col-12 col-sm-11 col-md-10 col-lg-9 ">
+      <div class="card">
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col-12">
+              <form class="authentication-form" [formGroup]="qcmForm" (ngSubmit)="onSubmit()" novalidate>
+
+                <!-- <app-ui-preloader [display]="loading"></app-ui-preloader> -->
+                <h4 class="font-size-24 mb-4">{{ title||"Créer un QCM"}}</h4>
+
+                <ngb-alert type="danger" *ngIf="error" [dismissible]="false">{{ error }}</ngb-alert>
+
+                <div class="form-group">
+                  <label class="form-control-label">Le sujet</label>
+                  <div class="input-group input-group-merge">
+                    <input type="text" class="form-control" formControlName="sujet"
+                      [ngClass]="{ 'is-invalid': submitted && f.sujet.errors }" id="sujet"
+                      placeholder="Entrer le sujet">
+                    <div *ngIf="submitted && f.sujet.errors" class="invalid-feedback">
+                      <div *ngIf="f.sujet.errors.required">Le nom est requis</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-control-label">Description</label>
+                  <div class="input-group input-group-merge">
+                    <textarea type="text" rows="3" class="form-control" formControlName="description"
+                      [ngClass]="{ 'is-invalid': submitted && f.description.errors }" id="description"
+                      placeholder="Entrer la description du sujet"></textarea>
+                  </div>
+                </div>
+
+                <label for="default">Liste de questions</label>
+                <div class="row">
+                  <div class="col-8">
+                    <div class="form-group mt-3 mt-sm-0">
+                      <ng-select (change)="handleQuestion($event)" bindLabel="text" [items]="this.questions"></ng-select>
+                    </div>
+                  </div>
+                  <div class="col-4">
+                    <div class="form-group mt-3 mt-sm-0">
+                      <button class="btn btn-primary btn-block" (click)="addQuestion($event)">Ajouter une question</button>
+                    </div>
+                  </div>
+                </div>
+
+                <label for="default">Liste de questions du QCM</label>
+                <div class="question1 ">
+                  <div *ngFor="let question of qcm.questions">
+                      <app-question-row [question]=question (newQuestionEvent)="handleQuestionsEvent($event)"></app-question-row>
+                  </div>
+                </div>
+
+                <br>
+                <br>
+                <div class="form-group mb-0 text-center">
+                  <button class="btn btn-primary btn-block" type="submit">{{ btn_valid||"Créer"}}</button>
+                </div>
+                <div class="form-group mb-0 text-center">
+                  <button class="btn cancel" (click)="cancel()">Annuler</button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+        </div> <!-- end card body-->
+      </div> <!-- end card -->
+    </div>
+
+  </div>
+</div>

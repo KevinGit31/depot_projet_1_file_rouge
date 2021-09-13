@@ -29,7 +29,7 @@ AAKI1=$(cat /tmp/AWSAccessKeyId.txt)
 ASAKI1=$(cat /tmp/AWSSecretAccessKeyId.txt)
 TYPENAME1=$(cat /tmp/TypeName.txt)
 
-
+amazon-linux-extras install epel -y
 #install java
 yum install -y java-1.8.0-openjdk-devel
 #recuperation package
@@ -89,6 +89,9 @@ echo "RET=$(sudo cat /etc/ansible/.ansvlt)" >> /etc/ansible/ansvlt.sh
 echo "echo \$RET" >> /etc/ansible/ansvlt.sh
 sed -i 's/\#vault_password_file = \/path\/to\/vault_password_file/vault_password_file=\/etc\/ansible\/ansvlt.sh/' /etc/ansible/ansible.cfg
 sed -i 's/\#host_key_checking = False/host_key_checking = False/' /etc/ansible/ansible.cfg
+
+sed -i 's/\#remote_tmp     = ~\/.ansible\/tmp/remote_tmp     = \/tmp\/.ansible-${USER}\/tmp/' /etc/ansible/ansible.cfg
+sed -i 's/\#local_tmp     = ~\/.ansible\/tmp/local_tmp     = \/tmp\/.ansible-${USER}\/tmp/' /etc/ansible/ansible.cfg
 #preparation pour le client aws pour ansible dans jenkins
 pip install boto3==1.15.16
 pip uninstall -y botocore
@@ -153,7 +156,7 @@ su - ec2-user -c "sudo systemctl enable --now docker"
 curl -L "https://github.com/docker/compose/releases/download/1.29.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 
-sleep 200
+sleep 300
 chown devops: /tmp/projet1grp3key.pem
 su - devops -c "cp /tmp/projet1grp3key.pem ~/.ssh/projet1grp3key.pem"
 su - devops -c "chmod 600 ~/.ssh/projet1grp3key.pem"

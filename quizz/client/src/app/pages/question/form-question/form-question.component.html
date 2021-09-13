@@ -1,0 +1,69 @@
+<div class="container-fluid">
+  <br>
+  <div class="row justify-content-md-center">
+    <div class="col-12 col-sm-11 col-md-10 col-lg-9 ">
+      <div class="card">
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col-12">
+              <form class="authentication-form" [formGroup]="questionForm" (ngSubmit)="onSubmit()" novalidate>
+
+                <!-- <app-ui-preloader [display]="loading"></app-ui-preloader> -->
+                <h4 class="font-size-24 mb-4">{{ title||"Créer un utilisateur"}}</h4>
+
+                <ngb-alert type="danger" *ngIf="error" [dismissible]="false">{{ error }}</ngb-alert>
+
+                <div class="form-group">
+                  <label class="form-control-label">Question</label>
+                  <div class="input-group input-group-merge">
+                    <textarea type="text" rows="5" class="form-control" formControlName="text"
+                      [ngClass]="{ 'is-invalid': submitted && f.text.errors }" id="text"
+                      placeholder="Entrer la question"></textarea>
+
+                    <div *ngIf="submitted && f.text.errors" class="invalid-feedback">
+                      <div *ngIf="f.text.errors.required">Le nom est requis</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-control-label">Réponse</label>
+                  <div class="input-group input-group-merge">
+                    <textarea type="text" formControlName="answerStr" rows="3" class="form-control"
+                      placeholder="Entrer la réponse"></textarea>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-auto mr-auto"></div>
+                  <div class="col-auto"><button class="btn btn-primary" (click)="addAnswer($event)">Ajouter</button>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-control-label">Liste des réponses</label>
+                  <div class="input-group answer1 input-group-merge">
+                    <div class="btn-block " *ngFor="let answer of question.answers">
+                        <app-answer-row [answer]=answer (newAnswerEvent)="handleAnswerEvent($event)"></app-answer-row>
+                    </div>
+                  </div>
+                </div>
+
+                <br>
+                <br>
+                <div class="form-group mb-0 text-center">
+                  <button class="btn btn-primary btn-block" type="submit">{{ btn_valid||"Créer"}}</button>
+                </div>
+                <div class="form-group mb-0 text-center">
+                  <button class="btn cancel" (click)="cancel()">Annuler</button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+        </div> <!-- end card body-->
+      </div> <!-- end card -->
+    </div>
+
+  </div>
+</div>

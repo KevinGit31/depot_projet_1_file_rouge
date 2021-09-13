@@ -385,7 +385,7 @@ if [ "$n1" = "jenkins" ]; then
     TYPEINSTALL=$n1
     EC2PRIVIP="10.80.140.10"
     PORTAPP="8080"
-    TYPEINSTANCE="t2.micro"
+    TYPEINSTANCE="t2.medium"
     TPL="$STACKNAMEEC2"
     STACKNAMEEC2="jenkins"
     CMDSCRIPT="$n1"
@@ -557,8 +557,10 @@ select var in "${CHOIX[@]}"; do
             echo $STACKLISTNAME
 
             if [[ $STACKNAMEEC2 == "jenkins" ]]; then
-                echo "En attente 180s de transfert de la clé ssh temps de disponibilité de l'instance ID et de la connexion ssh"
-                sleep 180s
+                echo "En attente de la mise à disposition de l'instance pour effectuer le transfert de la clé ssh"
+                RETA=$($AWSBIN cloudformation wait stack-create-complete --stack-name $STACKNAMEEC2)
+                echo $RETA
+
                 #Recupération de l'instance ID
                 FXDESC_FILTER1=$STACKNAMEEC2
                 #Filtre sur DBINSTANCE et cherche 2 éléments
@@ -572,8 +574,14 @@ select var in "${CHOIX[@]}"; do
                 eval $(FXAWS_DESCRIBE "$SVCTYPE" "$DESCRIBECMD" "$REGION" "$QUERY" "$FXDESC_FILTER1" "$FILTEROPTION" "$NEXTPIPECMD")
                 echo "InstanceID= $T2FXAWS_DESCRETURN"
                 echo "InstanceName= $T1FXAWS_DESCRETURN"
+
+                #En attente mise à dispo de l'instance
+                RETB=$($AWSBIN ec2 wait instance-status-ok --instance-ids $T2FXAWS_DESCRETURN)
+                echo $RETB
+                RETC=$($AWSBIN ec2 wait instance-running --instance-ids $T2FXAWS_DESCRETURN)
+                echo $RETC
                 RESULTINSTANCEID=$T2FXAWS_DESCRETURN
-                RESULTPUBDNSNAME=$(aws ec2 describe-instances --query "Reservations[].Instances[].PublicDnsName" --instance-ids $RESULTINSTANCEID --output text)
+                RESULTPUBDNSNAME=$($AWSBIN ec2 describe-instances --query "Reservations[].Instances[].PublicDnsName" --instance-ids $RESULTINSTANCEID --output text)
                 echo "L'id EC2 de l'instance $T1FXAWS_DESCRETURN pour : $RESULTINSTANCEID et son PublicDNSName est: $RESULTPUBDNSNAME"
                 echo ""
 

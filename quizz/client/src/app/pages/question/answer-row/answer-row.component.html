@@ -1,0 +1,11 @@
+<div class="row answer-row">
+    <div class="col-auto answer-text mr-auto">{{answer.text}}</div>
+    <div class="col-auto">
+        <span class="arow custom-switch">
+            <input type="checkbox" [(ngModel)]=answer.isTrue class="custom-control-input" [id]=answer.text>
+            <label class="custom-control-label" [attr.for]=answer.text>Vrai</label>
+        </span>
+        <a class="arow" title="Modifier" (click)="update()"><i class="uil uil-edit-alt mr-2"></i></a>
+        <a class="arow text-danger"   (click)="delete()" title="Supprimer"><i class="uil uil-trash mr-2"></i></a>
+    </div>
+</div>
