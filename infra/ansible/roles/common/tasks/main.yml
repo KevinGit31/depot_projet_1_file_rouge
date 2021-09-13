@@ -26,4 +26,9 @@
   include_tasks: install-qcm.yml
   when: gotoqcm  == "yes"
 
-  
+- name: Preparation install agent logstash pour elk amazon ES
+  include_tasks: install-elkagent.yml
+  vars:
+    ansible_python_interpreter: /usr/bin/python2
+#  when: ansible_environnement  == "dev"
+  when: gotoqcm  == "yes"
