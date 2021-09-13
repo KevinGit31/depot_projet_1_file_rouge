@@ -12,7 +12,7 @@
   become_user: devops
   become: true
   get_url:
-    url: http://{{ dnsnexus }}:8081/repository/APP/1/qcm-{{ansible_environnement}}/1.0-{{ numbuild }}/qcm-1.0-{{ numbuild }}.tar.gz
+    url: http://{{ dnsnexus }}:8081/repository/APP/1/qcm/1.0-{{ numbuild }}/qcm-1.0-{{ numbuild }}.tar.gz
     dest: ~/app
     username: "{{ adminnexus }}"
     password: "{{ pwdnexus }}"
@@ -31,7 +31,6 @@
   lineinfile:
     dest: /home/devops/.bashrc
     line: 'PATH=$PATH:/home/devops/.local/bin:/usr/local/bin'
-
 
 
 

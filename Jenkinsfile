@@ -76,7 +76,7 @@ agent any
             steps{
                 nexusArtifactUploader artifacts: [
                     [
-                        artifactId: "${NEXUS_ARTIFACT_ID}-${ENVIRONNEMENT}",
+                        artifactId: "${NEXUS_ARTIFACT_ID}",
                         classifier: '',
                         file: "qcm.tar.gz",
                         type: 'tar.gz'
@@ -95,7 +95,7 @@ agent any
         stage('Test acces url Nexus'){
             steps {
                 sh 'sleep 2s'
-                sh "curl http://${NEXUS_URL}/repository/${NEXUS_REPOSITORY}/${NEXUS_ARTIFACT_ID}-${ENVIRONNEMENT}/1.0-${BUILD_NUMBER}/${NEXUS_ARTIFACT_ID}-1.0-${BUILD_NUMBER}.tar.gz"
+                sh "curl http://${NEXUS_URL}/repository/${NEXUS_REPOSITORY}/${NEXUS_ARTIFACT_ID}/1.0-${BUILD_NUMBER}/${NEXUS_ARTIFACT_ID}-1.0-${BUILD_NUMBER}.tar.gz"
             }
         }
 // RECUPERATION DU DNS PUBLIC RDS BDD de TEST + BDD + NEXUS
