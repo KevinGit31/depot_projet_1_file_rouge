@@ -1,0 +1,46 @@
+<div class="container-fluid">
+    <br>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-xl-2 col-lg-3 col-6">
+                            <img src="assets/images/qcm.png" class="mr-4 align-self-center img-fluid " alt="cal" />
+                        </div>
+                        <div class="col-xl-10 col-lg-9">
+                            <div class="mt-4 mt-lg-0">
+                                <h5 class="mt-0 mb-1 font-weight-bold">Gestion des sujets de qcm</h5>
+                                <p class="text-muted mb-2">Cette page affiche la liste de tous les sujets.
+                                    Elle permet également, d'ajouter, de modifier ou de supprimer les sujets.
+                                </p>
+
+                                <a routerLink="/qcm/create"><button class="btn btn-primary mt-2 mr-1"
+                                        id="btn-new-event"><i class="uil-plus-circle"></i>
+                                        Ajout qcm</button></a>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div> <!-- end card body-->
+            </div> <!-- end card -->
+        </div>
+
+        <div class="col-xl-12">
+            <h5>Liste des sujets</h5>
+            <div class="row ">
+                <div class="col-md-4" *ngFor="let qcm of this.qcms">
+                    <app-stat 
+                    update="/qcm/update"
+                    delete="/qcm/delete"
+                    [qcmdata]="qcm"
+                    [title]="qcm.sujet" 
+                    [value]="qcm.description" 
+                    [qnbr]="qcm.questions.length" 
+                    icon="folder" color="primary"></app-stat>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

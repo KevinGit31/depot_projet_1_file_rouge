@@ -18,10 +18,17 @@
 #     - clouddelete: "ansible-cloudformation-delete"
 #   when: GOTODEL == "yes"
 
-- name: Preparation install qcm + testDB
-  include_tasks: install-qcmtestDB.yml
+- name: Preparation install qcm 1
+  include_tasks: install-qcm-upload.yml
   when: gotoqcm  == "no"
 
-- name: Preparation install qcm
+- name: Preparation install qcm 2
   include_tasks: install-qcm.yml
+  when: gotoqcm  == "yes"
+
+- name: Preparation install agent logstash pour elk amazon ES
+  include_tasks: install-elkagent.yml
+  vars:
+    ansible_python_interpreter: /usr/bin/python2
+#  when: ansible_environnement  == "dev"
   when: gotoqcm  == "yes"

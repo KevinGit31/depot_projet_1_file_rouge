@@ -2,41 +2,80 @@
   become_user: devops
   become: true
   lineinfile:
-    path: ~/app/quizz/src/config/appconfig.py
+    path: ~/app/quizz/server/api/__init__.py
     regexp: '^(.*)app\.config\[(.*)$'
     line: "    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://{{ userdb }}:{{ pwddb }}@{{ dnsdb }}/{{ namedb }}'"
     backrefs: yes
 
-- name: mise a jour du fichier ~/app/quizz/src/models/app.py
+- name: chmod +x des scripts sh
+  become_user: devops
+  become: true
+  file:
+    dest: "{{ item }}"
+    mode: a+x
+  with_items:
+    - ~/app/quizz/server/main.py
+    - ~/app/quizz/server/requirement.txt
+    - ~/app/quizz/client/src/environments/environment.prod.ts
+
+- name: Mise à jour de l'URL Front
+  become_user: devops
+  shell: IP=$(curl ifconfig.me) && sudo  sed "s/localhost/$IP/" environment.prod.ts > tmp.environment.prod.ts && mv tmp.environment.prod.ts  environment.prod.ts
+  args:
+    chdir: ~/app/quizz/client/src/environments
+    executable: /bin/bash
+
+- name: MAJ appconfig.py
   become_user: devops
   become: true
   lineinfile:
-    path: ~/app/quizz/src/models/app.py
-    regexp: '^# app_config\(app\)(.*)$'
-    line: app_config(app)
+    path: ~/app/quizz/client/src/environments/environment.prod.ts
+    regexp: '^  name:"Quizz"$'
+    line: "  name:\"Quizz {{ansible_environnement}}\""
     backrefs: yes
+  when: ansible_environnement != "prod"
 
-- name: mise a jour du fichier ~/app/quizz/src/models/app.py
-  become_user: devops
-  become: true
-  lineinfile:
-    path: ~/app/quizz/src/models/app.py
-    regexp: '^tsconfig\(app\)(.*)$'
-    line: '#tsconfig(app)'
-    backrefs: yes
 
-- name: Creation de la BDD ~/app/quizz/script/create-quizz-db.sh
+- name: Install Npm Package code 1
   become_user: devops
-  become: true
-  shell: ~/.local/bin/pipenv run python3 models/models.py
+  shell: npm install
   args:
-    chdir: ~/app/quizz/src
+    chdir: ~/app/quizz/client
     executable: /bin/bash
 
-- name: run qcm ~/app/quizz/script/start-quizz.sh
+- name: Install Npm Package server 2
   become_user: devops
-  become: true
-  shell: 'nohup ~/.local/bin/pipenv run python3 api/app.py > /tmp/nohup.out 2>&1 &'
+  shell: npm install
   args:
-    chdir: ~/app/quizz/src
+    chdir: ~/app/quizz/client_server
     executable: /bin/bash
+
+- name: Install python Package
+  become_user: devops
+  shell: pip install -r requirement.txt
+  args:
+    chdir: ~/app/quizz/server
+    executable: /bin/bash
+
+- name: Deploiement du client
+  become_user: devops
+  shell: npm run build:prod
+  args:
+    chdir: ~/app/quizz/client
+    executable: /bin/bash
+
+- name: Start du server back
+  become_user: devops
+  shell: nohup python main.py </dev/null >/dev/null 2>&1 &
+  args:
+    chdir: ~/app/quizz/server
+    executable: /bin/bash
+
+- name: Start du server front
+  become_user: devops
+  shell: nohup sudo node app.js </dev/null >/dev/null 2>&1 &
+  args:
+    chdir: ~/app/quizz/client_server
+    executable: /bin/bash
+
+

@@ -1,0 +1,56 @@
+<div class="container-fluid">
+  <app-page-title title="Score"></app-page-title>
+  <div class="row">
+    <div class="col-lg-3">
+      <ng-template [ngTemplateOutlet]="ProfileData"></ng-template>
+    </div>
+    <div class="col-lg-9">
+      <div class="">
+        <div class="">
+          <div class="">
+            <div class="message-list" *ngFor="let _user of users">
+              <li class="unread" *ngFor="let qcm_session of _user.qcm_sessions">
+                <div class="col-mail col-mail-1">
+                  <span class="star-toggle uil uil-star text-warning"></span>
+                  <a href="" class="title">{{ _user.name }} - {{ _user.email }}</a>
+                </div>
+
+                <div class="col-mail col-mail-2">
+                  <div class="subject" [ngClass]="{bad: qcm_session.score<50,good: qcm_session.score>=50,prefect: qcm_session.score>80}"> Score : {{ qcm_session.score }} %</div>
+                  <div class="created_date">{{ qcm_session.created_date | date: 'dd/MM/yyyy HH:mm:ss'}}</div>
+                </div>
+              </li>
+            </div>
+            <!--<ul class="message-list" *ngFor="let _user of users">
+              <li class="unread" *ngFor="let qcm_session of _user.qcm_sessions; let i = index; ">
+                <div class="col-mail col-mail-1">
+                  <span class="star-toggle uil uil-star text-warning"></span>
+                  <a href="" class="title">{{ _user.name }}</a>
+                </div>
+                <div class="col-mail col-mail-2">
+                  <a href="" class="subject">{{ _user.email. }}
+                  </a>
+                  <div class="date">{{ qcm_session.score }}</div>
+                </div>
+              </li>
+            </ul>-->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Profile data -->
+<ng-template #ProfileData>
+  <div class="card">
+    <div class="card-body">
+      <div class="text-center mt-3">
+        <img src="assets/images/users/avatar-7.jpg" alt="" class="avatar-lg rounded-circle" />
+        <h5 class="mt-2 mb-0">{{user.name}}</h5>
+        <h6 class="text-muted font-weight-normal mt-1 mb-4">{{user.email}}</h6>
+        <h6 class="text-muted font-weight-normal mt-1 mb-4">{{getAdmin()}}</h6>
+      </div>
+    </div>
+  </div>
+</ng-template>

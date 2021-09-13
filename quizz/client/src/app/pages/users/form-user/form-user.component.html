@@ -1,0 +1,92 @@
+<div class="container-fluid">
+  <br>
+  <div class="row justify-content-md-center">
+    <div class="col-12 col-sm-10 col-md-8 col-lg-5 ">
+      <div class="card">
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col-12">
+              <form class="authentication-form" [formGroup]="signupForm" (ngSubmit)="onSubmit()" novalidate>
+
+                <!-- <app-ui-preloader [display]="loading"></app-ui-preloader> -->
+                <h4 class="font-size-24 mb-4">{{ title||"Créer un utilisateur"}}</h4>
+
+                <ngb-alert type="danger" *ngIf="error" [dismissible]="false">{{ error }}</ngb-alert>
+
+                <div class="form-group">
+                  <label class="form-control-label">Nom</label>
+                  <div class="input-group input-group-merge">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">
+                        <i class="icon-dual" data-feather="user" appFeatherIcon></i>
+                      </span>
+                    </div>
+                    <input type="text" class="form-control" formControlName="name"
+                      [ngClass]="{ 'is-invalid': submitted && f.name.errors }" id="name"
+                      placeholder="Votre nom ou pseudo" />
+
+                    <div *ngIf="submitted && f.name.errors" class="invalid-feedback">
+                      <div *ngIf="f.name.errors.required">Le nom est requis</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-control-label">Adresse email</label>
+                  <div class="input-group input-group-merge">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">
+                        <i class="icon-dual" data-feather="mail" appFeatherIcon></i>
+                      </span>
+                    </div>
+                    <input type="email" [readonly]=update [ngClass]="{'readonly': update}" class="form-control" formControlName="email"
+                      [ngClass]="{ 'is-invalid': submitted && f.email.errors }" id="email"
+                      placeholder="bonjour@toutlemonde.com" />
+                    <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+                      <div *ngIf="f.email.errors.required">L'email est requis </div>
+                      <div *ngIf="f.email.errors.email">L'email doit être une adresse email valide</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group " *ngIf="!update">
+                  <label class="form-control-label">Mot de passe</label>
+                  <div class="input-group input-group-merge">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">
+                        <i class="icon-dual" data-feather="lock" appFeatherIcon></i>
+                      </span>
+                    </div>
+                    <input type="password" formControlName="password"
+                      [ngClass]="{ 'is-invalid': submitted && f.password.errors }" class="form-control" id="password"
+                      placeholder="Tapez votre mot de passe" />
+                    <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+                      <div *ngIf="f.password.errors.required">Mot de passe requis</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="custom-control custom-switch mb-2">
+                  <input type="checkbox" formControlName="admin" class="custom-control-input" id="customSwitch1">
+                  <label class="custom-control-label" for="customSwitch1">Administrateur</label>
+                </div>
+
+                <br>
+                <br>
+                <div class="form-group mb-0 text-center">
+                  <button class="btn btn-primary btn-block" type="submit">{{ btn_valid||"Créer"}}</button>
+                </div>
+                <div class="form-group mb-0 text-center">
+                  <button class="btn cancel" (click)="cancel()" >Annuler</button>
+                </div>
+                <br>
+              </form>
+            </div>
+          </div>
+
+        </div> <!-- end card body-->
+      </div> <!-- end card -->
+    </div>
+
+  </div>
+</div>

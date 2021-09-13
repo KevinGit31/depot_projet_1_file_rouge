@@ -1,0 +1,30 @@
+<div class="card">
+    <div class="card-body p-0">
+        <div class="media p-3">
+            <div class="media-body">
+                <h2 class="mb-0">{{title}}</h2>
+                <div class="font-size-12">{{ value }}</div>
+                <div class="font-size-12">Nombre de question(s) : {{ qnbr }}</div>
+            </div>
+            <div class="align-self-center">
+                <span class="">
+                    <i [attr.data-feather]="icon" appFeatherIcon class="icon-lg icon-dual-{{ color }}"></i>
+                </span>
+            </div>
+            
+            <div *ngIf="!isShow" class="dropdown float-right" ngbDropdown>
+                <a href="javascript: void(0);" class="dropdown-toggle arrow-none text-muted" ngbDropdownToggle>
+                    <i class="uil uil-ellipsis-v"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" ngbDropdownMenu>
+                    <!-- item-->
+                    <a [routerLink]="update" [state]="{ item: qcmdata }" class="dropdown-item"><i class="uil uil-edit-alt mr-2"></i>Modifier</a>
+                    
+                    <div class="dropdown-divider"></div>
+                    <!-- item-->
+                    <a [routerLink]="delete" [state]="{ item: qcmdata }" class="dropdown-item text-danger"><i class="uil uil-trash mr-2"></i>Supprimer</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

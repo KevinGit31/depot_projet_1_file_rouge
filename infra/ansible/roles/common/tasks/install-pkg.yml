@@ -3,50 +3,60 @@
     name: python3.x86_64
     state: present
     update_cache: true
+
 - name: Install python3-pip.noarch
   yum:
     name: python3-pip.noarch
     state: present
     update_cache: true
+
 - name: Install python3-devel.x86_64
   yum:
     name: python3-devel.x86_64
     state: present
     update_cache: true
+
 - name: Install mysql
   yum:
     name: mysql
     state: present
     update_cache: true
+
 - name: Install MySQL-python
   yum:
     name: MySQL-python
     state: present
     update_cache: true
+
 - name: Install python2-pip
   yum:
     name: python2-pip
     state: present
     update_cache: true
+
 - name: Install lxml pour ansible nexus module
   pip:
     name: lxml
     executable: pip3
+
 - name: Install flask
   pip:
     name: flask
     executable: pip3
     extra_args: --user
+
 - name: Install pymysql
   pip:
     name: pymysql
     executable: pip3
     extra_args: --user
+    
 - name: Install pymysql
   pip:
     name: pymysql
     executable: pip2
     extra_args: --user
+
 - name: Install python3.9 pour pipenv
 #  become_user: devops
   become: true
@@ -59,8 +69,22 @@
     - openssl-devel
     - bzip2-devel
     - libffi-devel
+    
 - name: Install python3-devel.x86_64
   yum:
     name: sqlite-devel.x86_64
     state: present
     update_cache: true
+
+- name: Install Node 1
+  become_user: devops
+  shell: sudo yum install -y gcc-c++ make && curl -sL https://rpm.nodesource.com/setup_14.x | sudo -E bash -
+  args:   
+    executable: /bin/bash
+
+- name: Install Node 2
+  become_user: devops
+  shell: sudo yum -y install nodejs 
+  args:
+    executable: /bin/bash
+ 

@@ -1,0 +1,18 @@
+<!-- ========== Left Sidebar Start ========== -->
+<div class="left-side-menu">
+  <div class="sidebar-content">
+    <!--- Sidemenu -->
+    <div class="h-100" appSlimScroll *ngIf="!isSidebarCondensed()">
+      <app-menu id="sidebar-menu"></app-menu>
+    </div>
+
+    <div *ngIf="isSidebarCondensed()">
+      <app-menu id="sidebar-menu"></app-menu>
+    </div>
+
+    <!-- End Sidebar -->
+    <div class="clearfix"></div>
+  </div>
+  <!-- Sidebar -left -->
+</div>
+<!-- Left Sidebar End -->
