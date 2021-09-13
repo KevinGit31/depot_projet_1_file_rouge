@@ -28,7 +28,7 @@ pipeline {
         NEXUS_STACK_NAME = "nexus"
         JOBMULTINAME = "MULTIQCMQuizz_"
         CREDENTIALS_ELK = credentials('elk')
-        
+
     }
 //
 agent any
@@ -137,7 +137,7 @@ agent any
                         env.SUBNETIDPUBADM_ENV = "${SUBIDPUBPROD}"
                         env.SUBNETIDPRIVADM_ENV = "${SUBIDPRIVPROD}"
                     }
-                    env.INGRPORT = "80" 
+                    env.INGRPORT = "80"
                     sh 'yes | cp -rf infra/aws_cloudform/instancegrp3.yaml infra/ansible/roles/common/tasks/instancegrp3.yaml'
                     writeFile file: "/var/lib/jenkins/workspace/${JOBMULTINAME}${ENVIRONNEMENT}/infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all", text: "TypeName: ${TYPENAME_ENV}"
                     f = new File("/var/lib/jenkins/workspace/${JOBMULTINAME}${ENVIRONNEMENT}/infra/ansible/inventory/${ENVIRONNEMENT}/group_vars/all/all")
@@ -207,6 +207,7 @@ agent any
             //            extras: "-vvv"
 //                    sudo -u devops -s ansible-playbook -i /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/distribkey.yml --user ec2-user --key-file /home/devops/.ssh/projet1grp3key.pem -vvv
 //                    sh """#!/bin/bash
+                    sh "mkdir -p /var/lib/jenkins/.ssh"
                     sh "echo \"\" > /var/lib/jenkins/.ssh/known_hosts"
                     sh "sudo -u devops /bin/bash -c \"ansible-playbook -i /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/inventory/${ENVIRONNEMENT}/hosts /var/lib/jenkins/workspace/${JOBMULTINAME}${env.JOB_BASE_NAME}/infra/ansible/distribkey.yml --user ec2-user --key-file /home/devops/.ssh/projet1grp3key.pem -vvv\""
 //                    """
