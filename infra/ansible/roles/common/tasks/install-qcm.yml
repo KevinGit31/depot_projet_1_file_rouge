@@ -17,7 +17,7 @@
     - ~/app/quizz/server/main.py
     - ~/app/quizz/server/requirement.txt
     - ~/app/quizz/client/src/environments/environment.prod.ts
-    
+
 - name: Mise à jour de l'URL Front
   become_user: devops
   shell: IP=$(curl ifconfig.me) && sudo  sed "s/localhost/$IP/" environment.prod.ts > tmp.environment.prod.ts && mv tmp.environment.prod.ts  environment.prod.ts
@@ -39,7 +39,7 @@
     chdir: ~/app/quizz/client_server
     executable: /bin/bash
 
-- name: Install python Package 
+- name: Install python Package
   become_user: devops
   shell: pip install -r requirement.txt
   args:
@@ -66,5 +66,5 @@
   args:
     chdir: ~/app/quizz/client_server
     executable: /bin/bash
-   
+
 
