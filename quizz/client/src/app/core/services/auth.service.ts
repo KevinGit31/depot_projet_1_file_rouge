@@ -11,6 +11,7 @@ import { environment } from 'src/environments/environment';
 
 const baseUrl = environment.api_url
 
+
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
     
@@ -40,7 +41,7 @@ export class AuthenticationService {
      * @param password password of user
      */
     login(email: string, password: string) {
-        let url1 = "http://127.0.0.1:5000/api/auth/login"
+        let url1 = baseUrl+"api/auth/login"
 
         const httpOptions = {
             headers: new HttpHeaders({
