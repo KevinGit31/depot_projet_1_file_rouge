@@ -21,7 +21,7 @@
   become_user: devops
   become: true
   unarchive:
-    src: ~/app/qcm-1.0-{{ numbuild }}.tar.gz
+    src: ~/app/qcm-{{ansible_environnement}}-1.0-{{ numbuild }}.tar.gz
     dest: ~/app
     remote_src: yes
 
