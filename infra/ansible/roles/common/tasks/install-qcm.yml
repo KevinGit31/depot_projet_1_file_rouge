@@ -18,12 +18,12 @@
     - ~/app/quizz/server/requirement.txt
     - ~/app/quizz/client/src/environments/environment.prod.ts
     
-- name: Mise à jour de l'URL Front
-  become_user: devops
-  shell: IP=$(curl ifconfig.me) && sudo  sed "s/localhost/$IP/" environment.prod.ts > tmp.environment.prod.ts && mv tmp.environment.prod.ts  environment.prod.ts
-  args:
-    chdir: ~/app/quizz/client/src/environments
-    executable: /bin/bash
+#- name: Mise à jour de l'URL Front
+#  become_user: devops
+#  shell: IP=$(curl ifconfig.me) && sudo  sed "s/localhost/$IP/" environment.prod.ts > tmp.environment.prod.ts && mv tmp.environment.prod.ts  environment.prod.ts
+#  args:
+#    chdir: ~/app/quizz/client/src/environments
+#    executable: /bin/bash
 
 - name: Install Npm Package code 1
   become_user: devops
