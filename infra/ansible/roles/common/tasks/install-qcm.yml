@@ -25,6 +25,17 @@
     chdir: ~/app/quizz/client/src/environments
     executable: /bin/bash
 
+- name: MAJ appconfig.py
+  become_user: devops
+  become: true
+  lineinfile:
+    path: ~/app/quizz/client/src/environments/environment.prod.ts
+    regexp: '^  name:"Quizz"$'
+    line: "  name:\"Quizz {{ansible_environnement}}\""
+    backrefs: yes
+  when: ansible_environnement != "prod"
+
+
 - name: Install Npm Package code 1
   become_user: devops
   shell: npm install

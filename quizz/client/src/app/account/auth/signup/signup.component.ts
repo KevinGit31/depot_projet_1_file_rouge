@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs/operators';
 import { User } from 'src/app/core/models/auth.models';
 import { UserProfileService } from 'src/app/core/services/user.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-signup',
@@ -17,7 +18,9 @@ export class SignupComponent implements OnInit, AfterViewInit {
   returnUrl: string;
   error = '';
   loading = false;
-  user:User
+  user:User;
+
+  title  =  environment.name
 
   constructor(private userService: UserProfileService,private formBuilder: FormBuilder, private route: ActivatedRoute, private router: Router) { }
 

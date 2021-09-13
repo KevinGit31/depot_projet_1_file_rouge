@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { AuthenticationService } from '../../../core/services/auth.service';
 
 import { User } from 'src/app/core/models/auth.models';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-topbar',
@@ -14,6 +15,8 @@ export class TopbarComponent implements OnInit {
 
   notificationItems: Notification[];
   user:User;
+
+  title  =  environment.name
 
   constructor(private router: Router, private authService: AuthenticationService) {}
 

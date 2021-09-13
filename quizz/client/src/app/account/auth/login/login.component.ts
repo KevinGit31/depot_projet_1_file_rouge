@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 
 import { AuthenticationService } from '../../../core/services/auth.service';
+import { environment } from 'src/environments/environment';
 
 
 @Component({
@@ -18,6 +19,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
   returnUrl: string;
   error = '';
   loading = false;
+
+  title  =  environment.name
 
   constructor(private formBuilder: FormBuilder, private route: ActivatedRoute, private router: Router,
               private authenticationService: AuthenticationService) { }
