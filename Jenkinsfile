@@ -114,10 +114,10 @@ agent any
                     env.DNSELK_ENV = "${sh(script:'aws es describe-elasticsearch-domain --domain-name elkqua --query "DomainStatus.[ [Endpoint ]]" --region ${REGION_ENV} --output text', returnStdout: true).trim()}"
                     }
                     if ( "${BRANCHS_ENV}" == 'qua') {
-                    env.DNSELK_ENV = "${sh(script:'aws es describe-elasticsearch-domain --domain-name ${BRANCHS_ENV} --query "DomainStatus.[ [Endpoint ]]" --region ${REGION_ENV} --output text', returnStdout: true).trim()}"
+                    env.DNSELK_ENV = "${sh(script:'aws es describe-elasticsearch-domain --domain-name elk${BRANCHS_ENV} --query "DomainStatus.[ [Endpoint ]]" --region ${REGION_ENV} --output text', returnStdout: true).trim()}"
                     }
                     if ( "${BRANCHS_ENV}" == 'prod') {
-                    env.DNSELK_ENV = "${sh(script:'aws es describe-elasticsearch-domain --domain-name ${BRANCHS_ENV} --query "DomainStatus.[ [Endpoint ]]" --region ${REGION_ENV} --output text', returnStdout: true).trim()}"
+                    env.DNSELK_ENV = "${sh(script:'aws es describe-elasticsearch-domain --domain-name elk${BRANCHS_ENV} --query "DomainStatus.[ [Endpoint ]]" --region ${REGION_ENV} --output text', returnStdout: true).trim()}"
                     }
                 }
             }
