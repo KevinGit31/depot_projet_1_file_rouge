@@ -69,7 +69,7 @@ Parameters:
       - '8080'
       - '8081'
       - '80'
-     
+
   Urlscript:
     Type: String
     Description: 'command du script'
@@ -460,6 +460,10 @@ Mappings:
       HVM64: ami-01fee56b22f308154
       HVMG2: ami-0fe84a5b4563d8f27
 
+Conditions:
+  isQcmdev: !Equals [!Ref TypeName, 'qcmdev']
+  isQcmqua: !Equals [!Ref TypeName, "qcmqua"]
+  isQcmprod: !Equals [!Ref TypeName, "qcmprod"]
 Resources:
   Grp3SecurityGroupingress:
     Type: 'AWS::EC2::SecurityGroupIngress'
@@ -468,6 +472,36 @@ Resources:
       IpProtocol: tcp
       FromPort: !Ref IngressPort
       ToPort: !Ref IngressPort
+      CidrIp: 0.0.0.0/0
+
+  Grp3SecurityGroupingressDEV:
+    Type: 'AWS::EC2::SecurityGroupIngress'
+    Condition: isQcmdev
+    Properties:
+      GroupId: !Ref SecurityGroupId
+      IpProtocol: tcp
+      FromPort: 5000
+      ToPort: 5000
+      CidrIp: 0.0.0.0/0
+
+  Grp3SecurityGroupingressQUA:
+    Type: 'AWS::EC2::SecurityGroupIngress'
+    Condition: isQcmqua
+    Properties:
+      GroupId: !Ref SecurityGroupId
+      IpProtocol: tcp
+      FromPort: 5000
+      ToPort: 5000
+      CidrIp: 0.0.0.0/0
+
+  Grp3SecurityGroupingressPROD:
+    Type: 'AWS::EC2::SecurityGroupIngress'
+    Condition: isQcmprod
+    Properties:
+      GroupId: !Ref SecurityGroupId
+      IpProtocol: tcp
+      FromPort: 5000
+      ToPort: 5000
       CidrIp: 0.0.0.0/0
 
   EC2Instance:
