@@ -19,3 +19,23 @@ hr {
   .score{
         font-size: 20px;
   }
+
+  .custom-control,.r-c{
+    cursor: pointer;
+  }
+
+  .custom-control{
+    padding-left: 100px;
+  }
+
+  .quizz-card{
+    border: solid 1px rgb(206, 206, 206);
+    border-left: solid 5px #3498db;
+    border-radius: 3px;
+    margin-bottom: 15px;
+    padding: 10px;
+  }
+
+  .question,.qcm{
+    color: #3498db;
+  }
