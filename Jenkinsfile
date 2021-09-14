@@ -285,6 +285,12 @@ agent any
                 sh "curl http://${DNSPUBEC2ENV}:${INGRPORT}"
             }
         }
+//TEST DE L'agent à L'ELK
+        stage('Test agent ELK'){
+            steps {
+                sh "curl https://admin:${CREDENTIALS_ELK_PSW}@${DNSELK_ENV}:443/_cat/indices"
+            }
+        }
     }
 }
 
