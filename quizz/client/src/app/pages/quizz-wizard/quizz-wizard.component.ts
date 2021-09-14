@@ -63,9 +63,9 @@ export class QuizzWizardComponent implements OnInit {
     });
 
     console.log(this.qcm_session)
-
-    if (this.index < this.qcm.questions.length - 1) {
-      this.index = this.index + 1
+    this.index = this.index + 1
+    if (this.index < this.qcm.questions.length) {
+      
       if (!this.questions[this.index])
         this.questions.push(this.getQuestion(this.qcm.questions[this.index]));
     } else {
@@ -74,6 +74,8 @@ export class QuizzWizardComponent implements OnInit {
       this.qcmSessionService.createQcmSession(this.qcm_session).subscribe((data)=>{
         this.score = data.score
       });
+
+      console.log(this.questions)
       console.log(this.showScore)
     }
   }
@@ -84,6 +86,12 @@ export class QuizzWizardComponent implements OnInit {
 
   getScore() {
     let qcm = { "qcm_id": this.qcm.id }
+  }
+
+  handlechange(answer_id){
+    this.questions[this.index].answers.map((a)=>a.isTrue=false);
+    this.questions[this.index].answers.map((a)=>{if(a.id==answer_id) {a.isTrue=true} return a});
+    console.log(this.questions[this.index])
   }
 
   getQuestion(q) {
