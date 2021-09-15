@@ -7,14 +7,14 @@
 
 - name: Download filebeat
   get_url:
-    url: https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.10.0-x86_64.rpm
+    url: https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-oss-7.10.0-x86_64.rpm
     dest: /tmp
 
 - name: Install package filebeat
   become: true
   become_user: root
   yum:
-    name: /tmp/filebeat-7.10.0-x86_64.rpm
+    name: /tmp/filebeat-oss-7.10.0-x86_64.rpm
     state: present
 
 - name: Download logstash oss
