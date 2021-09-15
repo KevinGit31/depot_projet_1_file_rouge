@@ -81,6 +81,46 @@ Resources:
             #       - "90.59.0.190"
             #       - "90.24.39.110"
 
+##############EXEMPLE sur l'erreur :
+# when I click the link, browser is throwing the following error.
+# {"Message":"User: anonymous is not authorized to perform: es:ESHttpGet on resource: arn:aws
+#SOLUTION1 possible=>
+# You can setup an Access Policy with both IAM and IP-address based access. See my answer here. In short:
+#     EC2 instance needs a profile with the arn:aws:iam::aws:policy/AmazonESFullAccess policy
+#     Policy should include two statements: first list IAM access, second list IP access.
+# Here's an example policy (statement order is important!)
+# {
+#   "Version": "2012-10-17",
+#   "Statement": [
+#     {
+#       "Effect": "Allow",
+#       "Principal": {
+#         "AWS": "arn:aws:iam::xxxxxxxxxxxx:root"
+#       },
+#       "Action": "es:*",
+#       "Resource": "arn:aws:es:us-west-2:xxxxxxxxxxxx:domain/my-elasticsearch-domain/*"
+#     },
+#     {
+#       "Sid": "",
+#       "Effect": "Allow",
+#       "Principal": {
+#         "AWS": "*"
+#       },
+#       "Action": "es:*",
+#       "Resource": "arn:aws:es:us-west-2:xxxxxxxxxxxx:domain/my-elasticsearch-domain/*",
+#       "Condition": {
+#         "IpAddress": {
+#           "aws:SourceIp": [
+#             "192.168.1.0",
+#             "192.168.1.1"
+#           ]
+#         }
+#       }
+#     }
+#   ]
+# }
+
+
             Resource: !Sub 'arn:aws:ec2:${AWS::Region}:${AWS::AccountId}:domain/${DomainName}/*'
       AdvancedOptions:
         rest.action.multi.allow_explicit_index: true

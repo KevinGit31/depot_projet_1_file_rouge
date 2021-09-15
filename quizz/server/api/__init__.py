@@ -5,13 +5,12 @@ from os import path
 from flask_login import LoginManager
 from flask_cors import CORS
 
-
 db = SQLAlchemy()
 DB_NAME = 'database.db'
 
 def create_app():
     app = Flask(__name__)
-
+    
     CORS(app)
 
     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://user.quizz:dru98eDFC90@localhost/db.quizz'
