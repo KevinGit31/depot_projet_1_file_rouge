@@ -3,19 +3,15 @@ import { User } from 'src/app/core/models/auth.models';
 import { AuthenticationService } from 'src/app/core/services/auth.service';
 import { UserProfileService } from 'src/app/core/services/user.service';
 
-import { messageData, activities, tasks, projectData } from './data';
-
-import { Message, Activity, Tasks, List } from './profile.model';
-
 @Component({
-  selector: 'app-profile',
-  templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.scss']
+  selector: 'app-score',
+  templateUrl: './score.component.html',
+  styleUrls: ['./score.component.scss']
 })
 /**
  * Profile-component - handling profile with sidenav-content
  */
-export class ProfileComponent implements OnInit {
+export class ScoreComponent implements OnInit {
 
   user: User;
   users: User[] = [];
