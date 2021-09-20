@@ -40,9 +40,8 @@
       - type: log
         enabled: true
         paths:
-          - /var/log/*/*.log
           - /var/log/messages
-          - /home/devops/app/quizz/app.log
+          - /home/devops/app/quizz/server/app.log
       filebeat.config.modules:
         path: ${path.config}/modules.d/*.yml
         reload.enabled: false
