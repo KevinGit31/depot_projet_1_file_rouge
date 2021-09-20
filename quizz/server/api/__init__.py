@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from os import path
 from flask_login import LoginManager
 from flask_cors import CORS
+import logging
 
 db = SQLAlchemy()
 DB_NAME = 'database.db'
@@ -14,6 +15,7 @@ def create_app():
     CORS(app)
 
     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://user.quizz:dru98eDFC90@localhost/db.quizz'
+    logging.basicConfig(filename='app.log',encoding='utf-8', level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     db.init_app(app)
 
     from .controllers.user import users

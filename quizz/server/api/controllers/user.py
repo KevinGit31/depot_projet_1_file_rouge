@@ -11,9 +11,10 @@ from flask import Blueprint,request,jsonify
 from api.models import User
 from api import db
 from api.controllers import token_required
+import logging
 from werkzeug.security import generate_password_hash
 
-
+logger = logging.getLogger('auth')
 
 SECRET_KEY="DevOps"
 
@@ -22,10 +23,13 @@ users = Blueprint('users',__name__)
 @users.route('',methods=['GET'])
 @token_required
 def get_all_users(current_user):
-
+    
+    logger.info('Obtenir des utilisateurs!')
     if not current_user.admin:
+        logger.info('l\'utilisateur actuel n\'est pas administrateur!')
         users = User.query.filter_by(id=current_user.id)
     else :
+        logger.info('l\'utilisateur actuel est administrateur!')
         users = User.query.order_by(User.name).all()
 
     output = []
@@ -52,13 +56,15 @@ def get_all_users(current_user):
 @users.route('/<id>',methods=['GET'])
 @token_required
 def get_one_user(current_user,id):
-
+    logger.info('Obtenir un utilisateur!')
     if not current_user.admin:
+        logger.error('Impossible d\'exécuter cette fonction !')
         return jsonify({'message':'Impossible d\'exécuter cette fonction !'})
 
     user = User.query.filter_by(id=id).first()
 
     if not user:
+        logger.error('Aucun utilisateur trouvé !')
         return jsonify({'message': 'Aucun utilisateur trouvé !'})
     
     user_data = {}
@@ -86,6 +92,7 @@ def create_user():
     new_user = User(email=data['email'], name=data['name'],password=hashed_password,admin=data['admin'])
     db.session.add(new_user)
     db.session.commit()
+    logger.info('Nouvel utilisateur créé !')
     return jsonify({'message':'Nouvel utilisateur créé !'})
 
 @users.route('/admin/<id>',methods=['PUT'])
@@ -93,15 +100,18 @@ def create_user():
 def promote_user(current_user,id):
     
     if not current_user.admin :
+        logger.error('Impossible d\'exécuter cette fonction !')
         return jsonify({'message': 'Impossible d\'exécuter cette fonction !'})
     
     user = User.query.filter_by(id=id).first()
 
     if not user:
+        logger.error('Aucun utilisateur trouvé !')
         return jsonify({'message': 'Aucun utilisateur trouvé !'})
     
     user.admin = True
     db.session.commit()
+    logger.info('L\'utilisateur a été promu !')
 
     return jsonify({'message':'L\'utilisateur a été promu !'})
 
@@ -110,6 +120,7 @@ def promote_user(current_user,id):
 def update_user(current_user,id):
     
     if not current_user.admin :
+        logger.error('Impossible d\'exécuter cette fonction !')
         return jsonify({'message': 'Impossible d\'exécuter cette fonction !'})
 
     data = request.get_json()
@@ -117,12 +128,14 @@ def update_user(current_user,id):
     user = User.query.filter_by(id=id).first()
 
     if not user:
+        logger.error('Aucun utilisateur trouvé !')
         return jsonify({'message': 'Aucun utilisateur trouvé !'})
     
     user.name = data['name']
     user.admin =data['admin']
 
     db.session.commit()
+    logger.info('L\'utilisateur a été modifier !')
     return jsonify({'message':'L\'utilisateur a été modifier !'})
 
 @users.route('/<id>',methods=['DELETE'])
@@ -130,13 +143,16 @@ def update_user(current_user,id):
 def delete_user(current_user,id):
 
     if not current_user.admin:
+        logger.error('Impossible d\'exécuter cette fonction !')
         return jsonify({'message':'Impossible d\'exécuter cette fonction !'})
 
     user = User.query.filter_by(id=id).first()
 
     if not user:
+        logger.error('Aucun utilisateur trouvé !')
         return jsonify({'message': 'Aucun utilisateur trouvé !'})
 
     db.session.delete(user)
     db.session.commit()
+    logger.info('L\'utilisateur a été supprimé !')
     return jsonify({'message': 'L\'utilisateur a été supprimé !'})

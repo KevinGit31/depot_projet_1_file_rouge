@@ -14,7 +14,8 @@ from api.controllers import token_required
 from werkzeug.security import generate_password_hash
 from api.models import Answer
 from api.models import QuestionAnswer
-
+import logging
+logger = logging.getLogger('question')
 
 SECRET_KEY="DevOps"
 
@@ -23,8 +24,9 @@ questions = Blueprint('questions',__name__)
 @questions.route('',methods=['GET'])
 @token_required
 def get_all_questions(current_user):
-
+    logger.info('Obtenir des questions!')
     if not current_user.admin:
+        logger.error('Impossible d\'exécuter cette fonction !')
         return jsonify({'message':'Impossible d\'exécuter cette fonction !'})
 
     questions = Question.query.order_by(Question.text).all()
@@ -45,11 +47,13 @@ def get_all_questions(current_user):
 def get_one_question(current_user,id):
 
     if not current_user.admin:
+        logger.error('Impossible d\'exécuter cette fonction !')
         return jsonify({'message':'Impossible d\'exécuter cette fonction !'})
 
     question = Question.query.filter_by(id=id).first()
 
     if not question:
+        logger.error('Aucune question trouvée !')
         return jsonify({'message': 'Aucune question trouvée !'})
     
     question_data = {}
@@ -64,6 +68,7 @@ def get_one_question(current_user,id):
 def create_question(current_user):
 
     if not current_user.admin:
+        logger.error('Impossible d\'exécuter cette fonction !')
         return jsonify({'message':'Impossible d\'exécuter cette fonction !'})
 
     data = request.get_json()
@@ -85,6 +90,7 @@ def create_question(current_user):
     new_question = Question(text=data['text'],answers=answers)
     db.session.add(new_question)
     db.session.commit()
+    logger.info('Nouvelle question créé!')
     return jsonify({'message':'Nouvelle question créé!'})
 
 @questions.route('/<id>',methods=['PUT'])
@@ -92,6 +98,7 @@ def create_question(current_user):
 def update_question(current_user,id):
     
     if not current_user.admin :
+        logger.error('Impossible d\'exécuter cette fonction !')
         return jsonify({'message': 'Impossible d\'exécuter cette fonction !'})
 
     data = request.get_json()
@@ -99,6 +106,7 @@ def update_question(current_user,id):
     question = Question.query.filter_by(id=id).first()
 
     if not question:
+        logger.error('Aucune question trouvée !')
         return jsonify({'message': 'Aucune question trouvée !'})
     
     question.text = data['text']
@@ -119,23 +127,27 @@ def update_question(current_user,id):
     question.answers =  answers
 
     db.session.commit()
-    return jsonify({'message':'La question a été modifier !'})
+    logger.info('La question a été modifiée !')
+    return jsonify({'message':'La question a été modifiée !'})
 
 @questions.route('/<id>',methods=['DELETE'])
 @token_required
 def delete_question(current_user,id):
 
     if not current_user.admin:
+        logger.error('Impossible d\'exécuter cette fonction !')
         return jsonify({'message':'Impossible d\'exécuter cette fonction !'})
 
     question = Question.query.filter_by(id=id).first()
 
     if not question:
+        logger.error('Aucune question trouvée !')
         return jsonify({'message': 'Aucune question trouvée !'})
 
     db.session.delete(question)
     db.session.commit()
-    return jsonify({'message': 'La question a été supprimer !'})
+    logger.info('La question a été supprimée !')
+    return jsonify({'message': 'La question a été supprimée !'})
 
 
 def questionAnswerToJson(question) :

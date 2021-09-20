@@ -16,7 +16,8 @@ from api.controllers import token_required
 from werkzeug.security import generate_password_hash
 from api.models import Question
 from api.models import QcmQuestion
-
+import logging
+logger = logging.getLogger('qcm')
 
 SECRET_KEY="DevOps"
 
@@ -25,7 +26,7 @@ qcms = Blueprint('qcms',__name__)
 @qcms.route('',methods=['GET'])
 @token_required
 def get_all_qcms(current_user):
-
+    logger.info('Obtenir des qcm!')
     qcms = Qcm.query.order_by(Qcm.sujet).all()
     
 
@@ -46,12 +47,14 @@ def get_all_qcms(current_user):
 def get_one_qcm(current_user,id):
 
     if not current_user.admin:
+        logger.error('Impossible d\'exécuter cette fonction !')
         return jsonify({'message':'Impossible d\'exécuter cette fonction !'})
 
     qcm = Qcm.query.filter_by(id=id).first()
 
     if not qcm:
-        return jsonify({'message': 'Aucun qcm trouvée !'})
+        logger.error('Aucun qcm trouvé !')
+        return jsonify({'message': 'Aucun qcm trouvé !'})
     
     qcm_data = {}
     qcm_data['id'] = qcm.id
@@ -66,6 +69,7 @@ def get_one_qcm(current_user,id):
 def create_qcm(current_user):
 
     if not current_user.admin:
+        logger.error('Impossible d\'exécuter cette fonction !')
         return jsonify({'message':'Impossible d\'exécuter cette fonction !'})
 
     data = request.get_json()
@@ -80,6 +84,7 @@ def create_qcm(current_user):
     new_qcm = Qcm(sujet=data['sujet'],description=data['description'],questions=questions)
     db.session.add(new_qcm)
     db.session.commit()
+    logger.info('Nouvel qcm créé!')
     return jsonify({'message':'Nouvel qcm créé!'})
 
 @qcms.route('/<id>',methods=['PUT'])
@@ -87,6 +92,7 @@ def create_qcm(current_user):
 def update_qcm(current_user,id):
     
     if not current_user.admin :
+        logger.error('Impossible d\'exécuter cette fonction !')
         return jsonify({'message': 'Impossible d\'exécuter cette fonction !'})
 
     data = request.get_json()
@@ -94,7 +100,8 @@ def update_qcm(current_user,id):
     qcm = Qcm.query.filter_by(id=id).first()
 
     if not qcm:
-        return jsonify({'message': 'Aucun qcm trouvée !'})
+        logger.error('Aucun qcm trouvé !')
+        return jsonify({'message': 'Aucun qcm trouvé !'})
     
     qcm.sujet=data['sujet']
     qcm.description=data['description']
@@ -108,23 +115,27 @@ def update_qcm(current_user,id):
         questions.append(q)
     qcm.questions=  questions
     db.session.commit()
-    return jsonify({'message':'Le qcm a été modifier !'})
+    logger.info('Le qcm a été modifié !')
+    return jsonify({'message':'Le qcm a été modifié !'})
 
 @qcms.route('/<id>',methods=['DELETE'])
 @token_required
 def delete_qcm(current_user,id):
 
     if not current_user.admin:
+        logger.error('Impossible d\'exécuter cette fonction !')
         return jsonify({'message':'Impossible d\'exécuter cette fonction !'})
 
     qcm = Qcm.query.filter_by(id=id).first()
 
     if not qcm:
+        logger.error('Aucun qcm trouvé !')
         return jsonify({'message': 'Aucune qcm trouvée !'})
 
     db.session.delete(qcm)
     db.session.commit()
-    return jsonify({'message': 'Le qcm a été supprimer !'})
+    logger.info('Le qcm a été supprimé !')
+    return jsonify({'message': 'Le qcm a été supprimé !'})
 
 def qcmQuestionToJson(qcm) :
     questions = []
