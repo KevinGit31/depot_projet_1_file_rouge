@@ -12,12 +12,12 @@ from functools import wraps
 import os
 import sys
 import inspect
-
+import logging
 currentdir = os.path.dirname(os.path.abspath(
     inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
-
+logger = logging.getLogger('qcm_session')
 
 SECRET_KEY = "DevOps"
 
@@ -27,6 +27,7 @@ qcm_sessions = Blueprint('qcm_sessions', __name__)
 @qcm_sessions.route('', methods=['GET'])
 @token_required
 def get_all_qcm_sessions(current_user):
+    logger.info('Obtenir des qcm_session!')
 
     if not current_user.admin:
         qcm_sessions = QcmSession.query.filter_by(user_id=current_user.id).first()
@@ -56,6 +57,7 @@ def get_one_qcm_session(current_user, id):
         qcm_session = QcmSession.query.filter_by(id=id).first()
 
     if not qcm_session:
+        logger.error('Aucun qcm_session trouvé !')
         return jsonify({'message': 'Aucun qcm_session trouvée !'})
 
     qcm_session_data = {}
@@ -105,6 +107,8 @@ def create_qcm_session(current_user):
 
     db.session.add(new_qcm_session)
     db.session.commit()
+    logger.info('Nouvel qcm_session créé!')
+    logger.info('score : '+score+'%')
     return jsonify({'message': 'Nouvel qcm_session créé!','score':score})
 
 @qcm_sessions.route('/<id>', methods=['DELETE'])
@@ -112,16 +116,19 @@ def create_qcm_session(current_user):
 def delete_qcm_session(current_user, id):
 
     if not current_user.admin:
+        logger.error('Impossible d\'exécuter cette fonction !')
         return jsonify({'message': 'Impossible d\'exécuter cette fonction !'})
 
     qcm_session = QcmSession.query.filter_by(id=id).first()
 
     if not qcm_session:
-        return jsonify({'message': 'Aucun qcm_session trouvée !'})
+        logger.error('Aucun qcm_session trouvé !')
+        return jsonify({'message': 'Aucun qcm_session trouvé !'})
 
     db.session.delete(qcm_session)
     db.session.commit()
-    return jsonify({'message': 'Le qcm_session a été supprimer !'})
+    logger.info('Le qcm_session a été supprimé !')
+    return jsonify({'message': 'Le qcm_session a été supprimé !'})
 
 
 def qcm_sessionAnswerToJson(qcm_session):
@@ -181,6 +188,7 @@ def qcm_sessionUserToJson(user_id):
     user = User.query.filter_by(id=user_id).first()
 
     if not user:
+        logger.error('Aucun utilisateur trouvé !')
         return jsonify({'message': 'Aucun utilisateur trouvé !'})
 
     user_data = {}
