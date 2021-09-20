@@ -8,12 +8,9 @@ import { FlatpickrModule } from 'angularx-flatpickr';
 
 import { UIModule } from '../shared/ui/ui.module';
 import { PagesRoutingModule } from './pages-routing.module';
-import { DashboardComponent } from './dashboard/dashboard.component';
+
 
 import { WidgetModule } from '../shared/widgets/widget.module';
-import { UiModule } from './ui/ui.module';
-import { AppsModule } from './apps/apps.module';
-import { OtherModule } from './other/other.module';
 import { UsersComponent } from './users/users.component';
 import { FormUserComponent } from './users/form-user/form-user.component';
 import { FormDeleteComponent } from './form-delete/form-delete.component';
@@ -28,17 +25,18 @@ import { QuestionRowComponent } from './qcm/question-row/question-row.component'
 import { QuizzQcmComponent } from './quizz-qcm/quizz-qcm.component';
 import { QuizzWizardComponent } from './quizz-wizard/quizz-wizard.component';
 import { ArchwizardModule } from 'angular-archwizard';
+import { ScoreComponent } from './score/score.component';
 
 
 @NgModule({
-  declarations: [DashboardComponent,
+  declarations: [
      UsersComponent, 
      FormUserComponent,
       FormDeleteComponent, 
       QcmComponent, 
       QuestionComponent, 
       AnswerComponent,
-       FormQuestionComponent,
+       FormQuestionComponent,ScoreComponent ,
         AnswerRowComponent, FormQcmComponent, QuestionRowComponent, QuizzQcmComponent, QuizzWizardComponent],
   imports: [
     NgSelectModule,
@@ -52,10 +50,7 @@ import { ArchwizardModule } from 'angular-archwizard';
     UIModule,
     WidgetModule,
     ArchwizardModule,
-    PagesRoutingModule,
-    UiModule,
-    AppsModule,
-    OtherModule
+    PagesRoutingModule
   ]
 })
 export class PagesModule { }
