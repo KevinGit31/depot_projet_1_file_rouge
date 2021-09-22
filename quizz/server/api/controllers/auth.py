@@ -47,7 +47,8 @@ def login():
             'name': user.name,
             'email': user.email,
             'admin': user.admin,
-        }, 'exp': datetime.datetime.utcnow()+datetime.timedelta(minutes=60)}, SECRET_KEY)
+        }, 'exp': datetime.datetime.utcnow()
+        +datetime.timedelta(minutes=60)}, SECRET_KEY)
         logger.info(token)
         logger.info('Profile Vérifié')
         return jsonify({'token': token})

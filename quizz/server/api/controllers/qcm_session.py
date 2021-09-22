@@ -108,7 +108,7 @@ def create_qcm_session(current_user):
     db.session.add(new_qcm_session)
     db.session.commit()
     logger.info('Nouvel qcm_session créé!')
-    logger.info('score : '+score+'%')
+    logger.info('score : '+str(score)+'%')
     return jsonify({'message': 'Nouvel qcm_session créé!','score':score})
 
 @qcm_sessions.route('/<id>', methods=['DELETE'])
